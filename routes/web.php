@@ -30,9 +30,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/login');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
