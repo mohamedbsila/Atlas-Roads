@@ -55,4 +55,21 @@ Route::middleware('auth')->group(function () {
     
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);
+    
+    // Wishlist Routes - User
+    Route::resource('wishlist', \App\Http\Controllers\WishlistController::class);
+    Route::post('wishlist/{wishlist}/vote', [\App\Http\Controllers\WishlistController::class, 'toggleVote'])->name('wishlist.vote');
+    Route::post('wishlist/{wishlist}/feedback', [\App\Http\Controllers\WishlistController::class, 'submitFeedback'])->name('wishlist.feedback');
+    Route::get('wishlist-browse', [\App\Http\Controllers\WishlistController::class, 'browse'])->name('wishlist.browse');
+    
+    // Admin Wishlist Management
+    Route::prefix('admin/wishlist')->name('admin.wishlist.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminWishlistController::class, 'index'])->name('index');
+        Route::get('/dashboard', [\App\Http\Controllers\AdminWishlistController::class, 'dashboard'])->name('dashboard');
+        Route::get('/{wishlist}', [\App\Http\Controllers\AdminWishlistController::class, 'show'])->name('show');
+        Route::post('/{wishlist}/update-status', [\App\Http\Controllers\AdminWishlistController::class, 'updateStatus'])->name('update-status');
+        Route::post('/{wishlist}/link-book', [\App\Http\Controllers\AdminWishlistController::class, 'linkToBook'])->name('link-book');
+        Route::post('/{wishlist}/create-book', [\App\Http\Controllers\AdminWishlistController::class, 'createBook'])->name('create-book');
+        Route::post('/bulk-update', [\App\Http\Controllers\AdminWishlistController::class, 'bulkUpdate'])->name('bulk-update');
+    });
 });

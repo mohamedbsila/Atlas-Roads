@@ -161,7 +161,16 @@
             <a href="{{ route('home') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                 <i class="fas fa-home mr-1"></i> Home
             </a>
+            <a href="#books" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
+                <i class="fas fa-book mr-1"></i> Books
+            </a>
             @auth
+                <a href="{{ route('wishlist.index') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
+                    <i class="fas fa-heart mr-1"></i> My Wishlist
+                </a>
+                <a href="{{ route('wishlist.create') }}" class="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition">
+                    <i class="fas fa-plus mr-1"></i> Request Book
+                </a>
                 <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                     <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
                 </a>
@@ -170,12 +179,6 @@
                     <i class="fas fa-sign-in-alt mr-1"></i> Login
                 </a>
             @endauth
-            <a href="#books" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
-                <i class="fas fa-book mr-1"></i> Books
-            </a>
-            <a href="#contact" class="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition">
-                <i class="fas fa-envelope mr-1"></i> Contact
-            </a>
         </nav>
     </div>
 </header>
