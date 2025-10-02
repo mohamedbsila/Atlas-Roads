@@ -37,7 +37,21 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
 
     Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
-    Route::get('/reset-password/{id}', ResetPassword::class)->name('reset-password')->middleware('signed');
+    // Removed signed middleware from reset-password route to fix 403 error
+    // Add the route expected by Laravel's password reset notification
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+});
+
+// Events (admin) - protect with auth and policy checks
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events', \App\Http\Livewire\Events\ListEvents::class)
+        ->name('events.index');
+
+    Route::get('/events/create', \App\Http\Livewire\Events\CreateEvent::class)
+        ->name('events.create');
+
+    Route::get('/events/{id}/edit', \App\Http\Livewire\Events\EditEvent::class)
+        ->name('events.edit');
 });
 
 Route::middleware('auth')->group(function () {
