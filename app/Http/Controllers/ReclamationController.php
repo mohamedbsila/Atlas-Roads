@@ -69,4 +69,13 @@ class ReclamationController extends Controller
         $reclamation->delete();
         return redirect()->route('reclamations.index')->with('success', 'Réclamation supprimée');
     }
+    public function bienRecu(Reclamation $reclamation)
+{
+    $reclamation->update([
+        'statut' => 'en_cours' // ou "reçue" selon ton workflow
+    ]);
+
+    return redirect()->back()->with('success', 'Réclamation marquée comme bien reçue.');
+}
+
 }
