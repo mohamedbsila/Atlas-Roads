@@ -18,6 +18,8 @@ use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\VirtualReality;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ReclamationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -53,4 +55,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/virtual-reality', VirtualReality::class)->name('virtual-reality');
     Route::get('/user-profile', UserProfile::class)->name('user-profile');
     Route::get('/user-management', UserManagement::class)->name('user-management');
+    //rouute pour reclamation
+    Route::resource('reclamations', ReclamationController::class);
 });
