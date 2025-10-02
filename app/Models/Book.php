@@ -103,6 +103,13 @@ class Book extends Model
     {
         parent::boot();
         
+        // Automatically set ownerId to authenticated user when creating a book
+        static::creating(function ($book) {
+            if (!$book->ownerId && auth()->check()) {
+                $book->ownerId = auth()->id();
+            }
+        });
+        
         static::deleting(function ($book) {
             // Only delete if it's a local file (not an external URL)
             if ($book->image && !str_starts_with($book->image, 'http') && Storage::disk('public')->exists($book->image)) {
