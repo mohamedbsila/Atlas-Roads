@@ -115,6 +115,40 @@
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
             }
+
+            /* Borrow Button */
+            .borrow-button {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .borrow-button:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            }
+
+            .borrow-button:active {
+                transform: translateY(-1px);
+            }
+
+            .borrow-button::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .borrow-button:hover::before {
+                left: 100%;
+            }
             
             /* Header */
             header {
@@ -133,6 +167,37 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             }
             
+            /* Modal Button Improvements */
+            #borrowModal .px-6 {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            #borrowModal button[type="submit"] {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            #borrowModal button[type="submit"]::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                transition: left 0.5s;
+            }
+            
+            #borrowModal button[type="submit"]:hover::before {
+                left: 100%;
+            }
+            
+            #borrowModal button[type="button"]:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
             /* Responsive */
             @media (max-width: 768px) {
                 header nav {
@@ -147,11 +212,21 @@
                 .book-image {
                     height: 250px;
                 }
+                
+                /* Modal responsive */
+                #borrowModal .flex.justify-between {
+                    flex-direction: column;
+                    gap: 0.75rem;
+                }
+                
+                #borrowModal button {
+                    width: 100%;
+                }
             }
         </style>
     @endpush
     
-<header class="bg-white shadow-md w-full">
+    <header class="bg-white shadow-md w-full">
     <div class="px-8 py-3 flex justify-between items-center">
         <div class="flex items-center gap-2">
             <img src="{{ asset('assets/img/logo/logo black.png') }}" alt="Atlas Roads" class="h-8">
@@ -181,9 +256,9 @@
             @endauth
         </nav>
     </div>
-</header>
+    </header>
 
-<main>
+    <main>
     <div class="carousel">
         <div class="list">
             @forelse($carouselBooks as $carouselBook)
@@ -201,8 +276,7 @@
                             @endif
                         </div>
                         <div class="buttons">
-                            <button class="seeMore" onclick="window.location.href='{{ route('book.show', $carouselBook) }}'">Discover</button>
-                            <button onclick="window.location.href='{{ route('login') }}'">Borrow</button>
+                            <button class="seeMore" onclick="window.location.href='{{ route('books.show', $carouselBook) }}'">Discover</button>
                         </div>
                     </div>
                 </div>
@@ -287,11 +361,40 @@
                                     {{ $book->published_year }} • {{ $book->language }}
                                 </p>
 
-                                <!-- Action Button -->
-                                <a href="{{ route('book.show', $book) }}" 
-                                   class="book-action-btn block w-full text-center px-4 py-2.5 rounded-lg text-sm font-semibold">
-                                    View Details
-                                </a>
+                                <!-- Action Buttons -->
+                                <div class="space-y-2">
+                                    @auth
+                                        @if($book->is_available && $book->ownerId !== Auth::id())
+                                            <button onclick="openBorrowModal('{{ $book->id }}', '{{ e($book->title) }}', '{{ e($book->author) }}')"
+                                                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-green-600 hover:to-green-700 transition-all transform hover:-translate-y-1 hover:shadow-lg">
+                                                <i class="fas fa-hand-holding-heart me-2"></i>
+                                                📚 Emprunter ce livre
+                                            </button>
+                                        @elseif($book->ownerId === Auth::id())
+                                            <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
+                                                <i class="fas fa-crown me-1"></i>
+                                                Votre livre
+                                            </div>
+                                        @else
+                                            <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
+                                                <i class="fas fa-ban me-1"></i>
+                                                Non disponible
+                                            </div>
+                                        @endif
+                                    @else
+                                        <a href="{{ route('login') }}" 
+                                           class="w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-gray-500 hover:to-gray-600 transition-all text-center block">
+                                            <i class="fas fa-sign-in-alt me-1"></i>
+                                            Se connecter pour emprunter
+                                        </a>
+                                    @endauth
+                                    
+                                    <a href="{{ route('books.show', $book) }}" 
+                                       class="book-action-btn block w-full text-center px-4 py-2.5 rounded-lg text-sm font-semibold border border-gray-300 hover:bg-gray-50 transition-all">
+                                        <i class="fas fa-eye me-1"></i>
+                                        Voir détails
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -315,8 +418,108 @@
     </div>
 </section>
 
+    <!-- Modal de demande d'emprunt -->
+    @auth
+    <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full relative">
+            <form id="borrowForm" method="POST" action="{{ route('borrow-requests.store') }}">
+                @csrf
+                <input type="hidden" id="modal_book_id" name="book_id">
+                
+                <!-- Header -->
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Demande d'emprunt</h3>
+                    <button type="button" onclick="closeBorrowModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Body -->
+                <div class="px-6 py-4">
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-900" id="modal_book_title"></h4>
+                        <p class="text-sm text-gray-600" id="modal_book_author"></p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                            <input type="date" 
+                                   id="start_date" 
+                                   name="start_date" 
+                                   min="{{ now()->addDay()->toDateString() }}"
+                                   required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                            <input type="date" 
+                                   id="end_date" 
+                                   name="end_date" 
+                                   required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Message (optionnel)</label>
+                            <textarea id="notes" 
+                                      name="notes" 
+                                      rows="3" 
+                                      maxlength="500"
+                                      placeholder="Pourquoi souhaitez-vous emprunter ce livre ?"
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="px-6 py-4 border-t border-gray-200 flex justify-between space-x-3">
+                    <button type="button" 
+                            onclick="closeBorrowModal()" 
+                            class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 hover:border-gray-400 transition-all">
+                        <i class="fas fa-times me-2"></i>
+                        ❌ Annuler
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg hover:from-green-600 hover:to-green-700 hover:shadow-lg transform hover:-translate-y-1 transition-all">
+                        <i class="fas fa-check-circle me-2"></i>
+                        ✅Valider
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endauth
+
     @push('scripts')
         <script src="{{ asset('assets/js/home/app.js') }}"></script>
         <script src="{{ asset('assets/js/home/scroll-animation.js') }}"></script>
+        
+        <script>
+            function openBorrowModal(bookId, bookTitle, bookAuthor) {
+                document.getElementById('modal_book_id').value = bookId;
+                document.getElementById('modal_book_title').textContent = bookTitle;
+                document.getElementById('modal_book_author').textContent = "Auteur : " + bookAuthor;
+
+                document.getElementById('borrowModal').classList.remove('hidden');
+            }
+
+            function closeBorrowModal() {
+                document.getElementById('borrowModal').classList.add('hidden');
+                document.getElementById('borrowForm').reset();
+                document.getElementById('modal_book_title').textContent = '';
+                document.getElementById('modal_book_author').textContent = '';
+            }
+
+            // Vérification dynamique des dates
+            document.getElementById('start_date')?.addEventListener('change', function () {
+                let start = this.value;
+                let endDateInput = document.getElementById('end_date');
+                if (start) {
+                    endDateInput.min = start;
+                }
+            });
+        </script>
     @endpush
 </x-layouts.base>

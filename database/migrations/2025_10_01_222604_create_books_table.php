@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -23,9 +24,10 @@ return new class extends Migration
             $table->boolean('is_available')->default(true);
             $table->timestamps();
             
-            $table->index(['title', 'author']);
+            // Index basiques sans problème de longueur
             $table->index('category');
             $table->index('is_available');
+            $table->index('published_year');
         });
     }
 
