@@ -63,6 +63,9 @@ class BookController extends Controller
         }
 
         $data['is_available'] = $request->has('is_available') ? true : false;
+        
+        // Automatically assign the logged-in user as the owner
+        $data['ownerId'] = auth()->id();
 
         Book::create($data);
 
