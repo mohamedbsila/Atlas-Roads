@@ -19,10 +19,11 @@ class ListEvents extends Component
     public function delete($id)
     {
         $event = Event::find($id);
+
         if ($event) {
             Gate::authorize('delete', $event);
             $event->delete();
-            // notify the frontend immediately and set a flash for next request
+
             session()->flash('status', 'Event deleted.');
             $this->dispatchBrowserEvent('notify', ['message' => 'Event deleted.']);
         }
@@ -51,7 +52,7 @@ class ListEvents extends Component
     public function render()
     {
         return view('livewire.events.list-events', [
-            'events' => Event::orderBy('start_date','desc')->paginate(10),
+            'events' => Event::orderBy('start_date', 'desc')->paginate(10),
         ]);
     }
 }
