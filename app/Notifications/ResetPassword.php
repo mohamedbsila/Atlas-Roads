@@ -48,7 +48,8 @@ class ResetPassword extends Notification
 
     public function toMail($notifiable)
     {
-        $url = URL::temporarySignedRoute('reset-password', now()->addHours(12), ['id' => $this->token]);
+    // Generate a normal (unsigned) route to the Livewire reset form. Include email as query param.
+    $url = URL::route('password.reset', ['token' => $this->token, 'email' => $notifiable->email]);
         return (new MailMessage)
             ->subject('Reset Password')
             ->line('Hello!')
