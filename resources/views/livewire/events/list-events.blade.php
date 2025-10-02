@@ -1,46 +1,47 @@
-<div class="p-6 bg-white rounded shadow">
-    <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold">Events</h3>
-        <a href="{{ route('events.create') }}" class="px-3 py-2 bg-blue-600 text-white rounded">Create Event</a>
-    </div>
+<div>
+    <div class="p-6 bg-white rounded shadow">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">Events</h3>
+            <a href="{{ route('events.create') }}" class="px-3 py-2 bg-blue-600 text-white rounded">Create Event</a>
+        </div>
 
-    @if (session('status'))
-        <div class="mb-4 text-green-600">{{ session('status') }}</div>
-    @endif
+        @if (session('status'))
+            <div class="mb-4 text-green-600">{{ session('status') }}</div>
+        @endif
 
-    <table class="w-full table-auto">
-        <thead>
-            <tr class="text-left">
-                <th>Title</th>
-                <th>Start</th>
-                <th>End</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($events as $event)
-                <tr class="border-t">
-                    <td class="py-2 flex items-center gap-3">
-                        @if($event->thumbnail)
-                            <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="" class="w-12 h-8 object-cover rounded" />
-                        @endif
-                        <span>{{ $event->title }}</span>
-                    </td>
-                    <td class="py-2">{{ $event->start_date }}</td>
-                    <td class="py-2">{{ $event->end_date }}</td>
-                    <td class="py-2 text-right">
-                        <a href="{{ route('events.edit', $event->id) }}" class="px-2 py-1 bg-blue-600 text-white rounded mr-2">Edit</a>
-                        <button wire:click.prevent="confirmDelete('{{ $event->id }}')" class="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
-                    </td>
+        <table class="w-full table-auto">
+            <thead>
+                <tr class="text-left">
+                    <th>Title</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th></th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($events as $event)
+                    <tr class="border-t">
+                        <td class="py-2 flex items-center gap-3">
+                            @if($event->thumbnail)
+                                <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="" class="w-12 h-8 object-cover rounded" />
+                            @endif
+                            <span>{{ $event->title }}</span>
+                        </td>
+                        <td class="py-2">{{ $event->start_date }}</td>
+                        <td class="py-2">{{ $event->end_date }}</td>
+                        <td class="py-2 text-right">
+                            <a href="{{ route('events.edit', $event->id) }}" class="px-2 py-1 bg-blue-600 text-white rounded mr-2">Edit</a>
+                            <button wire:click.prevent="confirmDelete('{{ $event->id }}')" class="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-    <div class="mt-4">
-        {{ $events->links() }}
+        <div class="mt-4">
+            {{ $events->links() }}
+        </div>
     </div>
-</div>
 
     <!-- Delete Confirmation Modal -->
     <div x-data="{}">
@@ -55,3 +56,4 @@
             </div>
         </div>
     </div>
+</div>
