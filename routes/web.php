@@ -18,6 +18,7 @@ use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\VirtualReality;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ReclamationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,8 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
     Route::get('/reset-password/{id}', ResetPassword::class)->name('reset-password')->middleware('signed');
+    // Alternative route for password reset (without signed middleware)
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
 Route::middleware('auth')->group(function () {
@@ -72,4 +75,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/{wishlist}/create-book', [\App\Http\Controllers\AdminWishlistController::class, 'createBook'])->name('create-book');
         Route::post('/bulk-update', [\App\Http\Controllers\AdminWishlistController::class, 'bulkUpdate'])->name('bulk-update');
     });
+
+    // Reclamations CRUD
+    Route::resource('reclamations', ReclamationController::class);
+    Route::patch('/reclamations/{reclamation}/bien-recu', [ReclamationController::class, 'bienRecu'])
+     ->name('reclamations.bienRecu');
 });
