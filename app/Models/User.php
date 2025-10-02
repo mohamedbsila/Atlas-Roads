@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -46,7 +47,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // Relationships
+    // Relationships - Wishlist and Reviews
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
@@ -61,5 +62,29 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Livres possédés par l'utilisateur
+     */
+    public function ownedBooks(): HasMany
+    {
+        return $this->hasMany(Book::class, 'ownerId');
+    }
+
+    /**
+     * Demandes d'emprunt faites par cet utilisateur
+     */
+    public function borrowRequests(): HasMany
+    {
+        return $this->hasMany(BorrowRequest::class, 'borrower_id');
+    }
+
+    /**
+     * Demandes d'emprunt reçues pour les livres de cet utilisateur
+     */
+    public function receivedBorrowRequests(): HasMany
+    {
+        return $this->hasMany(BorrowRequest::class, 'owner_id');
     }
 }
