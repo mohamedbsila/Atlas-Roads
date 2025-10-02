@@ -10,13 +10,18 @@ class UserProfile extends Component
 {
     public User $user;
 
-    protected $rules = [
-        'user.name' => 'max:40|min:3',
-        'user.email' => 'email:rfc,dns',
-        'user.phone' => 'max:10',
-        'user.about' => 'max:200',
-        'user.location' => 'min:3'
-    ];
+    // ...existing code...
+
+    public function rules()
+    {
+        return [
+            'user.name' => 'max:40|min:3',
+            'user.email' => 'required|email|unique:users,email,' . ($this->user->id ?? 'NULL'),
+            'user.phone' => 'max:10',
+            'user.about' => 'max:200',
+            'user.location' => 'min:3'
+        ];
+    }
 
     public function mount()
     {
@@ -25,7 +30,7 @@ class UserProfile extends Component
 
     public function save()
     {
-        $this->validate();
+    $this->validate($this->rules());
 
         if (env('IS_DEMO') && auth()->user()->id == 1) {
             if (auth()->user()->email == $this->user->email) {
