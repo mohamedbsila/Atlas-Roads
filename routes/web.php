@@ -57,4 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-management', UserManagement::class)->name('user-management');
     //rouute pour reclamation
     Route::resource('reclamations', ReclamationController::class);
+    Route::patch('/reclamations/{reclamation}/bien-recu', [ReclamationController::class, 'bienRecu'])
+     ->name('reclamations.bienRecu');
+
 });

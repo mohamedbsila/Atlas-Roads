@@ -56,6 +56,16 @@
               class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Dashboard</span>
           </a>
         </li>
+        <li class="mt-0.5 w-full">
+    <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+       href="{{ route('reclamations.index') }}">
+        <div
+            class="bg-gradient-to-tl from-red-600 to-rose-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+            <i class="fas fa-exclamation-circle text-white"></i>
+        </div>
+        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Report a problem</span>
+    </a>
+</li>
 
         <li class="w-full mt-4">
           <h6
