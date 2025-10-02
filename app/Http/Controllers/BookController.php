@@ -89,14 +89,14 @@ class BookController extends Controller
         // Handle image (uploaded file or external URL)
         if ($request->hasFile('image')) {
             // Delete old image if it's a local file
-            if ($book->image && !str_starts_with($book->image, 'http') && Storage::exists($book->image)) {
-                Storage::delete($book->image);
+            if ($book->image && !str_starts_with($book->image, 'http') && Storage::disk('public')->exists($book->image)) {
+                Storage::disk('public')->delete($book->image);
             }
             $data['image'] = $request->file('image')->store('books', 'public');
         } elseif ($request->filled('image_url')) {
             // Delete old image if it's a local file
-            if ($book->image && !str_starts_with($book->image, 'http') && Storage::exists($book->image)) {
-                Storage::delete($book->image);
+            if ($book->image && !str_starts_with($book->image, 'http') && Storage::disk('public')->exists($book->image)) {
+                Storage::disk('public')->delete($book->image);
             }
             $data['image'] = $request->image_url;
         }
