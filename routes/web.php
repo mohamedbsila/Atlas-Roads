@@ -18,6 +18,7 @@ use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\VirtualReality;
 use Illuminate\Http\Request;
+use App\Http\Controllers\BorrowRequestTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,4 +56,15 @@ Route::middleware('auth')->group(function () {
     
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);
+    
+    // Borrow Requests Management
+    Route::get('borrow-requests', [\App\Http\Controllers\BorrowRequestController::class, 'index'])->name('borrow-requests.index');
+    Route::post('borrow-requests', [\App\Http\Controllers\BorrowRequestController::class, 'store'])->name('borrow-requests.store');
+    Route::patch('borrow-requests/{borrowRequest}/approve', [\App\Http\Controllers\BorrowRequestController::class, 'approve'])->name('borrow-requests.approve');
+    Route::patch('borrow-requests/{borrowRequest}/reject', [\App\Http\Controllers\BorrowRequestController::class, 'reject'])->name('borrow-requests.reject');
+    Route::patch('borrow-requests/{borrowRequest}/return', [\App\Http\Controllers\BorrowRequestController::class, 'markAsReturned'])->name('borrow-requests.return');
+    Route::patch('borrow-requests/{borrowRequest}/cancel', [\App\Http\Controllers\BorrowRequestController::class, 'cancel'])->name('borrow-requests.cancel');
 });
+
+// Route de test pour BorrowRequest
+Route::get('/test-borrow-request', [BorrowRequestTestController::class, 'test']);
