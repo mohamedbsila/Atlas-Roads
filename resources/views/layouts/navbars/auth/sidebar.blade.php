@@ -156,6 +156,57 @@
           </a>
         </li>
 
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('borrow-requests*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+            href="{{ url('borrow-requests') }}">
+
+            <div
+              class="{{ (Request::is('borrow-requests*') ? ' bg-gradient-fuchsia' : '') }} shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+
+              <i style="font-size: 1rem;"
+                class="fas fa-lg fa-handshake ps-2 pe-2 text-center text-dark {{ (Request::is('borrow-requests*') ? 'text-white' : 'text-dark') }} "
+                aria-hidden="true"></i>
+
+            </div>
+            <span
+              class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Borrow Requests</span>
+          </a>
+        </li>
+
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('borrow-requests*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+            href="{{ url('borrow-requests') }}">
+
+            <div
+              class="{{ (Request::is('borrow-requests*') ? ' bg-gradient-fuchsia' : '') }} shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+
+              <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <title>borrow-request</title>
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1869.000000, -293.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g transform="translate(153.000000, 2.000000)">
+                        <path class="{{ (Request::is('borrow-requests*') ? '' : 'fill-slate-800') }}"
+                          d="M39.3,0.706431458 C40.4581722,0.706431458 41.4,1.64826024 41.4,2.80643146 C41.4,3.96460267 40.4581722,4.90643146 39.3,4.90643146 L9.3,4.90643146 C8.14182781,4.90643146 7.2,3.96460267 7.2,2.80643146 C7.2,1.64826024 8.14182781,0.706431458 9.3,0.706431458 L39.3,0.706431458 Z M39.3,10.7064315 C40.4581722,10.7064315 41.4,11.6482602 41.4,12.8064315 C41.4,13.9646027 40.4581722,14.9064315 39.3,14.9064315 L9.3,14.9064315 C8.14182781,14.9064315 7.2,13.9646027 7.2,12.8064315 C7.2,11.6482602 8.14182781,10.7064315 9.3,10.7064315 L39.3,10.7064315 Z M39.3,20.7064315 C40.4581722,20.7064315 41.4,21.6482602 41.4,22.8064315 C41.4,23.9646027 40.4581722,24.9064315 39.3,24.9064315 L9.3,24.9064315 C8.14182781,24.9064315 7.2,23.9646027 7.2,22.8064315 C7.2,21.6482602 8.14182781,20.7064315 9.3,20.7064315 L39.3,20.7064315 Z">
+                        </path>
+                        <path class="{{ (Request::is('borrow-requests*') ? '' : 'fill-slate-800') }}" opacity="0.598981585"
+                          d="M3.9,12.8064315 L3.9,2.80643146 C3.9,1.64826024 2.95817219,0.706431458 1.8,0.706431458 C0.641827812,0.706431458 -0.3,1.64826024 -0.3,2.80643146 L-0.3,22.8064315 C-0.3,23.9646027 0.641827812,24.9064315 1.8,24.9064315 L3.9,24.9064315 L3.9,12.8064315 Z">
+                        </path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+
+            </div>
+            <span
+              class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Demandes d'Emprunt</span>
+          </a>
+        </li>
+
         <li class="w-full mt-4">
           <h6
             class="{{ (Request::is('rtl') ? 'pr-6 mr-2' : 'pl-6 ml-2') }} font-bold leading-tight uppercase text-size-xs opacity-60">
