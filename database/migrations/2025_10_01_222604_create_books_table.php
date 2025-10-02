@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('isbn', 20)->nullable()->unique();
             $table->string('category', 50);
             $table->string('language', 30);
-            $table->year('published_year');
+            $table->unsignedSmallInteger('published_year');
             $table->boolean('is_available')->default(true);
             $table->timestamps();
             
