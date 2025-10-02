@@ -12,31 +12,42 @@
         <table class="w-full table-auto">
             <thead>
                 <tr class="text-left">
-                    <th>Title</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th></th>
+                    <th class="pb-2">Title</th>
+                    <th class="pb-2">Description</th>
+                    <th class="pb-2">Location</th>
+                    <th class="pb-2">Start</th>
+                    <th class="pb-2">End</th>
+                    <th class="pb-2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($events as $event)
-                    <tr class="border-t">
-                        <td class="py-2 flex items-center gap-3">
-                            @if($event->thumbnail)
-                                <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="" class="w-12 h-8 object-cover rounded" />
-                            @endif
-                            <span>{{ $event->title }}</span>
-                        </td>
-                        <td class="py-2">{{ $event->start_date }}</td>
-                        <td class="py-2">{{ $event->end_date }}</td>
-                        <td class="py-2 text-right">
-                            @can('update', $event)
-                                <a href="{{ route('events.edit', $event->id) }}" class="px-2 py-1 bg-blue-600 text-white rounded mr-2">Edit</a>
-                            @endcan
+                    <tr class="border-t align-top">
+                            <td class="py-3 flex items-start gap-3">
+                                @if($event->thumbnail)
+                                    <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="" class="w-14 h-10 object-cover rounded" />
+                                @else
+                                    <div class="w-14 h-10 bg-gray-100 rounded"></div>
+                                @endif
+                                <div>
+                                    <div class="font-semibold">{{ $event->title }}</div>
+                                    @if($event->description)
+                                        <div class="text-sm text-gray-600 mt-1">{{ \Illuminate\Support\Str::limit($event->description, 120) }}</div>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="py-3">{{ $event->description ? \Illuminate\Support\Str::limit($event->description, 80) : '-' }}</td>
+                            <td class="py-3">{{ $event->location ?? '-' }}</td>
+                            <td class="py-3">{{ $event->start_date }}</td>
+                            <td class="py-3">{{ $event->end_date }}</td>
+                            <td class="py-3 text-right">
+                                @can('update', $event)
+                                    <a href="{{ route('events.edit', $event->id) }}" class="px-2 py-1 bg-blue-600 text-white rounded mr-2">Edit</a>
+                                @endcan
 
-                            <button wire:click.prevent="confirmDelete('{{ $event->id }}')" class="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
-                        </td>
-                    </tr>
+                                <button wire:click.prevent="confirmDelete('{{ $event->id }}')" class="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
+                            </td>
+                        </tr>
                 @endforeach
             </tbody>
         </table>

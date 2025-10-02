@@ -18,101 +18,39 @@
 <main>
     <div class="carousel">
         <div class="list">
-            <div class="item">
-                <img src="{{ asset('assets/img/home/images/img1.png') }}" class="img">
-                <div class="content">
-                    <div class="author">Atlas Roads</div>
-                    <div class="title">Road Management System</div>
-                    <div class="topic">Modern Infrastructure Solutions</div>
-                    <div class="des">
-                        Streamline your road infrastructure management with our comprehensive dashboard.
+            @if (!empty($events) && $events->count())
+                @foreach ($events as $event)
+                    <div class="item">
+                        <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/home/images/img1.png') }}" class="img" alt="{{ $event->title }}">
+                        <div class="content">
+                            <div class="author">{{ config('app.name', 'Atlas Roads') }}</div>
+                            <div class="title">{{ $event->title }}</div>
+                                <div class="topic">{{ \Illuminate\Support\Str::limit($event->description, 60) }}</div>
+                                <div class="des">{{ \Illuminate\Support\Str::limit($event->description, 140) }}</div>
+                            <div class="buttons">
+                                <a href="{{ route('events.index') }}" class="btn">See Events</a>
+                                <a href="{{ route('events.index') }}" class="btn">Details</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="buttons">
-                        <button>Learn More</button>
-                        <button>Get Started</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="item">
-                <img src="{{ asset('assets/img/home/images/img2.png') }}" class="img">
-                <div class="content">
-                    <div class="author">Analytics</div>
-                    <div class="title">Real-time Monitoring</div>
-                    <div class="topic">Smart Data Analysis</div>
-                    <div class="des">
-                        Monitor road conditions and traffic patterns in real-time.
-                    </div>
-                    <div class="buttons">
-                        <button>See Features</button>
-                        <button>Demo</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="item">
-                <img src="{{ asset('assets/img/home/images/img3.png') }}" class="img">
-                <div class="content">
-                    <div class="author">Maintenance</div>
-                    <div class="title">Preventive Care</div>
-                    <div class="topic">Infrastructure Health</div>
-                    <div class="des">
-                        Schedule and track maintenance activities efficiently.
-                    </div>
-                    <div class="buttons">
-                        <button>Learn More</button>
-                        <button>Get Started</button>
+                @endforeach
+            @else
+                <div class="item">
+                    <img src="{{ asset('assets/img/home/images/img1.png') }}" class="img" alt="Atlas Roads hero">
+                    <div class="content">
+                        <div class="author">Atlas Roads</div>
+                        <div class="title">Road Management System</div>
+                        <div class="topic">Modern Infrastructure Solutions</div>
+                        <div class="des">
+                            Streamline your road infrastructure management with our comprehensive dashboard.
+                        </div>
+                        <div class="buttons">
+                            <button>Learn More</button>
+                            <button>Get Started</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="item">
-                <img src="{{ asset('assets/img/home/images/img4.png') }}" class="img">
-                <div class="content">
-                    <div class="author">Safety</div>
-                    <div class="title">Public Safety First</div>
-                    <div class="topic">Risk Management</div>
-                    <div class="des">
-                        Ensure road safety with proactive monitoring and quick response.
-                    </div>
-                    <div class="buttons">
-                        <button>See Features</button>
-                        <button>Demo</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="item">
-                <img src="{{ asset('assets/img/home/images/img5.png') }}" class="img">
-                <div class="content">
-                    <div class="author">Planning</div>
-                    <div class="title">Future-Ready</div>
-                    <div class="topic">Smart Planning</div>
-                    <div class="des">
-                        Plan infrastructure development with data-driven insights.
-                    </div>
-                    <div class="buttons">
-                        <button>Learn More</button>
-                        <button>Get Started</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="item">
-                <img src="{{ asset('assets/img/home/images/img6.png') }}" class="img">
-                <div class="content">
-                    <div class="author">Integration</div>
-                    <div class="title">Connected Systems</div>
-                    <div class="topic">Smart City Integration</div>
-                    <div class="des">
-                        Seamlessly integrate with other smart city systems.
-                    </div>
-                    <div class="buttons">
-                        <button>See Features</button>
-                        <button>Demo</button>
-                    </div>
-                </div>
-            </div>
+            @endif
         </div>
         <div class="arrows">
             <button id="prev"><</button>
