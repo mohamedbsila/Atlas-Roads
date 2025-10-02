@@ -53,8 +53,9 @@ class Book extends Model
         parent::boot();
         
         static::deleting(function ($book) {
-            if ($book->image && Storage::exists($book->image)) {
-                Storage::delete($book->image);
+            // Only delete if it's a local file (not an external URL)
+            if ($book->image && !str_starts_with($book->image, 'http') && Storage::disk('public')->exists($book->image)) {
+                Storage::disk('public')->delete($book->image);
             }
         });
     }
