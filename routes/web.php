@@ -19,6 +19,7 @@ use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\VirtualReality;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReclamationController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,12 @@ use App\Http\Controllers\ReclamationController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Review Routes (public)
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
+Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update')->middleware('auth');
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('auth');
+Route::patch('/reviews/{review}/flag', [ReviewController::class, 'flag'])->name('reviews.flag')->middleware('auth');
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('book.show');
