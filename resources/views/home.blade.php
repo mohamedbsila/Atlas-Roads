@@ -15,21 +15,125 @@
                 pointer-events: none;
             }
             
+            /* Clean Books Section */
             .books-section {
-                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                background: #f8f9fa;
                 padding: 60px 0;
             }
             
-            /* Navigation responsive */
+            /* Section Title */
+            .section-title {
+                color: #2d3748;
+                margin-bottom: 0.5rem;
+            }
+            
+            .section-subtitle {
+                color: #718096;
+            }
+            
+            /* Simple Book Card */
+            .book-card {
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                height: 100%;
+            }
+            
+            .book-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            }
+            
+            /* Book Image */
+            .book-image-container {
+                position: relative;
+                overflow: hidden;
+                background: #f1f5f9;
+            }
+            
+            .book-image {
+                width: 100%;
+                height: 320px;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+            
+            .book-card:hover .book-image {
+                transform: scale(1.05);
+            }
+            
+            /* Badges */
+            .badge-available {
+                background: #10b981;
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 600;
+            }
+            
+            .badge-unavailable {
+                background: #6b7280;
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 600;
+            }
+            
+            /* Book Info */
+            .book-title {
+                font-size: 1.125rem;
+                font-weight: 600;
+                color: #1a202c;
+                margin-bottom: 0.75rem;
+                line-height: 1.4;
+            }
+            
+            .book-info {
+                color: #64748b;
+                font-size: 0.875rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .book-info i {
+                margin-right: 0.5rem;
+                color: #94a3b8;
+            }
+            
+            /* Action Button */
+            .book-action-btn {
+                background: #3b82f6;
+                color: white;
+                transition: all 0.3s ease;
+            }
+            
+            .book-action-btn:hover {
+                background: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            }
+            
+            /* Header */
             header {
                 position: sticky;
                 top: 0;
                 z-index: 50;
                 background: white;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             }
-            header .container {
-                max-width: 1400px;
+            
+            /* Pagination */
+            .pagination-container {
+                background: white;
+                border-radius: 8px;
+                padding: 1rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             }
+            
+            /* Responsive */
             @media (max-width: 768px) {
                 header nav {
                     display: flex;
@@ -39,6 +143,9 @@
                 }
                 header nav a {
                     font-size: 0.875rem;
+                }
+                .book-image {
+                    height: 250px;
                 }
             }
         </style>
@@ -125,11 +232,11 @@
 
 <!-- Section Livres -->
 <section id="books" class="books-section">
-    <div class="container mx-auto px-8" style="max-width: 1400px;">
+    <div class="container mx-auto px-8" style="max-width: 1400px; position: relative; z-index: 2;">
         <!-- Section Title -->
         <div class="text-center mb-12">
-            <h2 class="text-5xl font-bold text-gray-800 mb-4">📚 Our Library</h2>
-            <p class="text-xl text-gray-600">Discover our collection of {{ $books->total() }} available books</p>
+            <h2 class="section-title text-5xl font-bold mb-4">Our Library</h2>
+            <p class="section-subtitle text-xl">Discover our collection of {{ $books->total() }} available books</p>
         </div>
 
         <!-- Grille de livres -->
@@ -137,47 +244,51 @@
             <div class="flex flex-wrap -mx-3">
                 @foreach($books as $book)
                     <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
-                        <div class="relative flex flex-col h-full bg-white shadow rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                            <div class="flex-auto p-4">
-                            <div class="relative overflow-hidden rounded-xl mb-3 group">
+                        <div class="book-card">
+                            <!-- Book Image -->
+                            <div class="book-image-container relative">
                                 <img src="{{ $book->image_url }}" 
                                      alt="{{ $book->title }}" 
-                                     class="w-full h-48 object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
-                                     loading="lazy">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl" style="z-index: 1;"></div>
-
+                                     class="book-image"
+                                     loading="lazy"
+                                     onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
+                                
                                 <!-- Availability Badge -->
                                 @if($book->is_available)
-                                    <span class="absolute px-3 py-1.5 text-xs rounded-lg text-white font-bold"
-                                          style="background-color: #22c55e; z-index: 999; top: 8px; right: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
-                                        <i class="ni ni-check-bold mr-1"></i> Available
+                                    <span class="badge-available absolute" style="top: 12px; right: 12px;">
+                                        Available
                                     </span>
                                 @else
-                                    <span class="absolute px-3 py-1.5 text-xs rounded-lg text-white font-bold"
-                                          style="background-color: #64748b; z-index: 999; top: 8px; right: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
-                                        <i class="ni ni-fat-remove mr-1"></i> Unavailable
+                                    <span class="badge-unavailable absolute" style="top: 12px; right: 12px;">
+                                        Unavailable
                                     </span>
                                 @endif
                             </div>
 
-                            <h5 class="mb-2 font-bold text-base leading-tight">{{ Str::limit($book->title, 40) }}</h5>
-                            <p class="mb-1 text-sm text-slate-600">
-                                <i class="ni ni-single-02 mr-1"></i> {{ Str::limit($book->author, 25) }}
-                            </p>
-                            <p class="mb-1 text-xs text-slate-400">
-                                <i class="ni ni-tag mr-1"></i> {{ $book->category }}
-                            </p>
-                            <p class="mb-3 text-xs text-slate-400">
-                                <i class="ni ni-calendar-grid-58 mr-1"></i> {{ $book->published_year }} | {{ $book->language }}
-                            </p>
+                            <!-- Book Info -->
+                            <div class="p-4">
+                                <h5 class="book-title">{{ Str::limit($book->title, 50) }}</h5>
+                                
+                                <p class="book-info">
+                                    <i class="fas fa-user"></i>
+                                    {{ Str::limit($book->author, 35) }}
+                                </p>
+                                
+                                <p class="book-info">
+                                    <i class="fas fa-bookmark"></i>
+                                    {{ $book->category }}
+                                </p>
+                                
+                                <p class="book-info mb-4">
+                                    <i class="fas fa-calendar"></i>
+                                    {{ $book->published_year }} • {{ $book->language }}
+                                </p>
 
-                            <!-- Action Button -->
-                            <a href="{{ route('book.show', $book) }}" 
-                               class="block w-full text-center px-3 py-2 rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
-                               style="background:linear-gradient(to right,#06b6d4,#0ea5e9)">
-                                <i class="ni ni-zoom-split-in mr-1"></i>
-                                <span>View Details</span>
-                            </a>
+                                <!-- Action Button -->
+                                <a href="{{ route('book.show', $book) }}" 
+                                   class="book-action-btn block w-full text-center px-4 py-2.5 rounded-lg text-sm font-semibold">
+                                    View Details
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -185,8 +296,8 @@
             </div>
 
             <!-- Pagination -->
-            <div class="flex justify-center">
-                <div class="bg-white rounded-xl shadow-md p-4">
+            <div class="flex justify-center mt-8">
+                <div class="pagination-container">
                     {{ $books->links() }}
                 </div>
             </div>
