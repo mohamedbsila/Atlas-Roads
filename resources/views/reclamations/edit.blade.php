@@ -1,11 +1,17 @@
-@extends('layouts.app')
+<x-layouts.app>
+    <div>
+        <div class="mb-6">
+            <a href="{{ route('reclamations.index') }}" 
+               class="inline-block px-4 py-2 mb-4 text-size-xs font-bold text-slate-400 hover:text-slate-700">
+                <i class="ni ni-bold-left mr-1"></i> Retour à la liste
+            </a>
+            <h5 class="mb-0 font-bold">Modifier Réclamation</h5>
+        </div>
 
-@section('content')
-<main class="mt-0 transition-all duration-200 ease-soft-in-out">
-    <section class="min-h-screen mb-32">
-        <div class="container max-w-lg mx-auto">
-            <div class="bg-white shadow-soft-xl rounded-2xl p-6">
-                <h2 class="text-2xl font-bold mb-4 text-slate-700">Modifier Réclamation</h2>
+        <div class="flex flex-wrap -mx-3">
+            <div class="w-full lg:w-8/12 px-3">
+                <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
+                    <div class="p-6">
 
                 @if ($errors->any())
                     <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
@@ -54,12 +60,20 @@
                     </div>
 
                     <div class="flex justify-between items-center mt-4">
-                        <a href="{{ route('reclamations.index') }}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Annuler</a>
-                        <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Mettre à jour</button>
+                        <a href="{{ route('reclamations.index') }}" 
+                           class="inline-block px-6 py-3 font-bold text-center text-slate-700 uppercase align-middle transition-all bg-transparent border border-slate-700 rounded-lg cursor-pointer hover:bg-slate-700 hover:text-white text-size-xs">
+                            Annuler
+                        </a>
+                        <button type="submit" 
+                                class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer text-size-xs shadow-md hover:scale-105"
+                                style="background:linear-gradient(to right,#d946ef,#ec4899)">
+                            Mettre à jour
+                        </button>
                     </div>
                 </form>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
-</main>
-@endsection
+    </div>
+</x-layouts.app>
