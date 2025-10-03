@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BorrowRequestTestController;
+use App\Http\Controllers\DraftController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,15 +33,18 @@ use App\Http\Controllers\BorrowRequestTestController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// Draft routes
+Route::middleware(['auth'])->group(function () {
+    Route::resource('drafts', DraftController::class);
+});
 
-// Review Routes (public)
+// Review Routes
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
 Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update')->middleware('auth');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('auth');
 Route::patch('/reviews/{review}/flag', [ReviewController::class, 'flag'])->name('reviews.flag')->middleware('auth');
-
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('book.show');
+Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('books.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
@@ -107,6 +111,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('borrow-requests/{borrowRequest}/reject', [\App\Http\Controllers\BorrowRequestController::class, 'reject'])->name('borrow-requests.reject');
     Route::patch('borrow-requests/{borrowRequest}/return', [\App\Http\Controllers\BorrowRequestController::class, 'markAsReturned'])->name('borrow-requests.return');
     Route::patch('borrow-requests/{borrowRequest}/cancel', [\App\Http\Controllers\BorrowRequestController::class, 'cancel'])->name('borrow-requests.cancel');
+
+    // Drafts Management
+    Route::resource('drafts', \App\Http\Controllers\DraftController::class)
+        ->parameters(['drafts' => 'draft'])
+        ->only(['index','create','store','show','edit','update','destroy']);
 });
 
 // Route de test pour BorrowRequest

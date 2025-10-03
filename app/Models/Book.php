@@ -98,7 +98,6 @@ class Book extends Model
     {
         return (bool) $this->is_available;
     }
-
     protected static function boot()
     {
         parent::boot();
@@ -108,5 +107,15 @@ class Book extends Model
                 Storage::delete($book->image);
             }
         });
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()->avg('rating');
     }
 }

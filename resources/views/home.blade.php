@@ -15,23 +15,23 @@
                 pointer-events: none;
             }
             
-            /* Clean Books Section */
+            /* Books Section */
             .books-section {
-                background: #f8f9fa;
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
                 padding: 60px 0;
             }
-            
+
             /* Section Title */
             .section-title {
                 color: #2d3748;
                 margin-bottom: 0.5rem;
             }
-            
+
             .section-subtitle {
                 color: #718096;
             }
-            
-            /* Simple Book Card */
+
+            /* Book Card */
             .book-card {
                 background: white;
                 border-radius: 12px;
@@ -40,30 +40,30 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.08);
                 height: 100%;
             }
-            
+
             .book-card:hover {
                 transform: translateY(-5px);
                 box-shadow: 0 8px 16px rgba(0,0,0,0.12);
             }
-            
+
             /* Book Image */
             .book-image-container {
                 position: relative;
                 overflow: hidden;
                 background: #f1f5f9;
             }
-            
+
             .book-image {
                 width: 100%;
                 height: 320px;
                 object-fit: cover;
                 transition: transform 0.3s ease;
             }
-            
+
             .book-card:hover .book-image {
                 transform: scale(1.05);
             }
-            
+
             /* Badges */
             .badge-available {
                 background: #10b981;
@@ -73,7 +73,7 @@
                 font-size: 0.75rem;
                 font-weight: 600;
             }
-            
+
             .badge-unavailable {
                 background: #6b7280;
                 color: white;
@@ -82,7 +82,7 @@
                 font-size: 0.75rem;
                 font-weight: 600;
             }
-            
+
             /* Book Info */
             .book-title {
                 font-size: 1.125rem;
@@ -91,25 +91,25 @@
                 margin-bottom: 0.75rem;
                 line-height: 1.4;
             }
-            
+
             .book-info {
                 color: #64748b;
                 font-size: 0.875rem;
                 margin-bottom: 0.5rem;
             }
-            
+
             .book-info i {
                 margin-right: 0.5rem;
                 color: #94a3b8;
             }
-            
+
             /* Action Button */
             .book-action-btn {
                 background: #3b82f6;
                 color: white;
                 transition: all 0.3s ease;
             }
-            
+
             .book-action-btn:hover {
                 background: #2563eb;
                 transform: translateY(-2px);
@@ -149,8 +149,8 @@
             .borrow-button:hover::before {
                 left: 100%;
             }
-            
-            /* Header */
+
+            /* Navigation responsive */
             header {
                 position: sticky;
                 top: 0;
@@ -158,7 +158,11 @@
                 background: white;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             }
-            
+
+            header .container {
+                max-width: 1400px;
+            }
+
             /* Pagination */
             .pagination-container {
                 background: white;
@@ -166,18 +170,18 @@
                 padding: 1rem;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             }
-            
+
             /* Modal Button Improvements */
             #borrowModal .px-6 {
                 position: relative;
                 overflow: hidden;
             }
-            
+
             #borrowModal button[type="submit"] {
                 position: relative;
                 overflow: hidden;
             }
-            
+
             #borrowModal button[type="submit"]::before {
                 content: '';
                 position: absolute;
@@ -188,16 +192,16 @@
                 background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
                 transition: left 0.5s;
             }
-            
+
             #borrowModal button[type="submit"]:hover::before {
                 left: 100%;
             }
-            
+
             #borrowModal button[type="button"]:hover {
                 transform: translateY(-1px);
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             }
-            
+
             /* Responsive */
             @media (max-width: 768px) {
                 header nav {
@@ -226,7 +230,7 @@
         </style>
     @endpush
     
-    <header class="bg-white shadow-md w-full">
+        <header class="bg-white shadow-md w-full">
     <div class="px-8 py-3 flex justify-between items-center">
         <div class="flex items-center gap-2">
             <img src="{{ asset('assets/img/logo/logo black.png') }}" alt="Atlas Roads" class="h-8">
@@ -253,6 +257,7 @@
                 <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                     <i class="fas fa-sign-in-alt mr-1"></i> Login
                 </a>
+            @endauth
             @endauth
         </nav>
     </div>
@@ -297,6 +302,11 @@
                         </div>
                         <div class="buttons">
                             <button class="seeMore" onclick="window.location.href='{{ route('books.show', $carouselBook) }}'">Discover</button>
+                            @guest
+                                <button onclick="window.location.href='{{ route('login') }}'">Borrow</button>
+                            @else
+                                <button onclick="openBorrowModal('{{ $carouselBook->id }}', '{{ e($carouselBook->title) }}', '{{ e($carouselBook->author) }}')">Borrow</button>
+                            @endguest
                         </div>
                     </div>
                 </div>
@@ -332,7 +342,7 @@
     <div class="container mx-auto px-8" style="max-width: 1400px; position: relative; z-index: 2;">
         <!-- Section Title -->
         <div class="text-center mb-12">
-            <h2 class="section-title text-5xl font-bold mb-4">Our Library</h2>
+            <h2 class="section-title text-5xl font-bold mb-4">📚 Our Library</h2>
             <p class="section-subtitle text-xl">Discover our collection of {{ $books->total() }} available books</p>
         </div>
 
@@ -341,80 +351,75 @@
             <div class="flex flex-wrap -mx-3">
                 @foreach($books as $book)
                     <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6">
-                        <div class="book-card">
-                            <!-- Book Image -->
-                            <div class="book-image-container relative">
+                        <div class="relative flex flex-col h-full bg-white shadow rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                            <div class="flex-auto p-4">
+                            <div class="relative overflow-hidden rounded-xl mb-3 group">
                                 <img src="{{ $book->image_url }}" 
                                      alt="{{ $book->title }}" 
-                                     class="book-image"
-                                     loading="lazy"
-                                     onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
-                                
+                                     class="w-full h-48 object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
+                                     loading="lazy">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl" style="z-index: 1;"></div>
+
                                 <!-- Availability Badge -->
                                 @if($book->is_available)
-                                    <span class="badge-available absolute" style="top: 12px; right: 12px;">
-                                        Available
+                                    <span class="absolute px-3 py-1.5 text-xs rounded-lg text-white font-bold"
+                                          style="background-color: #22c55e; z-index: 999; top: 8px; right: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                                        <i class="ni ni-check-bold mr-1"></i> Available
                                     </span>
                                 @else
-                                    <span class="badge-unavailable absolute" style="top: 12px; right: 12px;">
-                                        Unavailable
+                                    <span class="absolute px-3 py-1.5 text-xs rounded-lg text-white font-bold"
+                                          style="background-color: #64748b; z-index: 999; top: 8px; right: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+                                        <i class="ni ni-fat-remove mr-1"></i> Unavailable
                                     </span>
                                 @endif
                             </div>
 
-                            <!-- Book Info -->
-                            <div class="p-4">
-                                <h5 class="book-title">{{ Str::limit($book->title, 50) }}</h5>
-                                
-                                <p class="book-info">
-                                    <i class="fas fa-user"></i>
-                                    {{ Str::limit($book->author, 35) }}
-                                </p>
-                                
-                                <p class="book-info">
-                                    <i class="fas fa-bookmark"></i>
-                                    {{ $book->category }}
-                                </p>
-                                
-                                <p class="book-info mb-4">
-                                    <i class="fas fa-calendar"></i>
-                                    {{ $book->published_year }} • {{ $book->language }}
-                                </p>
+                            <h5 class="book-title mb-2 font-bold text-base leading-tight">{{ Str::limit($book->title, 40) }}</h5>
+                            <p class="book-info mb-1 text-sm text-slate-600">
+                                <i class="fas fa-user mr-1"></i> {{ Str::limit($book->author, 25) }}
+                            </p>
+                            <p class="book-info mb-1 text-xs text-slate-400">
+                                <i class="fas fa-bookmark mr-1"></i> {{ $book->category }}
+                            </p>
+                            <p class="book-info mb-3 text-xs text-slate-400">
+                                <i class="fas fa-calendar mr-1"></i> {{ $book->published_year }} | {{ $book->language }}
+                            </p>
 
-                                <!-- Action Buttons -->
-                                <div class="space-y-2">
-                                    @auth
-                                        @if($book->is_available && $book->ownerId !== Auth::id())
-                                            <button onclick="openBorrowModal('{{ $book->id }}', '{{ e($book->title) }}', '{{ e($book->author) }}')"
-                                                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-green-600 hover:to-green-700 transition-all transform hover:-translate-y-1 hover:shadow-lg">
-                                                <i class="fas fa-hand-holding-heart me-2"></i>
-                                                📚 Emprunter ce livre
-                                            </button>
-                                        @elseif($book->ownerId === Auth::id())
-                                            <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
-                                                <i class="fas fa-crown me-1"></i>
-                                                Votre livre
-                                            </div>
-                                        @else
-                                            <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
-                                                <i class="fas fa-ban me-1"></i>
-                                                Non disponible
-                                            </div>
-                                        @endif
+                            <!-- Action Buttons -->
+                            <div class="space-y-2">
+                                @auth
+                                    @if($book->is_available && $book->ownerId !== Auth::id())
+                                        <button onclick="openBorrowModal('{{ $book->id }}', '{{ e($book->title) }}', '{{ e($book->author) }}')"
+                                                class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-green-600 hover:to-green-700 transition-all transform hover:-translate-y-1 hover:shadow-lg">
+                                            <i class="fas fa-hand-holding-heart me-2"></i>
+                                            📚 Borrow Book
+                                        </button>
+                                    @elseif($book->ownerId === Auth::id())
+                                        <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
+                                            <i class="fas fa-crown me-1"></i>
+                                            Your Book
+                                        </div>
                                     @else
-                                        <a href="{{ route('login') }}" 
-                                           class="w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-gray-500 hover:to-gray-600 transition-all text-center block">
-                                            <i class="fas fa-sign-in-alt me-1"></i>
-                                            Se connecter pour emprunter
-                                        </a>
-                                    @endauth
-                                    
-                                    <a href="{{ route('books.show', $book) }}" 
-                                       class="book-action-btn block w-full text-center px-4 py-2.5 rounded-lg text-sm font-semibold border border-gray-300 hover:bg-gray-50 transition-all">
-                                        <i class="fas fa-eye me-1"></i>
-                                        Voir détails
+                                        <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
+                                            <i class="fas fa-ban me-1"></i>
+                                            Not Available
+                                        </div>
+                                    @endif
+                                @else
+                                    <a href="{{ route('login') }}" 
+                                       class="w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-gray-500 hover:to-gray-600 transition-all text-center block">
+                                        <i class="fas fa-sign-in-alt me-1"></i>
+                                        Login to Borrow
                                     </a>
-                                </div>
+                                @endauth
+                                
+                                <a href="{{ route('books.show', $book) }}" 
+                                   class="book-action-btn block w-full text-center px-3 py-2 rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
+                                   style="background:linear-gradient(to right,#06b6d4,#0ea5e9)">
+                                    <i class="fas fa-eye me-1"></i>
+                                    View Details
+                                </a>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -422,8 +427,8 @@
             </div>
 
             <!-- Pagination -->
-            <div class="flex justify-center mt-8">
-                <div class="pagination-container">
+            <div class="flex justify-center">
+                <div class="bg-white rounded-xl shadow-md p-4">
                     {{ $books->links() }}
                 </div>
             </div>
@@ -438,7 +443,7 @@
     </div>
 </section>
 
-    <!-- Modal de demande d'emprunt -->
+    <!-- Borrow Request Modal -->
     @auth
     <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full relative">
@@ -448,7 +453,7 @@
                 
                 <!-- Header -->
                 <div class="px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Demande d'emprunt</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Borrow Request</h3>
                     <button type="button" onclick="closeBorrowModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -463,7 +468,7 @@
                     
                     <div class="space-y-4">
                         <div>
-                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                             <input type="date" 
                                    id="start_date" 
                                    name="start_date" 
@@ -473,7 +478,7 @@
                         </div>
                         
                         <div>
-                            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
                             <input type="date" 
                                    id="end_date" 
                                    name="end_date" 
@@ -482,12 +487,12 @@
                         </div>
                         
                         <div>
-                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Message (optionnel)</label>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Message (optional)</label>
                             <textarea id="notes" 
                                       name="notes" 
                                       rows="3" 
                                       maxlength="500"
-                                      placeholder="Pourquoi souhaitez-vous emprunter ce livre ?"
+                                      placeholder="Why would you like to borrow this book?"
                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
                         </div>
                     </div>
@@ -499,12 +504,12 @@
                             onclick="closeBorrowModal()" 
                             class="px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 hover:border-gray-400 transition-all">
                         <i class="fas fa-times me-2"></i>
-                        ❌ Annuler
+                        Cancel
                     </button>
                     <button type="submit" 
                             class="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg hover:from-green-600 hover:to-green-700 hover:shadow-lg transform hover:-translate-y-1 transition-all">
                         <i class="fas fa-check-circle me-2"></i>
-                        ✅Valider
+                        Submit
                     </button>
                 </div>
             </form>
@@ -520,7 +525,7 @@
             function openBorrowModal(bookId, bookTitle, bookAuthor) {
                 document.getElementById('modal_book_id').value = bookId;
                 document.getElementById('modal_book_title').textContent = bookTitle;
-                document.getElementById('modal_book_author').textContent = "Auteur : " + bookAuthor;
+                document.getElementById('modal_book_author').textContent = "Author: " + bookAuthor;
 
                 document.getElementById('borrowModal').classList.remove('hidden');
             }
@@ -532,7 +537,7 @@
                 document.getElementById('modal_book_author').textContent = '';
             }
 
-            // Vérification dynamique des dates
+            // Dynamic date validation
             document.getElementById('start_date')?.addEventListener('change', function () {
                 let start = this.value;
                 let endDateInput = document.getElementById('end_date');

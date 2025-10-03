@@ -67,7 +67,6 @@
             <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Report a problem</span>
           </a>
         </li>
-
         <li class="w-full mt-4">
           <h6
             class="{{ (Request::is('rtl') ? 'pr-6 mr-2' : 'pl-6 ml-2') }} font-bold leading-tight uppercase text-size-xs opacity-60">
@@ -176,6 +175,24 @@
               <i style="font-size: 1rem;" class="fas fa-calendar-alt"></i>
             </div>
             <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Events</span>
+          </a>
+        </li>
+
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('drafts*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+            href="{{ url('drafts') }}">
+
+            <div
+              class="{{ (Request::is('drafts*') ? ' bg-gradient-fuchsia' : '') }} shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+
+              <i style="font-size: 1rem;"
+                class="fas fa-lg fa-pen-nib ps-2 pe-2 text-center text-dark {{ (Request::is('drafts*') ? 'text-white' : 'text-dark') }} "
+                aria-hidden="true"></i>
+
+            </div>
+            <span
+              class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Drafts</span>
           </a>
         </li>
 

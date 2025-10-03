@@ -3,7 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\DB;
+=======
+>>>>>>> origin/draft
 
 return new class extends Migration
 {
@@ -20,6 +23,7 @@ return new class extends Migration
             $table->string('isbn', 20)->nullable()->unique();
             $table->string('category', 50);
             $table->string('language', 30);
+<<<<<<< HEAD
             $table->unsignedSmallInteger('published_year');
             $table->boolean('is_available')->default(true);
             $table->timestamps();
@@ -28,6 +32,15 @@ return new class extends Migration
             $table->index('category');
             $table->index('is_available');
             $table->index('published_year');
+=======
+            $table->year('published_year');
+            $table->boolean('is_available')->default(true);
+            $table->timestamps();
+            
+            $table->index(['title', 'author']);
+            $table->index('category');
+            $table->index('is_available');
+>>>>>>> origin/draft
         });
     }
 

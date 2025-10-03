@@ -221,4 +221,8 @@
             
         </div>
     </div>
+<<<<<<< HEAD
 </x-layouts.base>
+=======
+</x-layouts.base>
+>>>>>>> origin/draft

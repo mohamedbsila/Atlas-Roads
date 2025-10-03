@@ -80,18 +80,26 @@ header nav a{
     transform: translateX(0);
 }
 .carousel .list .item img{
+<<<<<<< HEAD
     /* make thumbnails fill the item area while keeping aspect via cover */
     width: 65%;
     height: 92%;
     object-fit: cover;
     object-position: center right;
+=======
+    width: 50%;
+>>>>>>> origin/draft
     position: absolute;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+<<<<<<< HEAD
     transition: right 1.2s, height 0.5s, width 0.5s;
     border-radius: 14px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+=======
+    transition: right 1.5s;
+>>>>>>> origin/draft
 }
 
 .carousel .list .item .introduce{
@@ -146,6 +154,7 @@ header nav a{
     filter: var(--item3-filter);
     z-index: var(--item3-zIndex);
 }
+<<<<<<< HEAD
 .carousel .list .item:nth-child(2){
     /* make the active item more prominent */
     z-index: 20;
@@ -159,6 +168,8 @@ header nav a{
     box-shadow: 0 25px 50px rgba(0,0,0,0.12);
     transition: right 0.6s, width 0.6s;
 }
+=======
+>>>>>>> origin/draft
 .carousel .list .item:nth-child(4){
     transform: var(--item4-transform);
     filter: var(--item4-filter);
