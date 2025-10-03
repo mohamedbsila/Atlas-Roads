@@ -261,6 +261,26 @@
     <main>
     <div class="carousel">
         <div class="list">
+            <!-- Display Events in Carousel -->
+            @if (!empty($events) && $events->count())
+                @foreach ($events as $event)
+                    <div class="item">
+                        <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/home/images/img1.png') }}" class="img" alt="{{ $event->title }}">
+                        <div class="content">
+                            <div class="author">{{ config('app.name', 'Atlas Roads') }}</div>
+                            <div class="title">{{ $event->title }}</div>
+                            <div class="topic">{{ \Illuminate\Support\Str::limit($event->description, 60) }}</div>
+                            <div class="des">{{ \Illuminate\Support\Str::limit($event->description, 140) }}</div>
+                            <div class="buttons">
+                                <a href="{{ route('events.index') }}" class="btn">See Events</a>
+                                <a href="{{ route('events.index') }}" class="btn">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+
+            <!-- Display Books in Carousel -->
             @forelse($carouselBooks as $carouselBook)
                 <div class="item">
                     <img src="{{ $carouselBook->image_url }}" class="img" alt="{{ $carouselBook->title }}">
@@ -281,7 +301,7 @@
                     </div>
                 </div>
             @empty
-                <!-- Display default message if no books -->
+                <!-- Display default message if no books or events -->
                 <div class="item">
                     <img src="{{ asset('assets/img/curved-images/curved14.jpg') }}" class="img" alt="Library">
                     <div class="introduce">

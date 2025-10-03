@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Models\Event;
 
 class HomeController extends Controller
 {
@@ -20,7 +21,14 @@ class HomeController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate(12);
         
-        return view('home', compact('books', 'carouselBooks'));
+        // Load latest public events that have a thumbnail
+        $events = Event::where('is_public', true)
+            ->whereNotNull('thumbnail')
+            ->orderBy('start_date', 'desc')
+            ->take(6)
+            ->get();
+
+        return view('home', compact('books', 'carouselBooks', 'events'));
     }
     
     public function show(Book $book)
