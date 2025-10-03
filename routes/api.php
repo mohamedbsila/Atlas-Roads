@@ -24,3 +24,5 @@ Route::delete('/reviews/{id}', [ReviewController::class, 'deleteReview']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Event API removed to avoid exposing /api/events routes

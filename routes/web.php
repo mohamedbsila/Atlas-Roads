@@ -47,9 +47,20 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
 
     Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
-    Route::get('/reset-password/{id}', ResetPassword::class)->name('reset-password')->middleware('signed');
-    // Alternative route for password reset (without signed middleware)
+    // Route for password reset with token
     Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+});
+
+// Events (admin) - protect with auth and policy checks
+Route::middleware(['auth'])->group(function () {
+    Route::get('/events', \App\Http\Livewire\Events\ListEvents::class)
+        ->name('events.index');
+
+    Route::get('/events/create', \App\Http\Livewire\Events\CreateEvent::class)
+        ->name('events.create');
+
+    Route::get('/events/{id}/edit', \App\Http\Livewire\Events\EditEvent::class)
+        ->name('events.edit');
 });
 
 Route::middleware('auth')->group(function () {

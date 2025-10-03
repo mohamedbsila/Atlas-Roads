@@ -169,6 +169,18 @@
 
         <li class="mt-0.5 w-full">
           <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('events') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+            href="{{ url('events') }}">
+
+            <div class="{{ (Request::is('events') ? ' bg-gradient-fuchsia' : '') }} shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+              <i style="font-size: 1rem;" class="fas fa-calendar-alt"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Events</span>
+          </a>
+        </li>
+
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
               {{ (Request::is('wishlist*') && !Request::is('admin/wishlist*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
             href="{{ url('wishlist') }}">
 

@@ -80,12 +80,18 @@ header nav a{
     transform: translateX(0);
 }
 .carousel .list .item img{
-    width: 50%;
+    /* make thumbnails fill the item area while keeping aspect via cover */
+    width: 65%;
+    height: 92%;
+    object-fit: cover;
+    object-position: center right;
     position: absolute;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    transition: right 1.5s;
+    transition: right 1.2s, height 0.5s, width 0.5s;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .carousel .list .item .introduce{
@@ -139,6 +145,19 @@ header nav a{
     transform: var(--item3-transform);
     filter: var(--item3-filter);
     z-index: var(--item3-zIndex);
+}
+.carousel .list .item:nth-child(2){
+    /* make the active item more prominent */
+    z-index: 20;
+}
+.carousel .list .item:nth-child(2) img{
+    width: 85%;
+    height: 100%;
+    right: -4%;
+    object-position: center;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+    transition: right 0.6s, width 0.6s;
 }
 .carousel .list .item:nth-child(4){
     transform: var(--item4-transform);
