@@ -1,4 +1,4 @@
-<x-layouts.base>
+ <x-layouts.base>
     @auth
         @if (Request::is('static-sign-up'))
             <div class="flex flex-wrap -mx-3">
@@ -57,7 +57,7 @@
                 </div>
             </div>
             {{ $slot }}
-    @elseif (in_array(request()->route()->getName(),['static-sign-in', 'login', 'forgot-password', 'reset-password', 'password.reset']))
+        @elseif (in_array(request()->route()->getName(),['static-sign-in', 'login', 'forgot-password', 'reset-password', 'password.reset']))
 
         <div class="container sticky top-0 z-sticky">
             <div class="flex flex-wrap -mx-3">

@@ -188,4 +188,8 @@
 
 <!-- Font Awesome CDN -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<<<<<<< HEAD
 </x-layouts.app>
+=======
+</x-layouts.app>
+>>>>>>> origin/draft

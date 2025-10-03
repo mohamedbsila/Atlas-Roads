@@ -102,6 +102,7 @@
                                         <p class="text-size-xs text-slate-400 mt-1">Current image</p>
                                     </div>
                                 @endif
+<<<<<<< HEAD
                                 
                                 <div class="mb-3">
                                     <label class="inline-flex items-center cursor-pointer mb-2">
@@ -133,6 +134,11 @@
                                     </p>
                                 </div>
 
+=======
+                                <input type="file" name="image" accept="image/jpeg,image/jpg,image/png"
+                                       class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('image') border-red-500 @enderror">
+                                <p class="mt-1 text-size-xs text-slate-400">Accepted formats: JPG, JPEG, PNG (max 2MB)</p>
+>>>>>>> origin/draft
                                 @error('image')
                                     <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
                                 @enderror

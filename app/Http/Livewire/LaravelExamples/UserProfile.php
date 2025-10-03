@@ -10,17 +10,18 @@ class UserProfile extends Component
 {
     public User $user;
 
-    // ...existing code...
+    protected $rules = [
+        'user.name' => 'max:40|min:3',
+        'user.phone' => 'max:10',
+        'user.about' => 'max:200',
+        'user.location' => 'min:3'
+    ];
 
-    public function rules()
+    protected function rules()
     {
-        return [
-            'user.name' => 'max:40|min:3',
-            'user.email' => 'required|email|unique:users,email,' . ($this->user->id ?? 'NULL'),
-            'user.phone' => 'max:10',
-            'user.about' => 'max:200',
-            'user.location' => 'min:3'
-        ];
+        return array_merge($this->rules, [
+            'user.email' => 'required|email:rfc,dns|unique:users,email,' . ($this->user->id ?? 'NULL'),
+        ]);
     }
 
     public function mount()
@@ -30,7 +31,7 @@ class UserProfile extends Component
 
     public function save()
     {
-    $this->validate($this->rules());
+        $this->validate();
 
         if (env('IS_DEMO') && auth()->user()->id == 1) {
             if (auth()->user()->email == $this->user->email) {

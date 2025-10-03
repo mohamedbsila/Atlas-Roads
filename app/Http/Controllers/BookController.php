@@ -63,9 +63,12 @@ class BookController extends Controller
         }
 
         $data['is_available'] = $request->has('is_available') ? true : false;
+<<<<<<< HEAD
         
         // Automatically assign the logged-in user as the owner
         $data['ownerId'] = auth()->id();
+=======
+>>>>>>> origin/draft
 
         Book::create($data);
 
@@ -73,12 +76,16 @@ class BookController extends Controller
             ->with('success', 'Book has been successfully added!');
     }
 
+<<<<<<< HEAD
     public function show(Book $book)
     {
         // Load reviews with user data
         $book->load('reviews.user');
         return view('books.show', compact('book'));
     }
+=======
+    // Removed duplicate show(Book $book) method to resolve redeclaration error.
+>>>>>>> origin/draft
 
     public function edit(Book $book)
     {
@@ -92,14 +99,24 @@ class BookController extends Controller
         // Handle image (uploaded file or external URL)
         if ($request->hasFile('image')) {
             // Delete old image if it's a local file
+<<<<<<< HEAD
             if ($book->image && !str_starts_with($book->image, 'http') && Storage::disk('public')->exists($book->image)) {
                 Storage::disk('public')->delete($book->image);
+=======
+            if ($book->image && !str_starts_with($book->image, 'http') && Storage::exists($book->image)) {
+                Storage::delete($book->image);
+>>>>>>> origin/draft
             }
             $data['image'] = $request->file('image')->store('books', 'public');
         } elseif ($request->filled('image_url')) {
             // Delete old image if it's a local file
+<<<<<<< HEAD
             if ($book->image && !str_starts_with($book->image, 'http') && Storage::disk('public')->exists($book->image)) {
                 Storage::disk('public')->delete($book->image);
+=======
+            if ($book->image && !str_starts_with($book->image, 'http') && Storage::exists($book->image)) {
+                Storage::delete($book->image);
+>>>>>>> origin/draft
             }
             $data['image'] = $request->image_url;
         }
@@ -119,5 +136,14 @@ class BookController extends Controller
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully deleted!');
     }
+<<<<<<< HEAD
+=======
+
+    public function show($id)
+{
+    $book = Book::with('reviews.user')->findOrFail($id); // récupère book + reviews + user
+    return view('books.show', compact('book'));
+}
+>>>>>>> origin/draft
 }
 

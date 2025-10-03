@@ -62,4 +62,8 @@ class ReviewController extends Controller
         $review->update(['is_flagged' => true]);
         return redirect()->back()->with('success', 'Review signalé !');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/draft

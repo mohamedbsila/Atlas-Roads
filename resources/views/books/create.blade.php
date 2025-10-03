@@ -176,4 +176,9 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 </x-layouts.app>
+=======
+</x-layouts.app>
+
+>>>>>>> origin/draft
