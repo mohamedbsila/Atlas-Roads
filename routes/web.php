@@ -61,6 +61,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/events/{id}/edit', \App\Http\Livewire\Events\EditEvent::class)
         ->name('events.edit');
+
+    // Event details page (was protected) - moved to be public below
 });
 
 Route::middleware('auth')->group(function () {
@@ -111,3 +113,7 @@ Route::middleware('auth')->group(function () {
 
 // Route de test pour BorrowRequest
 Route::get('/test-borrow-request', [BorrowRequestTestController::class, 'test']);
+
+// Public Event details route (allow guests to view an event's page)
+Route::get('/events/{id}', \App\Http\Livewire\Events\ShowEvent::class)
+    ->name('events.show');

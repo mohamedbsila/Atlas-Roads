@@ -40,3 +40,43 @@ seeMoreButtons.forEach((button) => {
 backButton.onclick = function(){
     carousel.classList.remove('showDetail');
 }
+
+// Events carousel controls (appended to reuse logic)
+let eventsNext = document.getElementById('events-next');
+let eventsPrev = document.getElementById('events-prev');
+
+const showSliderFor = (containerSelector, type, nextBtn, prevBtn) => {
+    const container = document.querySelector(containerSelector);
+    if(!container) return;
+    const list = container.querySelector('.list');
+    const items = container.querySelectorAll('.list .item');
+    if(!items.length) return;
+
+    if(nextBtn) nextBtn.style.pointerEvents = 'none';
+    if(prevBtn) prevBtn.style.pointerEvents = 'none';
+
+    container.classList.remove('next', 'prev');
+    if(type === 'next'){
+        list.appendChild(items[0]);
+        container.classList.add('next');
+    } else {
+        list.prepend(items[items.length - 1]);
+        container.classList.add('prev');
+    }
+
+    setTimeout(()=>{
+        if(nextBtn) nextBtn.style.pointerEvents = 'auto';
+        if(prevBtn) prevBtn.style.pointerEvents = 'auto';
+    }, 800);
+}
+
+if(eventsNext){
+    eventsNext.addEventListener('click', function(){
+        showSliderFor('.events-carousel', 'next', eventsNext, eventsPrev);
+    });
+}
+if(eventsPrev){
+    eventsPrev.addEventListener('click', function(){
+        showSliderFor('.events-carousel', 'prev', eventsNext, eventsPrev);
+    });
+}

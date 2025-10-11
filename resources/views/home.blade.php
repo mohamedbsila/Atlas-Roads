@@ -198,6 +198,197 @@
                 box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             }
             
+            /* Enhanced Events Section */
+            .events-section {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 80px 0;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .events-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            }
+            
+            .events-title {
+                color: white;
+                font-size: 3rem;
+                font-weight: 800;
+                margin-bottom: 1rem;
+                text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            
+            .events-subtitle {
+                color: rgba(255,255,255,0.9);
+                font-size: 1.25rem;
+                margin-bottom: 3rem;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .event-card {
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                transition: all 0.4s ease;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                height: 100%;
+                position: relative;
+            }
+            
+            .event-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            }
+            
+            .event-image-container {
+                position: relative;
+                overflow: hidden;
+                height: 220px;
+            }
+            
+            .event-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+            
+            .event-card:hover .event-image {
+                transform: scale(1.1);
+            }
+            
+            .event-date {
+                position: absolute;
+                top: 16px;
+                left: 16px;
+                background: rgba(255,255,255,0.95);
+                border-radius: 10px;
+                padding: 10px 12px;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                backdrop-filter: blur(5px);
+            }
+            
+            .event-day {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #4f46e5;
+                line-height: 1;
+            }
+            
+            .event-month {
+                display: block;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #6b7280;
+                text-transform: uppercase;
+                margin-top: 2px;
+            }
+            
+            .event-content {
+                padding: 24px;
+            }
+            
+            .event-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: #1f2937;
+                margin-bottom: 12px;
+                line-height: 1.4;
+            }
+            
+            .event-description {
+                color: #6b7280;
+                font-size: 0.875rem;
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
+            
+            .event-meta {
+                display: flex;
+                align-items: center;
+                color: #6b7280;
+                font-size: 0.875rem;
+                margin-bottom: 20px;
+            }
+            
+            .event-meta i {
+                margin-right: 8px;
+                color: #9ca3af;
+            }
+            
+            .event-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 0.875rem;
+                transition: all 0.3s ease;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .event-button:hover {
+                background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+                color: white;
+            }
+            
+            .events-cta {
+                text-align: center;
+                margin-top: 4rem;
+            }
+            
+            .events-cta-button {
+                display: inline-flex;
+                align-items: center;
+                background: white;
+                color: #4f46e5;
+                padding: 14px 32px;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 1.125rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            }
+            
+            .events-cta-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+                color: #4f46e5;
+            }
+            
+            .no-events {
+                text-align: center;
+                padding: 60px 20px;
+                color: white;
+            }
+            
+            .no-events-icon {
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+                opacity: 0.7;
+            }
+            
+            .no-events-text {
+                font-size: 1.25rem;
+                margin-bottom: 2rem;
+            }
+            
             /* Responsive */
             @media (max-width: 768px) {
                 header nav {
@@ -221,6 +412,18 @@
                 
                 #borrowModal button {
                     width: 100%;
+                }
+                
+                .events-title {
+                    font-size: 2.25rem;
+                }
+                
+                .events-subtitle {
+                    font-size: 1.125rem;
+                }
+                
+                .event-card {
+                    margin-bottom: 1.5rem;
                 }
             }
         </style>
@@ -265,15 +468,17 @@
             @if (!empty($events) && $events->count())
                 @foreach ($events as $event)
                     <div class="item">
-                        <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/home/images/img1.png') }}" class="img" alt="{{ $event->title }}">
+                        <a href="{{ route('events.show', $event->id) }}">
+                            <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/home/images/img1.png') }}" class="img" alt="{{ $event->title }}">
+                        </a>
                         <div class="content">
                             <div class="author">{{ config('app.name', 'Atlas Roads') }}</div>
                             <div class="title">{{ $event->title }}</div>
                             <div class="topic">{{ \Illuminate\Support\Str::limit($event->description, 60) }}</div>
                             <div class="des">{{ \Illuminate\Support\Str::limit($event->description, 140) }}</div>
                             <div class="buttons">
-                                <a href="{{ route('events.index') }}" class="btn">See Events</a>
-                                <a href="{{ route('events.index') }}" class="btn">Details</a>
+                                <a href="#events" class="btn">See Events</a>
+                                <a href="{{ route('events.show', $event->id) }}" class="btn">Details</a>
                             </div>
                         </div>
                     </div>
@@ -326,6 +531,82 @@
         </div>
     </div>
 </main>
+
+<!-- Enhanced Events Section -->
+<section id="events" class="events-section">
+    <div class="container mx-auto px-8" style="max-width: 1400px;">
+        <div class="text-center mb-12">
+            <h2 class="events-title">Upcoming Events</h2>
+            <p class="events-subtitle">Join our community activities, workshops, and literary gatherings</p>
+        </div>
+
+        @if(isset($events) && $events->count())
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($events as $event)
+                    <div class="event-card">
+                        <div class="event-image-container">
+                            <a href="{{ route('events.show', $event->id) }}">
+                                <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/curved-images/curved14.jpg') }}"
+                                     alt="{{ $event->title ?? 'Event' }}"
+                                 class="event-image"
+                                 loading="lazy"
+                                 onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
+                            </a>
+                            
+                            <!-- Event Date Badge -->
+                            <div class="event-date">
+                                @php
+                                    $eventDate = $event->date ?? now();
+                                    $day = $eventDate->format('d');
+                                    $month = $eventDate->format('M');
+                                @endphp
+                                <span class="event-day">{{ $day }}</span>
+                                <span class="event-month">{{ $month }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="event-content">
+                            <h3 class="event-title">{{ $event->title ?? 'Event Title' }}</h3>
+                            
+                            <p class="event-description">
+                                {{ \Illuminate\Support\Str::limit($event->description ?? 'Event description coming soon.', 120) }}
+                            </p>
+                            
+                            <div class="event-meta">
+                                <i class="fas fa-clock"></i>
+                                <span>{{ $event->date ? $event->date->format('M j, Y \\a\\t g:i A') : 'Date TBA' }}</span>
+                            </div>
+                            
+                            <a href="{{ route('events.show', $event->id) }}" class="event-button">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            
+            <div class="events-cta">
+                <a href="#events" class="events-cta-button">
+                    <i class="fas fa-calendar-week mr-2"></i>
+                    View All Events
+                </a>
+            </div>
+        @else
+            <div class="no-events">
+                <div class="no-events-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="no-events-text">No upcoming events at the moment</h3>
+                <p class="text-white opacity-80 mb-4">Check back later for new events and activities</p>
+                <a href="#events" class="events-cta-button">
+                    <i class="fas fa-history mr-2"></i>
+                    View Past Events
+                </a>
+            </div>
+        @endif
+    </div>
+</section>
 
 <!-- Section Livres -->
 <section id="books" class="books-section">
