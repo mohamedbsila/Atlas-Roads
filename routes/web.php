@@ -77,6 +77,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-profile', UserProfile::class)->name('user-profile');
     Route::get('/user-management', UserManagement::class)->name('user-management');
     
+    // Communities page
+    Route::get('/communities', function() {
+        return view('communities.index');
+    })->name('communities.index');
+    
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);
     
