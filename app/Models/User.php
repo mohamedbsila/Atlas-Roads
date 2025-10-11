@@ -90,4 +90,11 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasMany(BorrowRequest::class, 'owner_id');
     }
+
+    public function communities()
+    {
+        return $this->belongsToMany(Community::class)
+            ->withPivot(['role'])
+            ->withTimestamps();
+    }
 }
