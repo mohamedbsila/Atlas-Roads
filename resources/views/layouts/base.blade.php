@@ -39,6 +39,7 @@
     {{ $slot }}
 
     @livewireScripts
+    @vite('resources/js/app.js')
     @stack('scripts')
     <script>
         // Simple toast helper
