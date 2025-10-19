@@ -113,7 +113,9 @@ pipeline {
                     steps {
                         echo 'Installing PHP dependencies...'
                         sh '''
-                            composer install --no-interaction --prefer-dist --optimize-autoloader
+                            # Increase timeout and use source instead of dist for slow connections
+                            export COMPOSER_PROCESS_TIMEOUT=1200
+                            composer install --no-interaction --prefer-source --optimize-autoloader
                         '''
                         echo 'PHP dependencies installed'
                     }
