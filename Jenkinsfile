@@ -94,19 +94,15 @@ pipeline {
                     '''
                     
                     // Update .env with test database credentials
-                    withCredentials([
-                        string(credentialsId: 'db-username', variable: 'DB_USER'),
-                        string(credentialsId: 'db-password', variable: 'DB_PASS')
-                    ]) {
-                        sh '''
-                            sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=${DB_CONNECTION}/" .env
-                            sed -i "s/DB_HOST=.*/DB_HOST=${DB_HOST}/" .env
-                            sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT}/" .env
-                            sed -i "s/DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE}/" .env
-                            sed -i "s/DB_USERNAME=.*/DB_USERNAME=${DB_USER}/" .env
-                            sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${DB_PASS}/" .env
-                        '''
-                    }
+                    // For empty password, we don't use withCredentials
+                    sh '''
+                        sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=${DB_CONNECTION}/" .env
+                        sed -i "s/DB_HOST=.*/DB_HOST=${DB_HOST}/" .env
+                        sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT}/" .env
+                        sed -i "s/DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE}/" .env
+                        sed -i "s/DB_USERNAME=.*/DB_USERNAME=root/" .env
+                        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=/" .env
+                    '''
                 }
             }
         }
@@ -206,16 +202,11 @@ pipeline {
                 echo 'Setting up test database...'
                 
                 script {
-                    // Create test database
-                    withCredentials([
-                        string(credentialsId: 'db-username', variable: 'DB_USER'),
-                        string(credentialsId: 'db-password', variable: 'DB_PASS')
-                    ]) {
-                        sh '''
-                            mysql -h${DB_HOST} -u${DB_USER} -p${DB_PASS} -e "DROP DATABASE IF EXISTS ${DB_DATABASE};"
-                            mysql -h${DB_HOST} -u${DB_USER} -p${DB_PASS} -e "CREATE DATABASE ${DB_DATABASE};"
-                        '''
-                    }
+                    // Create test database with root user and empty password
+                    sh '''
+                        mysql -h${DB_HOST} -uroot -e "DROP DATABASE IF EXISTS ${DB_DATABASE};"
+                        mysql -h${DB_HOST} -uroot -e "CREATE DATABASE ${DB_DATABASE};"
+                    '''
                     
                     // Run migrations
                     sh '''
@@ -379,15 +370,10 @@ pipeline {
                 echo 'Cleaning up...'
                 
                 script {
-                    // Clean up test database
-                    withCredentials([
-                        string(credentialsId: 'db-username', variable: 'DB_USER'),
-                        string(credentialsId: 'db-password', variable: 'DB_PASS')
-                    ]) {
-                        sh '''
-                            mysql -h${DB_HOST} -u${DB_USER} -p${DB_PASS} -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
-                        '''
-                    }
+                    // Clean up test database with root user and empty password
+                    sh '''
+                        mysql -h${DB_HOST} -uroot -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
+                    '''
                     
                     // Clear Laravel caches
                     sh '''
