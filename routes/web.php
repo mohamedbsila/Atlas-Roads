@@ -49,10 +49,13 @@ Route::middleware('guest')->group(function () {
     Route::get('/login/forgot-password', ForgotPassword::class)->name('forgot-password');
     // Route for password reset with token
     Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+    // Static sign-in / sign-up pages - only for guests (RedirectIfAuthenticated will send logged users to home)
+    Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
+    Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
 });
 
-// Events (admin) - protect with auth and policy checks
-Route::middleware(['auth'])->group(function () {
+// Events (admin) - protect with auth and admin middleware
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/events', \App\Http\Livewire\Events\ListEvents::class)
         ->name('events.index');
 
@@ -64,19 +67,21 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    // Dashboard should be accessible to admin users only. Non-admins will get a 404 via the 'admin' middleware.
+    Route::get('/dashboard', Dashboard::class)->middleware('admin')->name('dashboard');
     Route::get('/billing', Billing::class)->name('billing');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/tables', Tables::class)->name('tables');
-    Route::get('/static-sign-in', StaticSignIn::class)->name('sign-in');
-    Route::get('/static-sign-up', StaticSignUp::class)->name('static-sign-up');
+    // NOTE: static sign-in/up are intentionally guest-only and defined above.
     Route::get('/rtl', Rtl::class)->name('rtl');
     Route::get('/virtual-reality', VirtualReality::class)->name('virtual-reality');
     Route::get('/user-profile', UserProfile::class)->name('user-profile');
     Route::get('/user-management', UserManagement::class)->name('user-management');
     
-    // Books CRUD
-    Route::resource('books', \App\Http\Controllers\BookController::class);
+    // Books CRUD (admin only)
+    Route::middleware(['admin'])->group(function () {
+        Route::resource('books', \App\Http\Controllers\BookController::class);
+    });
     
     // Wishlist Routes - User
     Route::resource('wishlist', \App\Http\Controllers\WishlistController::class);
@@ -84,8 +89,8 @@ Route::middleware('auth')->group(function () {
     Route::post('wishlist/{wishlist}/feedback', [\App\Http\Controllers\WishlistController::class, 'submitFeedback'])->name('wishlist.feedback');
     Route::get('wishlist-browse', [\App\Http\Controllers\WishlistController::class, 'browse'])->name('wishlist.browse');
     
-    // Admin Wishlist Management
-    Route::prefix('admin/wishlist')->name('admin.wishlist.')->group(function () {
+    // Admin Wishlist Management (admin only)
+    Route::prefix('admin/wishlist')->name('admin.wishlist.')->middleware('admin')->group(function () {
         Route::get('/', [\App\Http\Controllers\AdminWishlistController::class, 'index'])->name('index');
         Route::get('/dashboard', [\App\Http\Controllers\AdminWishlistController::class, 'dashboard'])->name('dashboard');
         Route::get('/{wishlist}', [\App\Http\Controllers\AdminWishlistController::class, 'show'])->name('show');
