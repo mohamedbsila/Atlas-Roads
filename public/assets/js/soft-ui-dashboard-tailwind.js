@@ -17,7 +17,8 @@
 */
 var page = window.location.pathname.split("/").pop().split(".")[0];
 var aux = window.location.pathname.split("/");
-var to_build = (aux.includes('pages')?'../':'./');
+// Use absolute /assets/ path to avoid relative resolution when pages are nested (e.g. /wishlist/create)
+var to_build = '/';
 var root = window.location.pathname.split("/")
 // if (!aux.includes("pages")) {
 //   page = "dashboard";

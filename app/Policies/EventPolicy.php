@@ -10,6 +10,9 @@ class EventPolicy
 {
     use HandlesAuthorization;
 
+    /**
+     * Global before hook: allow admins to do anything.
+     */
     public function before(?User $user, $ability = null)
     {
         if ($user && ($user->is_admin ?? false)) {
@@ -19,40 +22,36 @@ class EventPolicy
 
     public function viewAny(?User $_user)
     {
-        // any authenticated user may view the events listing
         return true;
     }
 
     public function view(?User $user, Event $event)
     {
-        // allow admins, the event organizer, or if the event is public
         return ($user && ($user->is_admin ?? false)) || ($user && $user->id === $event->organizer_id) || $event->is_public;
     }
 
-    public function create(?User $_user)
+    public function create(?User $user)
     {
-        // allow only authenticated users to create events
-        return $_user !== null;
+        return $user !== null;
     }
 
     public function update(?User $user, Event $event)
     {
-        // allow admins, the organizer, or (for legacy events with no organizer) any authenticated user
-        if ($user && ($user->is_admin ?? false)) {
+        if ($user && $user->id === $event->organizer_id) {
             return true;
         }
 
+        // If no organizer is set, allow any authenticated user to update (legacy behavior)
         if ($event->organizer_id === null) {
             return $user !== null;
         }
 
-        return $user && $user->id === $event->organizer_id;
+        return false;
     }
 
     public function delete(?User $user, Event $event)
     {
-        // same rules as update
-        if ($user && ($user->is_admin ?? false)) {
+        if ($user && $user->id === $event->organizer_id) {
             return true;
         }
 
@@ -60,6 +59,6 @@ class EventPolicy
             return $user !== null;
         }
 
-        return $user && $user->id === $event->organizer_id;
+        return false;
     }
 }

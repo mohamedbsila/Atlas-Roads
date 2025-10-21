@@ -246,9 +246,14 @@
                 <a href="{{ route('wishlist.create') }}" class="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition">
                     <i class="fas fa-plus mr-1"></i> Request Book
                 </a>
-                <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
-                    <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
-                </a>
+                @if(auth()->user() && auth()->user()->is_admin)
+                    <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
+                        <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+                    </a>
+                @endif
+                <span class="ml-4">
+                    <livewire:auth.logout />
+                </span>
             @else
                 <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                     <i class="fas fa-sign-in-alt mr-1"></i> Login
