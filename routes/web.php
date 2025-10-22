@@ -100,6 +100,22 @@ Route::middleware('auth')->group(function () {
         Route::post('/bulk-update', [\App\Http\Controllers\AdminWishlistController::class, 'bulkUpdate'])->name('bulk-update');
     });
 
+    // Admin Bibliotheques Management (admin only)
+    Route::prefix('admin/bibliotheques')->name('admin.bibliotheques.')->middleware('admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\BibliothequeController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\BibliothequeController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\BibliothequeController::class, 'store'])->name('store');
+        Route::get('/statistics', [\App\Http\Controllers\Admin\BibliothequeController::class, 'statistics'])->name('statistics');
+        Route::post('/ai/generate-description', [\App\Http\Controllers\Admin\BibliothequeController::class, 'generateDescription'])->name('ai.description');
+        Route::post('/ai/suggest-names', [\App\Http\Controllers\Admin\BibliothequeController::class, 'suggestNames'])->name('ai.names');
+        Route::post('/ai/generate-image', [\App\Http\Controllers\Admin\BibliothequeController::class, 'generateImage'])->name('ai.image');
+        Route::get('/ai/test', [\App\Http\Controllers\Admin\BibliothequeController::class, 'testAI'])->name('ai.test');
+        Route::get('/{bibliotheque}', [\App\Http\Controllers\Admin\BibliothequeController::class, 'show'])->name('show');
+        Route::get('/{bibliotheque}/edit', [\App\Http\Controllers\Admin\BibliothequeController::class, 'edit'])->name('edit');
+        Route::put('/{bibliotheque}', [\App\Http\Controllers\Admin\BibliothequeController::class, 'update'])->name('update');
+        Route::delete('/{bibliotheque}', [\App\Http\Controllers\Admin\BibliothequeController::class, 'destroy'])->name('destroy');
+    });
+
     // Reclamations CRUD
     Route::resource('reclamations', ReclamationController::class);
     Route::patch('/reclamations/{reclamation}/bien-recu', [ReclamationController::class, 'bienRecu'])

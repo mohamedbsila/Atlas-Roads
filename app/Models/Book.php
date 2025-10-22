@@ -18,7 +18,8 @@ class Book extends Model
         'language',
         'published_year',
         'is_available',
-        'ownerId'
+        'ownerId',
+        'bibliotheque_id'
     ];
 
     protected $casts = [
@@ -57,6 +58,14 @@ class Book extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'ownerId');
+    }
+
+    /**
+     * Bibliotheque du livre
+     */
+    public function bibliotheque(): BelongsTo
+    {
+        return $this->belongsTo(Bibliotheque::class);
     }
 
     /**
