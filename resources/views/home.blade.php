@@ -239,6 +239,9 @@
             <a href="#books" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                 <i class="fas fa-book mr-1"></i> Books
             </a>
+            <a href="#clubs" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
+                <i class="fas fa-users mr-1"></i> Clubs
+            </a>
             @auth
                 <a href="{{ route('wishlist.index') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                     <i class="fas fa-heart mr-1"></i> My Wishlist
@@ -438,6 +441,145 @@
     </div>
 </section>
 
+<!-- Section Clubs -->
+<section id="clubs" class="clubs-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0;">
+    <div class="container mx-auto px-8" style="max-width: 1400px; position: relative; z-index: 2;">
+        <!-- Section Title -->
+        <div class="text-center mb-12">
+            <h2 class="text-5xl font-bold mb-4 text-white">Our Clubs</h2>
+            <p class="text-xl text-blue-100">Join our amazing clubs and participate in exciting meetings</p>
+        </div>
+
+        @auth
+            @if(session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-800 p-4 rounded-xl mb-6 max-w-2xl mx-auto">
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        {{ session('success') }}
+                    </div>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl mb-6 max-w-2xl mx-auto">
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
+        @endauth
+
+        @if($clubs->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @foreach($clubs as $club)
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:-translate-y-2 transition-all duration-300 hover:shadow-3xl">
+                        <!-- Club Image -->
+                        <div class="relative h-48 overflow-hidden">
+                            @if($club->image)
+                                <img src="{{ asset('storage/' . $club->image) }}" alt="{{ $club->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                    <i class="fas fa-users text-white text-4xl"></i>
+                                </div>
+                            @endif
+                            <!-- Club Name Overlay -->
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                                <h3 class="text-xl font-bold text-white">{{ $club->name }}</h3>
+                                @if($club->location)
+                                    <p class="text-blue-200 text-sm flex items-center mt-1">
+                                        <i class="fas fa-map-marker-alt mr-2"></i>
+                                        {{ $club->location }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Club Info -->
+                        <div class="p-6">
+                            @if($club->description)
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ Str::limit($club->description, 120) }}</p>
+                            @endif
+
+                            <!-- Meetings Count -->
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center text-blue-600">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span class="text-sm font-medium">{{ $club->meetings_count }} meetings</span>
+                                </div>
+                                <a href="{{ route('clubs.show-public', $club) }}" class="text-blue-600 hover:text-blue-800 transition-colors duration-200">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+
+                            <!-- Recent Meetings -->
+                            @if($club->meetings->count() > 0)
+                                <div class="border-t pt-4">
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Recent Meetings</h4>
+                                    <div class="space-y-2">
+                                        @foreach($club->meetings->take(2) as $meeting)
+                                            <div class="flex items-center justify-between text-xs">
+                                                <div class="flex-1">
+                                                    <p class="font-medium text-gray-800 truncate">{{ $meeting->title }}</p>
+                                                    <p class="text-gray-500">{{ $meeting->scheduled_at->format('M d, Y - H:i') }}</p>
+                                                </div>
+                                                @if($meeting->scheduled_at->isFuture())
+                                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                        Upcoming
+                                                    </span>
+                                                @else
+                                                    <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium">
+                                                        Past
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @else
+                                <div class="border-t pt-4 text-center">
+                                    <p class="text-gray-500 text-sm">No meetings scheduled yet</p>
+                                </div>
+                            @endif
+
+                            <!-- Action Buttons -->
+                            <div class="mt-4 space-y-2">
+                                <a href="{{ route('clubs.show-public', $club) }}" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:-translate-y-1 hover:shadow-lg text-center block">
+                                    <i class="fas fa-eye mr-2"></i>
+                                    View Details
+                                </a>
+                                @auth
+                                    <button onclick="openJoinModal({{ $club->id }}, '{{ $club->name }}')" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-green-700 hover:to-emerald-700 transition-all transform hover:-translate-y-1 hover:shadow-lg text-center">
+                                        <i class="fas fa-user-plus mr-2"></i>
+                                        Join Club
+                                    </button>
+                                @else
+                                    <a href="{{ route('login') }}" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:from-green-700 hover:to-emerald-700 transition-all transform hover:-translate-y-1 hover:shadow-lg text-center block">
+                                        <i class="fas fa-sign-in-alt mr-2"></i>
+                                        Login to Join
+                                    </a>
+                                @endauth
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+        @else
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-12 max-w-md mx-auto">
+                    <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-users text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">No clubs yet</h3>
+                    <p class="text-blue-100 mb-6">Clubs will be available soon!</p>
+                </div>
+            </div>
+        @endif
+    </div>
+</section>
+
     <!-- Modal de demande d'emprunt -->
     @auth
     <div id="borrowModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
@@ -513,6 +655,76 @@
     @endauth
 
     @push('scripts')
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('chatbot-toggle');
+    const body = document.getElementById('chatbot-body');
+    const inputArea = document.getElementById('chatbot-input-area');
+    const input = document.getElementById('chatbot-input');
+    const messages = document.getElementById('chatbot-messages');
+
+    if(!toggleBtn) return;
+
+    toggleBtn.addEventListener('click', () => {
+        const isHidden = body.style.display === 'none';
+        body.style.display = isHidden ? 'flex' : 'none';
+        inputArea.style.display = isHidden ? 'block' : 'none';
+        toggleBtn.textContent = isHidden ? '–' : '+';
+    });
+
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && input.value.trim() !== '') {
+            const userMessage = input.value.trim();
+            appendMessage('user', userMessage);
+            input.value = '';
+            setTimeout(() => {
+                appendMessage('bot', getBotResponse(userMessage));
+            }, 500);
+        }
+    });
+
+    function appendMessage(sender, text) {
+        if (!messages) return;
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('flex', 'w-full', sender === 'user' ? 'justify-end' : 'justify-start');
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('chat-msg', 'p-2', 'rounded-lg', 'text-sm');
+        if (sender === 'user') {
+            bubble.classList.add('bg-blue-600', 'text-white');
+        } else {
+            bubble.classList.add('bg-gray-100', 'text-gray-800');
+        }
+        bubble.textContent = text;
+
+        wrapper.appendChild(bubble);
+        messages.appendChild(wrapper);
+
+        const scrollContainer = document.getElementById('chatbot-body');
+        if (scrollContainer) {
+            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+    }
+
+    function getBotResponse(msg) {
+        msg = msg.toLowerCase();
+        if(msg.includes('bonjour')) return 'Bonjour ! Comment puis-je vous aider ?';
+        if(msg.includes('club')) return 'Vous pouvez consulter nos clubs disponibles dans la section Clubs.';
+        if(msg.includes('livre')) return 'Consultez nos livres disponibles dans la section Library 📚.';
+        return 'Désolé, je n’ai pas compris. Pouvez-vous reformuler ?';
+    }
+});
+</script>
+
+<style>
+.chat-msg {
+    max-width: 70%;
+    word-break: break-word;
+}
+</style>
+
+
+
         <script src="{{ asset('assets/js/home/app.js') }}"></script>
         <script src="{{ asset('assets/js/home/scroll-animation.js') }}"></script>
         
@@ -541,5 +753,116 @@
                 }
             });
         </script>
+        <script>
+            // Show chatbot only when #clubs section is visible
+            document.addEventListener('DOMContentLoaded', () => {
+                const chatbot = document.getElementById('chatbot');
+                const clubs = document.getElementById('clubs');
+                if (!chatbot || !clubs) return;
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            chatbot.classList.remove('hidden');
+                        } else {
+                            chatbot.classList.add('hidden');
+                        }
+                    });
+                }, { root: null, threshold: 0 });
+
+                observer.observe(clubs);
+
+                // If user navigates directly to #clubs
+                if (location.hash === '#clubs') {
+                    chatbot.classList.remove('hidden');
+                }
+            });
+        </script>
     @endpush
+
+    <!-- Modal d'inscription aux clubs -->
+    @auth
+    <div id="joinClubModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full relative">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold">Join Club</h3>
+                        <p class="text-green-100 text-sm" id="clubName">Club Name</p>
+                    </div>
+                    <button onclick="closeJoinModal()" class="text-white hover:text-green-200 transition-colors">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="joinClubForm" method="POST" class="p-6">
+                @csrf
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-comment mr-2 text-green-600"></i>
+                        Why do you want to join this club? (Optional)
+                    </label>
+                    <textarea 
+                        name="message" 
+                        rows="4" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 resize-none"
+                        placeholder="Tell us why you're interested in joining this club..."
+                        maxlength="500"></textarea>
+                    <p class="text-xs text-gray-500 mt-1">Maximum 500 characters</p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeJoinModal()" class="flex-1 bg-gray-200 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors duration-200">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all transform hover:-translate-y-1 hover:shadow-lg">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function openJoinModal(clubId, clubName) {
+        document.getElementById('clubName').textContent = clubName;
+        document.getElementById('joinClubForm').action = `/clubs/${clubId}/join`;
+        document.getElementById('joinClubModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeJoinModal() {
+        document.getElementById('joinClubModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        document.getElementById('joinClubForm').reset();
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('joinClubModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeJoinModal();
+        }
+    });
+    </script>
+    @endauth
+
+
+<div id="chatbot" class="fixed bottom-4 right-4 w-80 bg-white rounded-xl shadow-lg flex flex-col z-[1000] hidden">
+    <div id="chatbot-header" class="bg-blue-600 text-white px-4 py-3 cursor-pointer flex justify-between items-center">
+        <span>Chatbot 🤖</span>
+        <button id="chatbot-toggle" class="font-bold">–</button>
+    </div>
+    <div id="chatbot-body" class="flex-1 p-3 overflow-y-auto" style="max-height: 400px; display: none;">
+        <div id="chatbot-messages" class="space-y-2"></div>
+    </div>
+    <div id="chatbot-input-area" class="px-3 py-2 border-t" style="display: none;">
+        <input type="text" id="chatbot-input" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Écrire un message...">
+    </div>
+</div>
+
 </x-layouts.base>

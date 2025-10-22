@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use App\Services\BookStatisticService;
 
 class ReviewController extends Controller
 {
+    protected $bookStats;
+
+    public function __construct(BookStatisticService $bookStats)
+    {
+        $this->bookStats = $bookStats;
+    }
+
     // Ajouter un review
     public function store(Request $request)
     {
@@ -16,12 +25,17 @@ class ReviewController extends Controller
             'comment' => 'required|string',
         ]);
 
+        $book = Book::findOrFail($request->book_id);
+
         Review::create([
-            'book_id' => $request->book_id,
+            'book_id' => $book->id,
             'user_id' => $request->user()->id,
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);
+
+        // Mettre à jour les statistiques du livre
+        $this->bookStats->updateBookStats($book, ['views' => $book->views + 1]);
 
         return redirect()->back()->with('success', 'Review ajouté avec succès !');
     }
@@ -29,7 +43,6 @@ class ReviewController extends Controller
     // Mettre à jour un review
     public function update(Request $request, Review $review)
     {
-        // Vérifier que c’est l’auteur
         if ($review->user_id !== $request->user()->id) {
             abort(403);
         }
@@ -41,6 +54,10 @@ class ReviewController extends Controller
 
         $review->update($request->only('rating', 'comment'));
 
+        // Mettre à jour les statistiques du livre associé
+        $book = $review->book;
+        $this->bookStats->updateBookStats($book, ['views' => $book->views + 1]);
+
         return redirect()->back()->with('success', 'Review mis à jour !');
     }
 
@@ -51,7 +68,10 @@ class ReviewController extends Controller
             abort(403);
         }
 
+        $book = $review->book; // récupérer le livre associé avant suppression
         $review->delete();
+
+        $this->bookStats->updateBookStats($book, ['views' => $book->views + 1]);
 
         return redirect()->back()->with('success', 'Review supprimé !');
     }

@@ -50,6 +50,14 @@ class User extends Authenticatable implements CanResetPasswordContract
         'is_admin' => 'boolean',
     ];
 
+    /**
+     * @return HasMany<ClubMembership>
+     */
+    public function clubMemberships(): HasMany
+    {
+        return $this->hasMany(ClubMembership::class);
+    }
+
     // Relationships - Wishlist and Reviews
     public function wishlists()
     {
@@ -90,4 +98,10 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasMany(BorrowRequest::class, 'owner_id');
     }
+
+    public function recommendations()
+{
+    return $this->hasMany(Recommendation::class);
+}
+
 }

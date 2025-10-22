@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Event;
+use App\Models\Club;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,16 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        return view('home', compact('books', 'carouselBooks', 'events'));
+        // Load clubs with their meetings for the frontend
+        $clubs = Club::with(['meetings' => function ($query) {
+            $query->orderBy('scheduled_at', 'desc')->take(3);
+        }])
+        ->withCount('meetings')
+        ->orderBy('created_at', 'desc')
+        ->take(6)
+        ->get();
+
+        return view('home', compact('books', 'carouselBooks', 'events', 'clubs'));
     }
     
     public function show(Book $book)

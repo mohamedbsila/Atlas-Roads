@@ -21,6 +21,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BorrowRequestTestController;
+use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\ClubController;
+use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\ClubMembershipController;
+use App\Http\Controllers\ClubMessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +36,24 @@ use App\Http\Controllers\BorrowRequestTestController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+*/  
+Route::post('/clubs/{club}/join', [ClubMembershipController::class, 'store'])->middleware('auth');
+Route::get('/admin/club-memberships', [ClubMembershipController::class, 'index'])->middleware(['auth']);
+Route::post('/admin/club-memberships/{membership}/approve', [ClubMembershipController::class, 'approve'])->middleware(['auth']);
+Route::post('/admin/club-memberships/{membership}/reject', [ClubMembershipController::class, 'reject'])->middleware(['auth']);
+
+Route::middleware('auth')->group(function () {
+    Route::post('/recommendations', [RecommendationController::class, 'store']);
+    Route::get('/recommendations', [RecommendationController::class, 'index']);
+    Route::get('/recommendations/{recommendation}/edit', [RecommendationController::class, 'edit'])->name('recommendations.edit');
+
+     Route::put('/recommendations/{recommendation}', [RecommendationController::class, 'update'])->name('recommendations.update');
+    Route::delete('/recommendations/{recommendation}', [RecommendationController::class, 'destroy'])->name('recommendations.destroy');
+
+});
+Route::middleware('auth')->group(function () {
+    Route::post('/recommendations', [RecommendationController::class, 'store'])->name('recommendations.store');
+});
 
 // Review Routes (public)
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
@@ -41,6 +63,15 @@ Route::patch('/reviews/{review}/flag', [ReviewController::class, 'flag'])->name(
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('book.show');
+
+// Public club routes (no authentication required)
+Route::get('/clubs-public/{club}', [ClubController::class, 'showPublic'])->name('clubs.show-public');
+// Club chat messages (public read, auth write)
+Route::get('/clubs/{club}/messages', [ClubMessageController::class, 'index'])->name('clubs.messages.index');
+Route::post('/clubs/{club}/messages', [ClubMessageController::class, 'store'])->name('clubs.messages.store')->middleware('auth');
+
+// Club membership routes
+Route::post('/clubs/{club}/join', [ClubMembershipController::class, 'store'])->name('clubs.join')->middleware('auth');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
@@ -77,6 +108,31 @@ Route::middleware('auth')->group(function () {
     
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);
+
+    // Clubs - CRUD complet
+    Route::get('clubs', [ClubController::class, 'index'])->name('clubs.index');
+    Route::get('clubs/create', [ClubController::class, 'create'])->name('clubs.create');
+    Route::post('clubs', [ClubController::class, 'store'])->name('clubs.store');
+    Route::get('clubs/{club}', [ClubController::class, 'show'])->name('clubs.show');
+    Route::get('clubs/{club}/edit', [ClubController::class, 'edit'])->name('clubs.edit');
+    Route::put('clubs/{club}', [ClubController::class, 'update'])->name('clubs.update');
+    Route::delete('clubs/{club}', [ClubController::class, 'destroy'])->name('clubs.destroy');
+
+    // Meetings - CRUD complet
+    Route::get('meetings', [MeetingController::class, 'index'])->name('meetings.index');
+    Route::get('meetings/{meeting}', [MeetingController::class, 'show'])->name('meetings.show');
+    Route::get('clubs/{club}/meetings/create', [MeetingController::class, 'create'])->name('clubs.meetings.create');
+    Route::post('clubs/{club}/meetings', [MeetingController::class, 'store'])->name('clubs.meetings.store');
+    Route::get('meetings/{meeting}/edit', [MeetingController::class, 'edit'])->name('meetings.edit');
+    Route::put('meetings/{meeting}', [MeetingController::class, 'update'])->name('meetings.update');
+    Route::delete('meetings/{meeting}', [MeetingController::class, 'destroy'])->name('meetings.destroy');
+
+// Admin club membership management
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('club-memberships', [ClubMembershipController::class, 'index'])->name('admin.club-memberships.index');
+    Route::patch('club-memberships/{membership}/approve', [ClubMembershipController::class, 'approve'])->name('admin.club-memberships.approve');
+    Route::patch('club-memberships/{membership}/reject', [ClubMembershipController::class, 'reject'])->name('admin.club-memberships.reject');
+});
     
     // Wishlist Routes - User
     Route::resource('wishlist', \App\Http\Controllers\WishlistController::class);

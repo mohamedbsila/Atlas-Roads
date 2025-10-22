@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use HasFactory;
 
 class Book extends Model
 {
@@ -117,4 +118,15 @@ class Book extends Model
             }
         });
     }
+    public function recommendations()
+{
+    return $this->hasMany(Recommendation::class);
+}
+public function statistics()
+{
+    return $this->hasOne(BookStatistic::class);
+}
+
+
+ 
 }

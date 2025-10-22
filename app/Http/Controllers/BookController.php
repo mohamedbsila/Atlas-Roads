@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Http\Requests\BookRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Services\BookStatisticService;
 
 class BookController extends Controller
 {
@@ -74,11 +75,16 @@ class BookController extends Controller
     }
 
     public function show(Book $book)
-    {
-        // Load reviews with user data
-        $book->load('reviews.user');
-        return view('books.show', compact('book'));
-    }
+{
+    // Charger les relations nécessaires
+    $book->load(['reviews.user', 'recommendations.user']);
+
+    // Récupérer les statistiques si nécessaire
+    $stats = $this->bookStats->getStatistics($book);
+
+    return view('books.show', compact('book', 'stats'));
+}
+
 
     public function edit(Book $book)
     {
@@ -119,5 +125,21 @@ class BookController extends Controller
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully deleted!');
     }
+  protected $bookStats;
+
+    public function __construct(BookStatisticService $bookStats)
+    {
+        $this->bookStats = $bookStats;
+    }
+
+     public function incrementViews(Book $book)
+{
+    // Incrémente les vues
+    $this->bookStats->updateBookStats($book, ['views' => $book->views + 1]);
+
+    return redirect()->back();
+}
+
+    
 }
 
