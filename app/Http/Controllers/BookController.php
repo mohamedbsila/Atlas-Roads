@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Http\Requests\BookRequest;
+use App\Services\TwilioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -83,6 +84,10 @@ class BookController extends Controller
                 $category->incrementBookCount();
             }
         }
+
+        // Send SMS notification
+        $twilioService = new TwilioService();
+        $twilioService->notifyNewBook($book->title);
 
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully added!');
