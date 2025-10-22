@@ -91,6 +91,18 @@
                                 </div>
                             </div>
 
+                            @if(!is_null($book->price))
+                            <div class="flex items-start mb-4 pb-4 border-b border-gray-200">
+                                <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-600 mr-4">
+                                    <i class="ni ni-credit-card text-white text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase mb-1">Price</p>
+                                    <p class="text-lg font-semibold text-slate-700">{{ $book->price_formatted }}</p>
+                                </div>
+                            </div>
+                            @endif
+
                             <!-- ISBN -->
                             @if($book->isbn)
                                 <div class="flex items-start mb-4">
@@ -128,8 +140,19 @@
                                             <i class="ni ni-settings mr-1"></i> Manage (Admin)
                                         </a>
                                     @endauth
+
+                                    @auth
+                                        @if($book->is_available && $book->ownerId !== auth()->id() && !is_null($book->price))
+                                            <form method="POST" action="{{ route('books.purchase', $book) }}">
+                                                @csrf
+                                                <button type="submit" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg cursor-pointer text-xs hover:scale-105 hover:shadow-lg">
+                                                    <i class="ni ni-cart mr-1"></i> Acheter ce livre ({{ $book->price_formatted }})
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endauth
                                 </div>
-                            </div>
+                            </div
 
                             <!-- QR Code -->
                             <div class="w-full lg:w-1/2 px-3 mb-4">
@@ -145,6 +168,7 @@
                                             "Category: " . $book->category . "\n" .
                                             "Language: " . $book->language . "\n" .
                                             "Year: " . $book->published_year . "\n" .
+                                            ($book->price_formatted ? "Price: " . $book->price_formatted . "\n" : "") .
                                             ($book->isbn ? "ISBN: " . $book->isbn . "\n" : "") .
                                             "Available: " . ($book->is_available ? "Yes" : "No")
                                         ) !!}

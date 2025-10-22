@@ -28,6 +28,19 @@
                             @endif
                         </div>
 
+                        @auth
+                            @if($book->is_available && $book->ownerId !== auth()->id() && !is_null($book->price))
+                            <div class="flex justify-center mb-2">
+                                <form method="POST" action="{{ route('books.purchase', $book) }}">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 text-white text-size-xs font-bold rounded-lg" style="background:linear-gradient(to right,#0ea5e9,#06b6d4)">
+                                        <i class="ni ni-cart mr-2"></i> Acheter ({{ $book->price_formatted }})
+                                    </button>
+                                </form>
+                            </div>
+                            @endif
+                        @endauth
+
                         <!-- QR Code -->
                         <div class="bg-gray-50 rounded-xl p-4 text-center">
                             <h6 class="text-xs font-bold text-slate-600 mb-3 uppercase">
@@ -41,6 +54,7 @@
                                     "Category: " . $book->category . "\n" .
                                     "Language: " . $book->language . "\n" .
                                     "Year: " . $book->published_year . "\n" .
+                                    ($book->price_formatted ? "Price: " . $book->price_formatted . "\n" : "") .
                                     ($book->isbn ? "ISBN: " . $book->isbn . "\n" : "") .
                                     "Available: " . ($book->is_available ? "Yes" : "No")
                                 ) !!}
@@ -96,6 +110,18 @@
                                     <p class="text-size-lg font-semibold text-slate-700">{{ $book->published_year }}</p>
                                 </div>
                             </div>
+
+                            @if(!is_null($book->price))
+                            <div class="flex items-start mb-4 pb-4 border-b border-gray-200">
+                                <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-cyan mr-4">
+                                    <i class="ni ni-credit-card text-white text-size-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-size-xs font-bold text-slate-400 uppercase mb-1">Price</p>
+                                    <p class="text-size-lg font-semibold text-slate-700">{{ $book->price_formatted }}</p>
+                                </div>
+                            </div>
+                            @endif
 
                             @if($book->isbn)
                                 <div class="flex items-start mb-4">

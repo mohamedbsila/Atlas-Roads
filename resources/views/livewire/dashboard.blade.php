@@ -102,6 +102,89 @@
         </div>
     </div>
 
+    <!-- Borrow Requests Overview -->
+    <div class="flex flex-wrap mt-6 -mx-3">
+        <div class="w-full px-3">
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
+                <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                    <div>
+                        <h5 class="font-bold text-slate-700">Demandes d'emprunt</h5>
+                        <p class="text-size-sm text-slate-500">Dernières activités</p>
+                    </div>
+                    <a href="{{ route('borrow-requests.index') }}" class="text-cyan-600 text-size-sm font-semibold hover:underline">Voir tout</a>
+                </div>
+                <div class="flex flex-wrap p-4 -mx-3">
+                    <!-- Mes demandes -->
+                    <div class="w-full px-3 lg:w-1/2 lg:flex-none">
+                        <div class="mb-4">
+                            <h6 class="mb-3 font-semibold text-slate-700">Mes demandes envoyées</h6>
+                            @if(isset($myRequests) && $myRequests->isNotEmpty())
+                                <ul class="divide-y divide-gray-100">
+                                    @foreach($myRequests as $req)
+                                        <li class="py-3 flex items-start justify-between">
+                                            <div class="flex items-start gap-3">
+                                                <div class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-gradient-fuchsia text-white">
+                                                    <i class="fas fa-book"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-semibold text-slate-700">{{ $req->book->title }}</div>
+                                                    <div class="text-size-sm text-slate-500">chez {{ optional($req->book->owner)->name ?? '—' }}</div>
+                                                    <div class="text-size-xs text-slate-400">Du {{ $req->start_date->format('d/m/Y') }} au {{ $req->end_date->format('d/m/Y') }}</div>
+                                                </div>
+                                            </div>
+                                            <span class="px-2 py-1 rounded text-size-xs font-semibold
+                                                @if($req->status->value === 'pending') bg-yellow-100 text-yellow-700
+                                                @elseif($req->status->value === 'approved') bg-green-100 text-green-700
+                                                @elseif($req->status->value === 'rejected') bg-red-100 text-red-700
+                                                @else bg-blue-100 text-blue-700 @endif">
+                                                {{ $req->status->label() }}
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="text-size-sm text-slate-500">Aucune demande envoyée récemment.</div>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Demandes reçues -->
+                    <div class="w-full px-3 lg:w-1/2 lg:flex-none">
+                        <div class="mb-4">
+                            <h6 class="mb-3 font-semibold text-slate-700">Demandes reçues</h6>
+                            @if(isset($receivedRequests) && $receivedRequests->isNotEmpty())
+                                <ul class="divide-y divide-gray-100">
+                                    @foreach($receivedRequests as $req)
+                                        <li class="py-3 flex items-start justify-between">
+                                            <div class="flex items-start gap-3">
+                                                <div class="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-gradient-cyan text-white">
+                                                    <i class="fas fa-inbox"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-semibold text-slate-700">{{ $req->book->title }}</div>
+                                                    <div class="text-size-sm text-slate-500">par {{ optional($req->borrower)->name ?? '—' }}</div>
+                                                    <div class="text-size-xs text-slate-400">Du {{ $req->start_date->format('d/m/Y') }} au {{ $req->end_date->format('d/m/Y') }}</div>
+                                                </div>
+                                            </div>
+                                            <span class="px-2 py-1 rounded text-size-xs font-semibold
+                                                @if($req->status->value === 'pending') bg-yellow-100 text-yellow-700
+                                                @elseif($req->status->value === 'approved') bg-green-100 text-green-700
+                                                @elseif($req->status->value === 'rejected') bg-red-100 text-red-700
+                                                @else bg-blue-100 text-blue-700 @endif">
+                                                {{ $req->status->label() }}
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="text-size-sm text-slate-500">Aucune demande reçue récemment.</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- cards row 2 -->
     <div class="flex flex-wrap mt-6 -mx-3">
         <div class="w-full px-3 mb-6 lg:mb-0 lg:w-7/12 lg:flex-none">

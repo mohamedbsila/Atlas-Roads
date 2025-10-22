@@ -6,6 +6,7 @@ return [
 
     'hour' => env('SCHEDULED_HOUR', ''),
     'min' => env('SCHEDULED_MIN', ''),
+    'currency_symbol' => env('CURRENCY_SYMBOL', '$'),
 
     /*
     |--------------------------------------------------------------------------

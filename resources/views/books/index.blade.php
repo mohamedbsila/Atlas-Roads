@@ -65,6 +65,20 @@
                         </select>
                     </div>
                     <br>
+                    <div class="w-full px-3 mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <input type="number" step="0.01" min="0" name="price_min" value="{{ request('price_min') }}"
+                               placeholder="Min price ({{ config('app.currency_symbol', '$') }})"
+                               class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:outline-none" />
+                        <input type="number" step="0.01" min="0" name="price_max" value="{{ request('price_max') }}"
+                               placeholder="Max price ({{ config('app.currency_symbol', '$') }})"
+                               class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:outline-none" />
+                        <select name="sort" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:outline-none">
+                            <option value="">Sort</option>
+                            <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                        </select>
+                    </div>
+                    <br>
                     <div class="w-full px-3">
                         <button type="submit"
                                 class="w-full px-6 py-3 font-bold text-center text-white uppercase rounded-lg text-size-xs shadow-md hover:scale-105 transition-all"
@@ -83,10 +97,11 @@
                     <div class="relative flex flex-col h-full bg-white shadow rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                         <div class="flex-auto p-4">
                             <div class="relative overflow-hidden rounded-xl mb-3 group">
+                                <?php $onerror = "this.onerror=null;this.src='" . asset('assets/img/curved-images/curved14.jpg') . "'"; ?>
                                 <img src="{{ $book->image_url }}" 
                                      alt="{{ $book->title }}" 
                                      class="w-full h-48 object-cover rounded-xl transition-transform duration-300 group-hover:scale-110"
-                                     onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
+                                     onerror="{{ $onerror }}">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl" style="z-index: 1;"></div>
 
                                 <!-- Availability Badge -->
@@ -114,33 +129,66 @@
                                 <i class="ni ni-calendar-grid-58 mr-1"></i> {{ $book->published_year }} | {{ $book->language }}
                             </p>
 
-                            <div class="flex gap-1.5">
-                                <!-- View Button -->
-                                <a href="{{ route('books.show', $book) }}"
-                                   class="flex-1 px-3 py-2 text-center rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
-                                   style="background:linear-gradient(to right,#06b6d4,#0ea5e9)">
-                                    <i class="ni ni-zoom-split-in mr-1"></i>
-                                    <span>View</span>
-                                </a>
-                                <!-- Edit Button -->
-                                <a href="{{ route('books.edit', $book) }}"
-                                   class="flex-1 px-3 py-2 text-center rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
-                                   style="background-color:#f59e0b; border:1px solid #d97706;">
-                                    <i class="ni ni-settings mr-1"></i>
-                                    <span>Edit</span>
-                                </a>
-                                <!-- Delete Button -->
-                                <form action="{{ route('books.destroy', $book) }}" method="POST" class="flex-1"
-                                      onsubmit="return confirm('⚠️ Are you sure you want to delete « {{ $book->title }} »?\n\nThis action is irreversible.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="w-full px-3 py-2 text-center rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
-                                            style="background:linear-gradient(to right,#ef4444,#dc2626)">
-                                        <i class="ni ni-basket mr-1"></i>
-                                        <span>Delete</span>
-                                    </button>
-                                </form>
+                            @if(!is_null($book->price))
+                                <p class="mb-3 text-sm font-bold text-slate-800">
+                                    <i class="ni ni-credit-card mr-1"></i>
+                                    {{ $book->price_formatted }}
+                                </p>
+                            @endif
+
+                            <div class="flex flex-col gap-2 mb-2">
+                                @auth
+                                    @if($book->is_available && $book->ownerId !== auth()->id() && !is_null($book->price))
+                                    <div class="flex justify-center gap-2 mb-2">
+                                        <form method="POST" action="{{ route('books.borrow', $book) }}">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center px-4 py-2 text-white text-size-xs font-bold rounded-lg" style="background:linear-gradient(to right,#22c55e,#16a34a)">
+                                                <i class="ni ni-send mr-2"></i> Emprunter ce livre
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('books.purchase', $book) }}">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center px-4 py-2 text-white text-size-xs font-bold rounded-lg" style="background:linear-gradient(to right,#0ea5e9,#06b6d4)">
+                                                <i class="ni ni-cart mr-2"></i> Acheter ({{ $book->price_formatted }})
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('books.purchase', $book) }}">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center px-4 py-2 text-white text-size-xs font-bold rounded-lg" style="background:linear-gradient(to right,#f59e0b,#fbbf24)">
+                                                <i class="ni ni-cart mr-2"></i> Acheter
+                                            </button>
+                                        </form>
+                                    </div>
+                                    @endif
+                                @endauth
+                                <div class="flex gap-1.5">
+                                    <!-- View Button -->
+                                    <a href="{{ route('books.show', $book) }}"
+                                       class="flex-1 px-3 py-2 text-center rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
+                                       style="background:linear-gradient(to right,#06b6d4,#0ea5e9)">
+                                        <i class="ni ni-zoom-split-in mr-1"></i>
+                                        <span>Voir détails</span>
+                                    </a>
+                                    <!-- Edit Button -->
+                                    <a href="{{ route('books.edit', $book) }}"
+                                       class="flex-1 px-3 py-2 text-center rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
+                                       style="background-color:#f59e0b; border:1px solid #d97706;">
+                                        <i class="ni ni-settings mr-1"></i>
+                                        <span>Editer</span>
+                                    </a>
+                                    <!-- Delete Button -->
+                                    <form action="{{ route('books.destroy', $book) }}" method="POST" class="flex-1"
+                                          onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer « {{ $book->title }} » ?\n\nCette action est irréversible.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="w-full px-3 py-2 text-center rounded-lg text-xs font-bold text-white shadow-md hover:scale-105 transition-all"
+                                                style="background:linear-gradient(to right,#ef4444,#dc2626)">
+                                            <i class="ni ni-basket mr-1"></i>
+                                            <span>Supprimer</span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

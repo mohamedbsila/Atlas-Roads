@@ -34,6 +34,7 @@ class BookFactory extends Factory
                 'Philosophie'
             ]),
             'language' => fake()->randomElement(['Français', 'Anglais', 'Espagnol']),
+            'price' => fake()->randomFloat(2, 5, 120),
             'published_year' => fake()->numberBetween(1900, 2024),
             'is_available' => fake()->boolean(80),
             'ownerId' => User::factory(),

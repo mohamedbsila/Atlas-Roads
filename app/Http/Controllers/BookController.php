@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Http\Requests\BookRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -38,12 +39,25 @@ class BookController extends Controller
             $query->where('is_available', $request->available === '1');
         }
 
+        // Filtre prix min / max
+        if ($request->filled('price_min') && is_numeric($request->price_min)) {
+            $query->where('price', '>=', (float) $request->price_min);
+        }
+        if ($request->filled('price_max') && is_numeric($request->price_max)) {
+            $query->where('price', '<=', (float) $request->price_max);
+        }
+
+        // Tri par prix optionnel
+        if ($request->filled('sort') && in_array($request->sort, ['price_asc','price_desc'])) {
+            $query->orderBy('price', $request->sort === 'price_asc' ? 'asc' : 'desc');
+        }
+
         $books = $query->latest()->paginate(15);
         $categories = Book::distinct()->pluck('category')->sort();
         $languages = Book::distinct()->pluck('language')->sort();
         $years = Book::distinct()->pluck('published_year')->sortDesc();
 
-        return view('books.index', compact('books', 'categories', 'languages', 'years'));
+    return view('books.index', compact('books', 'categories', 'languages', 'years'));
     }
 
     public function create()
@@ -63,6 +77,9 @@ class BookController extends Controller
         }
 
         $data['is_available'] = $request->has('is_available') ? true : false;
+
+        // Assigner le propriétaire du livre au user connecté
+        $data['ownerId'] = Auth::id();
 
         Book::create($data);
 

@@ -273,7 +273,7 @@
                             @endif
                         </div>
                         <div class="buttons">
-                            <button class="seeMore" onclick="window.location.href='{{ route('books.show', $carouselBook) }}'">Discover</button>
+                            <a class="seeMore" href="{{ route('books.show', $carouselBook) }}">Discover</a>
                         </div>
                     </div>
                 </div>
@@ -289,17 +289,17 @@
                             Our book catalog will be available soon. Come back and visit us soon!
                         </div>
                         <div class="buttons">
-                            <button class="seeMore" onclick="window.location.href='#books'">Discover</button>
-                            <button onclick="window.location.href='{{ route('login') }}'">Sign Up</button>
+                            <a class="seeMore" href="#books">Discover</a>
+                            <a href="{{ route('login') }}">Sign Up</a>
                         </div>
                     </div>
                 </div>
             @endforelse
         </div>
         <div class="arrows">
-            <button id="prev"><</button>
-            <button id="next">></button>
-            <button id="back">See All  &#8599</button>
+            <button id="prev" onclick=";">&lt;</button>
+            <button id="next" onclick=";">&gt;</button>
+            <button id="back" onclick=";">See All  &#8599</button>
         </div>
     </div>
 </main>
@@ -325,7 +325,8 @@
                                      alt="{{ $book->title }}" 
                                      class="book-image"
                                      loading="lazy"
-                                     onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
+                                    <?php $onerror = "this.onerror=null;this.src='" . asset('assets/img/curved-images/curved14.jpg') . "'"; ?>
+                                     onerror="{{ $onerror }}">
                                 
                                 <!-- Availability Badge -->
                                 @if($book->is_available)
@@ -358,6 +359,13 @@
                                     {{ $book->published_year }} • {{ $book->language }}
                                 </p>
 
+                                @if(!is_null($book->price))
+                                <p class="mb-4 text-base font-bold text-slate-800">
+                                    <i class="fas fa-credit-card mr-1"></i>
+                                    {{ $book->price_formatted }}
+                                </p>
+                                @endif
+
                                 <!-- Action Buttons -->
                                 <div class="space-y-2">
                                     @auth
@@ -367,6 +375,15 @@
                                                 <i class="fas fa-hand-holding-heart me-2"></i>
                                                 📚 Emprunter ce livre
                                             </button>
+                                            @if(!is_null($book->price))
+                                            <form method="POST" action="{{ route('books.purchase', $book) }}">
+                                                @csrf
+                                                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-blue-600 hover:to-blue-800 transition-all">
+                                                    <i class="fas fa-shopping-cart me-2"></i>
+                                                    Acheter ({{ $book->price_formatted }})
+                                                </button>
+                                            </form>
+                                            @endif
                                         @elseif($book->ownerId === Auth::id())
                                             <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
                                                 <i class="fas fa-crown me-1"></i>

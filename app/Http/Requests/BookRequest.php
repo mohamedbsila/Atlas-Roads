@@ -6,6 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BookRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('price')) {
+            $raw = (string) $this->input('price');
+            // Remplacer virgule par point pour les décimales
+            $normalized = str_replace(',', '.', $raw);
+            // Supprimer espaces
+            $normalized = trim($normalized);
+            $this->merge([
+                'price' => $normalized,
+            ]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -22,6 +36,7 @@ class BookRequest extends FormRequest
             'isbn' => 'nullable|string|max:20|unique:books,isbn,' . $bookId,
             'category' => 'required|string|max:50',
             'language' => 'required|string|max:30',
+            'price' => 'required|numeric|min:0|max:999999.99',
             'published_year' => 'required|integer|min:1900|max:2025',
             'is_available' => 'boolean'
         ];
@@ -37,6 +52,9 @@ class BookRequest extends FormRequest
             'isbn.unique' => 'This ISBN already exists in the database',
             'category.required' => 'The category is required',
             'language.required' => 'The language is required',
+            'price.required' => 'The price is required',
+            'price.numeric' => 'The price must be a number',
+            'price.min' => 'The price must be at least 0',
             'published_year.required' => 'The publication year is required',
             'published_year.integer' => 'The publication year must be a number',
             'published_year.min' => 'The publication year must be greater than 1900',

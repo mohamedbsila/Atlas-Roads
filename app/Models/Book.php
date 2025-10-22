@@ -16,6 +16,7 @@ class Book extends Model
         'isbn',
         'category',
         'language',
+        'price',
         'published_year',
         'is_available',
         'ownerId'
@@ -24,6 +25,7 @@ class Book extends Model
     protected $casts = [
         'published_year' => 'integer',
         'is_available' => 'boolean',
+        'price' => 'decimal:2',
     ];
 
     public function getImageUrlAttribute()
@@ -108,5 +110,14 @@ class Book extends Model
                 Storage::delete($book->image);
             }
         });
+    }
+
+    /**
+     * Prix formaté avec 2 décimales et symbole $
+     */
+    public function getPriceFormattedAttribute(): ?string
+    {
+        $symbol = config('app.currency_symbol', '$');
+        return is_null($this->price) ? null : number_format((float)$this->price, 2) . ' ' . $symbol;
     }
 }

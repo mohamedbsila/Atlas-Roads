@@ -6,6 +6,7 @@ use App\Enums\RequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
 
 class BorrowRequest extends Model
@@ -53,20 +54,33 @@ class BorrowRequest extends Model
     }
 
     /**
+     * Paiement associé à cette demande
+     */
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    /**
      * Créer une nouvelle demande d'emprunt
      */
     public static function createRequest(int $borrowerId, int $bookId, Carbon $startDate, Carbon $endDate, ?string $notes = null): self
     {
         $book = Book::findOrFail($bookId);
-        
+        // Récupérer l'owner depuis la FK correcte 'ownerId' sur Book
+        $ownerId = $book->ownerId; // colonne dans la table books
+
+        // Normaliser la note pour éviter d'insérer la chaîne 'null'
+        $normalizedNotes = ($notes === 'null') ? null : $notes;
+
         return self::create([
             'borrower_id' => $borrowerId,
-            'owner_id' => $book->ownerId,
+            'owner_id' => $ownerId,
             'book_id' => $bookId,
             'start_date' => $startDate,
             'end_date' => $endDate,
             'status' => RequestStatus::PENDING,
-            'notes' => $notes
+            'notes' => $normalizedNotes
         ]);
     }
 

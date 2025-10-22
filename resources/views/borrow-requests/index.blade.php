@@ -142,6 +142,23 @@
                                         <span class="detail-value">{{ $request->getDurationInDays() }} jour(s)</span>
                                     </div>
 
+                                    <div class="detail-item">
+                                        <i class="fas fa-credit-card text-warning me-2"></i>
+                                        <span class="detail-label">Paiement:</span>
+                                        @php($p = $request->payment)
+                                        @if($p)
+                                            <span class="detail-value">
+                                                {{ $p->amount_total_formatted }}
+                                                —
+                                                <span class="badge {{ $p->status === 'paid' ? 'bg-success' : 'bg-secondary' }}">
+                                                    {{ strtoupper($p->status) }}
+                                                </span>
+                                            </span>
+                                        @else
+                                            <span class="detail-value text-muted">Non généré</span>
+                                        @endif
+                                    </div>
+
                                     @if($request->status === App\Enums\RequestStatus::APPROVED && $request->isOverdue())
                                         <div class="alert alert-danger alert-sm mt-2">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -243,6 +260,23 @@
                                         <i class="fas fa-clock text-info me-2"></i>
                                         <span class="detail-label">Durée:</span>
                                         <span class="detail-value">{{ $request->getDurationInDays() }} jour(s)</span>
+                                    </div>
+
+                                    <div class="detail-item">
+                                        <i class="fas fa-credit-card text-warning me-2"></i>
+                                        <span class="detail-label">Paiement:</span>
+                                        @php($p = $request->payment)
+                                        @if($p)
+                                            <span class="detail-value">
+                                                {{ $p->amount_total_formatted }}
+                                                —
+                                                <span class="badge {{ $p->status === 'paid' ? 'bg-success' : 'bg-secondary' }}">
+                                                    {{ strtoupper($p->status) }}
+                                                </span>
+                                            </span>
+                                        @else
+                                            <span class="detail-value text-muted">Non généré</span>
+                                        @endif
                                     </div>
 
                                     <div class="detail-item">

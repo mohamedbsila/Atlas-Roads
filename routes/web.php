@@ -18,6 +18,26 @@ use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
 use App\Http\Livewire\VirtualReality;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PaymentController;
+use App\Models\Book;
+
+// Stripe Webhook (doit être AVANT auth middleware)
+Route::post('/stripe/webhook', [PaymentController::class, 'webhook'])->name('stripe.webhook');
+
+// Payments
+Route::middleware(['auth'])->group(function() {
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::post('/payments/{payment}/mark-paid', [PaymentController::class, 'markAsPaid'])->name('payments.mark-paid');
+    Route::post('/books/{book}/purchase', [PaymentController::class, 'purchase'])->name('books.purchase');
+    Route::post('/books/{book}/borrow', [\App\Http\Controllers\BorrowRequestController::class, 'store'])->name('books.borrow');
+    
+    // Stripe success/cancel pages
+    Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
+    Route::get('/payments/cancel/{payment}', [PaymentController::class, 'cancel'])->name('payments.cancel');
+    
+    // Payer un emprunt via Stripe
+    Route::post('/borrow-requests/{borrowRequest}/pay', [PaymentController::class, 'createBorrowCheckoutSession'])->name('borrow-requests.pay');
+});
 use App\Http\Controllers\BorrowRequestTestController;
 
 /*
