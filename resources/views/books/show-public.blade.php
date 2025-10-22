@@ -3,6 +3,24 @@
         body {
             background-color: #f7fafc;
         }
+
+        /* Scroll pour reviews si beaucoup */
+        .reviews-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Scrollbar stylisée */
+        .reviews-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .reviews-container::-webkit-scrollbar-thumb {
+            background-color: rgba(107, 114, 128, 0.5);
+            border-radius: 3px;
+        }
+        .reviews-container::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
     </style>
     
     <div class="container mx-auto px-4 py-8">
@@ -40,7 +58,7 @@
                 </div>
             </div>
 
-            <!-- Informations du livre -->
+            <!-- Informations + Reviews -->
             <div class="w-full lg:w-8/12 px-3">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-lg rounded-2xl mb-6">
                     <div class="p-6">
@@ -65,7 +83,14 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-slate-400 uppercase mb-1">Category</p>
-                                    <p class="text-lg font-semibold text-slate-700">{{ $book->category }}</p>
+                                    <p class="text-lg font-semibold text-slate-700">
+                                        @if($book->category_id && $book->relationLoaded('category'))
+                                            @php $cat = $book->getRelation('category'); @endphp
+                                            {{ $cat ? $cat->category_name : 'N/A' }}
+                                        @else
+                                            {{ $book->getAttribute('category') ?? 'N/A' }}
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
 
@@ -153,10 +178,54 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Reviews Section Inside Info Card -->
+                        <div class="mt-8">
+    <h5 class="font-bold mb-4 text-xl text-slate-700">Reviews</h5>
+    <div class="reviews-container space-y-4">
+        @if($book->reviews->count() > 0)
+            @foreach($book->reviews as $review)
+                <div class="flex p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition transform hover:-translate-y-1">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center text-white font-bold text-lg mr-4">
+                        {{ strtoupper(substr($review->user->name, 0, 1)) }}
+                    </div>
+                    
+                    <!-- Review Content -->
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                            <strong class="text-slate-800">{{ $review->user->name }}</strong>
+                            <span class="text-xs text-gray-400">{{ $review->created_at->format('M d, Y') }}</span>
+                        </div>
+                        <div class="flex items-center mb-2">
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= $review->rating)
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                @else
+                                    <i class="far fa-star text-gray-300"></i>
+                                @endif
+                            @endfor
+                        </div>
+                        <p class="text-slate-700">{{ $review->comment }}</p>
+                        
+                        @if($review->is_flagged)
+                            <span class="inline-block mt-2 px-2 py-1 text-xs font-bold text-red-600 bg-red-100 rounded-full">
+                                <i class="fas fa-flag mr-1"></i> Flagged
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <p class="text-slate-500 mt-2">No reviews for this book yet.</p>
+        @endif
+    </div>
+</div>
+
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 </x-layouts.base>
-

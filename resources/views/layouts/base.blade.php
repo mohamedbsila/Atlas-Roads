@@ -21,7 +21,7 @@
     <link href="{{ asset('assets') }}/css/nucleo-svg.css" rel="stylesheet" />
 
     <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Popper -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.5/umd/popper.min.js"></script>
 
@@ -40,6 +40,33 @@
 
     @livewireScripts
     @stack('scripts')
+    <script>
+        // Simple toast helper
+        function showToast(message) {
+            const existing = document.getElementById('live-toast');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.id = 'live-toast';
+            div.className = 'fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded shadow-lg';
+            div.textContent = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3500);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Livewire browser event
+            window.addEventListener('notify', function (e) {
+                if (e && e.detail && e.detail.message) {
+                    showToast(e.detail.message);
+                }
+            });
+
+            // Check for session flash rendered into the page
+            @if(session('status'))
+                showToast(@json(session('status')));
+            @endif
+        });
+    </script>
 </body>
 
 <!-- plugin for charts  -->

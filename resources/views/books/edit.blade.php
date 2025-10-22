@@ -69,12 +69,18 @@
                             <div class="flex flex-wrap -mx-3 mb-4">
                                 <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
                                     <label class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">
-                                        Category <span class="text-red-500">*</span>
+                                        Category
                                     </label>
-                                    <input type="text" name="category" value="{{ old('category', $book->category) }}"
-                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('category') border-red-500 @enderror"
-                                           placeholder="Novel, Science-Fiction, etc.">
-                                    @error('category')
+                                    <select name="category_id"
+                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('category_id') border-red-500 @enderror">
+                                        <option value="">Select a category</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" {{ old('category_id', $book->category_id) == $category->id ? 'selected' : '' }}>
+                                                {{ $category->category_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id')
                                         <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -102,9 +108,37 @@
                                         <p class="text-size-xs text-slate-400 mt-1">Current image</p>
                                     </div>
                                 @endif
-                                <input type="file" name="image" accept="image/jpeg,image/jpg,image/png"
-                                       class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('image') border-red-500 @enderror">
-                                <p class="mt-1 text-size-xs text-slate-400">Accepted formats: JPG, JPEG, PNG (max 2MB)</p>
+                                
+                                <div class="mb-3">
+                                    <label class="inline-flex items-center cursor-pointer mb-2">
+                                        <input type="radio" name="image_type" value="file" checked
+                                               onclick="document.getElementById('file_input_edit').classList.remove('hidden'); document.getElementById('url_input_edit').classList.add('hidden');"
+                                               class="w-4 h-4 text-fuchsia-600">
+                                        <span class="ml-2 text-size-sm text-slate-700">Upload a file</span>
+                                    </label>
+                                    <label class="inline-flex items-center cursor-pointer ml-6">
+                                        <input type="radio" name="image_type" value="url"
+                                               onclick="document.getElementById('file_input_edit').classList.add('hidden'); document.getElementById('url_input_edit').classList.remove('hidden');"
+                                               class="w-4 h-4 text-fuchsia-600">
+                                        <span class="ml-2 text-size-sm text-slate-700">External image URL</span>
+                                    </label>
+                                </div>
+
+                                <div id="file_input_edit">
+                                    <input type="file" name="image" accept="image/jpeg,image/jpg,image/png"
+                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('image') border-red-500 @enderror">
+                                    <p class="mt-1 text-size-xs text-slate-400">Accepted formats: JPG, JPEG, PNG (max 2MB)</p>
+                                </div>
+
+                                <div id="url_input_edit" class="hidden">
+                                    <input type="url" name="image_url" placeholder="https://example.com/image.jpg"
+                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none">
+                                    <p class="mt-1 text-size-xs text-slate-400">
+                                        <i class="ni ni-world-2 mr-1"></i> 
+                                        Direct image URL (e.g: goodreads.com, amazon.com, etc.)
+                                    </p>
+                                </div>
+
                                 @error('image')
                                     <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
                                 @enderror
