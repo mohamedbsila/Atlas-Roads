@@ -172,14 +172,14 @@ pipeline {
             steps {
                 echo 'Setting up test database...'
                 script {
-                    // Try to create database - may fail if already exists
                     sh '''
-                        sudo mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};" || true
-                        sudo mysql -e "GRANT ALL PRIVILEGES ON ${DB_DATABASE}.* TO 'jenkins'@'localhost' IDENTIFIED BY '';" || true
+                        sudo mysql -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
+                        sudo mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
+                        sudo mysql -e "GRANT ALL PRIVILEGES ON ${DB_DATABASE}.* TO 'root'@'localhost';" || true
                         sudo mysql -e "FLUSH PRIVILEGES;" || true
                     '''
                     sh '''
-                        php artisan migrate:fresh --force --seed
+                        php artisan migrate --force --seed
                     '''
                     echo 'Database setup completed'
                 }
