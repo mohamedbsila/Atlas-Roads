@@ -83,7 +83,9 @@
                                             </div>
                                             <div class="flex flex-col justify-center">
                                                 <h6 class="mb-0 text-sm font-semibold text-slate-700">{{ $category->category_name }}</h6>
-                                                <p class="text-xs text-slate-400">Created {{ $category->created_at->diffForHumans() }}</p>
+                                                <p class="text-xs text-slate-400">
+                                                    Created {{ $category->created_at ? $category->created_at->diffForHumans() : 'N/A' }}
+                                                </p>
                                             </div>
                                         </div>
                                     </td>
