@@ -21,8 +21,7 @@ class BookRequest extends FormRequest
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:100',
             'isbn' => 'nullable|string|max:20|unique:books,isbn,' . $bookId,
-            'category' => 'nullable|string|max:50',
-            'category_id' => 'nullable|exists:categories,id',
+            'category' => 'required|string|max:50',
             'language' => 'required|string|max:30',
             'published_year' => 'required|integer|min:1900|max:2025',
             'is_available' => 'boolean'
@@ -37,7 +36,7 @@ class BookRequest extends FormRequest
             'author.required' => 'The author name is required',
             'author.max' => 'The author name must not exceed 100 characters',
             'isbn.unique' => 'This ISBN already exists in the database',
-            'category_id.exists' => 'The selected category does not exist',
+            'category.required' => 'The category is required',
             'language.required' => 'The language is required',
             'published_year.required' => 'The publication year is required',
             'published_year.integer' => 'The publication year must be a number',

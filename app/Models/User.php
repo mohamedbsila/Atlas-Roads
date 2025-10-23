@@ -90,4 +90,12 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasMany(BorrowRequest::class, 'owner_id');
     }
+
+    /**
+     * Room reservations made by this user
+     */
+    public function roomReservations(): HasMany
+    {
+        return $this->hasMany(RoomReservation::class);
+    }
 }

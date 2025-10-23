@@ -11,15 +11,13 @@ class HomeController extends Controller
     public function index()
     {
         // Récupérer les 6 premiers livres pour le carousel
-        $carouselBooks = Book::with('category')
-                            ->where('is_available', true)
+        $carouselBooks = Book::where('is_available', true)
                             ->orderBy('created_at', 'desc')
                             ->limit(6)
                             ->get();
         
         // Récupérer tous les livres disponibles avec pagination pour la grille
-        $books = Book::with('category')
-                    ->where('is_available', true)
+        $books = Book::where('is_available', true)
                     ->orderBy('created_at', 'desc')
                     ->paginate(12);
         
@@ -36,7 +34,6 @@ class HomeController extends Controller
     public function show(Book $book)
     {
         // Permettre aux visiteurs de voir les détails d'un livre
-        $book->load('category', 'reviews');
         return view('books.show-public', compact('book'));
     }
 }

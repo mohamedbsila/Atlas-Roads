@@ -38,4 +38,8 @@ return [
         'notify_number' => env('TWILIO_NOTIFY_NUMBER'),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+    ],
+
 ];

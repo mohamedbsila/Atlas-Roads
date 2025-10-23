@@ -19,7 +19,8 @@ class Book extends Model
         'language',
         'published_year',
         'is_available',
-        'ownerId'
+        'ownerId',
+        'bibliotheque_id'
     ];
 
     protected $casts = [
@@ -66,6 +67,14 @@ class Book extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Bibliotheque du livre
+     */
+    public function bibliotheque(): BelongsTo
+    {
+        return $this->belongsTo(Bibliotheque::class);
     }
 
     /**

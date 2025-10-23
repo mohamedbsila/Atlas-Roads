@@ -69,18 +69,12 @@
                             <div class="flex flex-wrap -mx-3 mb-4">
                                 <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
                                     <label class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">
-                                        Category
+                                        Category <span class="text-red-500">*</span>
                                     </label>
-                                    <select name="category_id"
-                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('category_id') border-red-500 @enderror">
-                                        <option value="">Select a category</option>
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('category_id', $book->category_id) == $category->id ? 'selected' : '' }}>
-                                                {{ $category->category_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('category_id')
+                                    <input type="text" name="category" value="{{ old('category', $book->category) }}"
+                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('category') border-red-500 @enderror"
+                                           placeholder="Novel, Science-Fiction, etc.">
+                                    @error('category')
                                         <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
                                     @enderror
                                 </div>

@@ -1,18 +1,9 @@
 <x-layouts.client>
 <div class="mb-6">
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <a href="{{ route('home') }}#books" 
-           class="inline-block px-4 py-2 text-sm font-semibold text-slate-400 hover:text-slate-700 transition">
-            <i class="fas fa-arrow-left mr-1"></i> Back to list
-        </a>
-        
-        <!-- Download PDF Button -->
-        <a href="{{ route('books.download-pdf', $book) }}" 
-           class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-red-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
-            <i class="fas fa-file-pdf"></i>
-            <span>Download PDF</span>
-        </a>
-    </div>
+    <a href="{{ route('home') }}#books" 
+       class="inline-block px-4 py-2 mb-4 text-sm font-semibold text-slate-400 hover:text-slate-700 transition">
+        <i class="fas fa-arrow-left mr-1"></i> Back to list
+    </a>
     <h1 class="text-4xl font-bold text-slate-800">Book Details</h1>
 </div>
 
@@ -59,14 +50,7 @@
             <h2 class="text-3xl font-bold text-slate-800">{{ $book->title }}</h2>
             <div class="flex flex-wrap gap-4 text-slate-700">
                 <p><span class="font-semibold">Author:</span> {{ $book->author }}</p>
-                <p><span class="font-semibold">Category:</span> 
-                    @if($book->category_id && $book->relationLoaded('category'))
-                        @php $cat = $book->getRelation('category'); @endphp
-                        {{ $cat ? $cat->category_name : 'N/A' }}
-                    @else
-                        {{ $book->getAttribute('category') ?? 'N/A' }}
-                    @endif
-                </p>
+                <p><span class="font-semibold">Category:</span> {{ $book->category }}</p>
                 <p><span class="font-semibold">Language:</span> {{ $book->language }}</p>
                 <p><span class="font-semibold">Year:</span> {{ $book->published_year }}</p>
                 @if($book->isbn)
