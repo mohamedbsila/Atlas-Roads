@@ -12,8 +12,11 @@ pipeline {
         DB_HOST = '127.0.0.1'
         DB_PORT = '3306'
         DB_DATABASE = 'atlas_roads_test'
+        DB_USERNAME = 'jenkins'
+        DB_PASSWORD = 'jenkins123'
         PHPUNIT_COVERAGE = 'false'
         DEPLOY_PATH = '/var/www/atlas-roads'
+        NEXUS_URL = 'http://localhost:8081'
     }
 
     options {
@@ -37,6 +40,36 @@ pipeline {
 
                 echo "Commit: ${env.GIT_COMMIT_SHORT} by ${env.GIT_AUTHOR}"
                 echo "Message: ${env.GIT_COMMIT_MSG}"
+            }
+        }
+
+        stage('Start Docker Services') {
+            steps {
+                echo 'Starting MySQL and Nexus Docker containers...'
+                script {
+                    sh '''
+                        # Arrêter les anciens conteneurs s'ils existent
+                        docker-compose down || true
+                        
+                        # Démarrer les services
+                        docker-compose up -d
+                        
+                        # Attendre que MySQL soit prêt
+                        echo "Waiting for MySQL to be ready..."
+                        for i in {1..30}; do
+                            if docker-compose exec -T mysql mysqladmin ping -h localhost --silent; then
+                                echo "MySQL is ready!"
+                                break
+                            fi
+                            echo "Waiting for MySQL... ($i/30)"
+                            sleep 2
+                        done
+                        
+                        # Vérifier que Nexus démarre (il prend du temps)
+                        echo "Nexus is starting in background..."
+                        docker-compose ps
+                    '''
+                }
             }
         }
 
@@ -76,8 +109,8 @@ pipeline {
                         sed -i "s/DB_HOST=.*/DB_HOST=${DB_HOST}/" .env
                         sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT}/" .env
                         sed -i "s/DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE}/" .env
-                        sed -i "s/DB_USERNAME=.*/DB_USERNAME=root/" .env
-                        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=/" .env
+                        sed -i "s/DB_USERNAME=.*/DB_USERNAME=${DB_USERNAME}/" .env
+                        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD}/" .env
                     '''
                 }
             }
@@ -173,13 +206,11 @@ pipeline {
                 echo 'Setting up test database...'
                 script {
                     sh '''
-                        sudo mysql -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
-                        sudo mysql -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
-                        sudo mysql -e "GRANT ALL PRIVILEGES ON ${DB_DATABASE}.* TO 'root'@'localhost';" || true
-                        sudo mysql -e "FLUSH PRIVILEGES;" || true
+                        mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD} -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
+                        mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
                     '''
                     sh '''
-                        php artisan migrate --force --seed
+                        php artisan migrate:fresh --force --seed
                     '''
                     echo 'Database setup completed'
                 }
@@ -230,7 +261,7 @@ pipeline {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: 'http://localhost:8081',
+                    nexusUrl: "${NEXUS_URL}",
                     groupId: 'laravel',
                     version: "${env.GIT_COMMIT_SHORT ?: '1.0.0'}",
                     repository: 'lara',
@@ -252,7 +283,7 @@ pipeline {
                 echo 'Cleaning up...'
                 script {
                     sh '''
-                        mysql -h${DB_HOST} -uroot -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
+                        mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD} -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
                     '''
                     sh '''
                         php artisan cache:clear || true
@@ -270,6 +301,13 @@ pipeline {
         always {
             script {
                 echo 'Pipeline execution completed'
+                
+                // Arrêter les conteneurs Docker (optionnel - commentez si vous voulez les garder)
+                sh '''
+                    echo "Stopping Docker containers..."
+                    docker-compose down || true
+                ''' 
+                
                 try {
                     cleanWs(
                         deleteDirs: true,
