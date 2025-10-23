@@ -68,7 +68,16 @@ class BookController extends Controller
         // Automatically assign the logged-in user as the owner
         $data['ownerId'] = auth()->id();
 
-        Book::create($data);
+        $book = Book::create($data);
+
+        // Send SMS notification for new book
+        try {
+            $twilioService = new \App\Services\TwilioService();
+            $twilioService->notifyNewBook($book->title);
+        } catch (\Exception $e) {
+            // Log error but don't block the book creation
+            \Log::error('SMS notification failed: ' . $e->getMessage());
+        }
 
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully added!');
