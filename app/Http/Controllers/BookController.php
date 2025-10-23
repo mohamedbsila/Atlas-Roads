@@ -71,16 +71,24 @@ class BookController extends Controller
         $book = Book::create($data);
 
         // Send SMS notification for new book
+        $smsStatus = '';
         try {
             $twilioService = new \App\Services\TwilioService();
-            $twilioService->notifyNewBook($book->title);
+            $result = $twilioService->notifyNewBook($book->title);
+            
+            if ($result) {
+                $smsStatus = ' SMS notification sent successfully!';
+            } else {
+                $smsStatus = ' (SMS notification failed - check logs)';
+            }
         } catch (\Exception $e) {
             // Log error but don't block the book creation
             \Log::error('SMS notification failed: ' . $e->getMessage());
+            $smsStatus = ' (SMS notification skipped: ' . $e->getMessage() . ')';
         }
 
         return redirect()->route('books.index')
-            ->with('success', 'Book has been successfully added!');
+            ->with('success', 'Book has been successfully added!' . $smsStatus);
     }
 
     public function show(Book $book)

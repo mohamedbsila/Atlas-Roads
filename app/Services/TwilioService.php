@@ -19,15 +19,26 @@ class TwilioService
         $this->from = config('services.twilio.from');
         $this->notifyNumber = config('services.twilio.notify_number');
 
+        // Check if credentials are configured
+        if (empty($sid) || empty($token) || empty($this->from)) {
+            Log::warning("Twilio Service: Missing credentials in .env file");
+            throw new \Exception("Twilio credentials not configured. Please update your .env file with valid TWILIO_SID, TWILIO_AUTH_TOKEN, and TWILIO_FROM values.");
+        }
+
         // Debug: log what we're using
         Log::info("Twilio Service initialized", [
             'sid' => $sid,
-            'token_preview' => substr($token, 0, 8) . '...',
+            'token_preview' => $token ? substr($token, 0, 8) . '...' : 'NOT SET',
             'from' => $this->from,
             'notify_to' => $this->notifyNumber
         ]);
 
-        $this->twilio = new Client($sid, $token);
+        try {
+            $this->twilio = new Client($sid, $token);
+        } catch (\Exception $e) {
+            Log::error("Failed to initialize Twilio client: " . $e->getMessage());
+            throw new \Exception("Invalid Twilio credentials. Please check your TWILIO_SID and TWILIO_AUTH_TOKEN in .env file.");
+        }
     }
 
     /**
