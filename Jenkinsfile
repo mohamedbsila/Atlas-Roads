@@ -48,16 +48,23 @@ pipeline {
                 echo 'Starting MySQL and Nexus Docker containers...'
                 script {
                     sh '''
+                        # Vérifier si docker compose est disponible
+                        if command -v docker-compose &> /dev/null; then
+                            DOCKER_COMPOSE="docker-compose"
+                        else
+                            DOCKER_COMPOSE="docker compose"
+                        fi
+                        
                         # Arrêter les anciens conteneurs s'ils existent
-                        docker-compose down || true
+                        $DOCKER_COMPOSE down || true
                         
                         # Démarrer les services
-                        docker-compose up -d
+                        $DOCKER_COMPOSE up -d
                         
                         # Attendre que MySQL soit prêt
                         echo "Waiting for MySQL to be ready..."
                         for i in {1..30}; do
-                            if docker-compose exec -T mysql mysqladmin ping -h localhost --silent; then
+                            if $DOCKER_COMPOSE exec -T mysql mysqladmin ping -h localhost --silent 2>/dev/null; then
                                 echo "MySQL is ready!"
                                 break
                             fi
@@ -67,7 +74,7 @@ pipeline {
                         
                         # Vérifier que Nexus démarre (il prend du temps)
                         echo "Nexus is starting in background..."
-                        docker-compose ps
+                        $DOCKER_COMPOSE ps
                     '''
                 }
             }
@@ -305,7 +312,11 @@ pipeline {
                 // Arrêter les conteneurs Docker (optionnel - commentez si vous voulez les garder)
                 sh '''
                     echo "Stopping Docker containers..."
-                    docker-compose down || true
+                    if command -v docker-compose &> /dev/null; then
+                        docker-compose down || true
+                    else
+                        docker compose down || true
+                    fi
                 ''' 
                 
                 try {
