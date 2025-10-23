@@ -285,8 +285,4 @@ pipeline {
         // Notifs par mail (à adapter au besoin)
         // ...
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 03b6acf (fix files)
