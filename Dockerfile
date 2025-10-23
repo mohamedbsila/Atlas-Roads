@@ -25,8 +25,14 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet
 COPY . .
 
+# Créer le fichier .env à partir de .env.example
+RUN cp .env.example .env || echo "APP_NAME=Laravel" > .env
+
 # Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
+
+# Générer la clé d'application
+RUN php artisan key:generate
 
 # Installer les dépendances NPM et compiler les assets
 RUN npm ci && npm run build
@@ -42,9 +48,30 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Port exposé
 EXPOSE 80
 
+# Créer un script d'entrypoint
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Attendre que MySQL soit prêt\n\
+echo "Waiting for MySQL..."\n\
+until php artisan migrate:status 2>/dev/null; do\n\
+  echo "MySQL not ready, waiting..."\n\
+  sleep 2\n\
+done\n\
+\n\
+echo "Running migrations..."\n\
+php artisan migrate --force || true\n\
+\n\
+echo "Optimizing Laravel..."\n\
+php artisan config:cache\n\
+php artisan route:cache\n\
+php artisan view:cache\n\
+\n\
+echo "Starting Apache..."\n\
+exec apache2-foreground' > /usr/local/bin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Commande de démarrage
-CMD php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    apache2-foreground
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
