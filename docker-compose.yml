@@ -10,8 +10,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456789
       MYSQL_DATABASE: atlas_roads
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: laravel123
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -38,8 +36,8 @@ services:
       DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: atlas_roads
-      DB_USERNAME: laravel
-      DB_PASSWORD: laravel123
+      DB_USERNAME: root
+      DB_PASSWORD: 123456789
       
       SESSION_DRIVER: file
       CACHE_DRIVER: file

@@ -138,10 +138,10 @@ pipeline {
                 echo 'Preparing Laravel environment...'
                 script {
                     sh '''
-                        # Forcer la régénération du .env depuis .env.example
-                        rm -f .env
-                        cp .env.example .env
-                        echo "Created fresh .env file from .env.example"
+                        if [ ! -f .env ]; then
+                            cp .env.example .env
+                            echo "Created .env file"
+                        fi
                     '''
                     sh '''
                         # Mettre à jour ou ajouter les variables DB dans .env
@@ -170,15 +170,15 @@ pipeline {
                         fi
                         
                         if grep -q "^DB_USERNAME=" .env; then
-                            sed -i "s/^DB_USERNAME=.*/DB_USERNAME=laravel/" .env
+                            sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env
                         else
-                            echo "DB_USERNAME=laravel" >> .env
+                            echo "DB_USERNAME=root" >> .env
                         fi
                         
                         if grep -q "^DB_PASSWORD=" .env; then
-                            sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=laravel123/" .env
+                            sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=123456789/" .env
                         else
-                            echo "DB_PASSWORD=laravel123" >> .env
+                            echo "DB_PASSWORD=123456789" >> .env
                         fi
                         
                         # Afficher les valeurs DB pour debug
@@ -282,9 +282,6 @@ pipeline {
                         # Utiliser docker exec pour se connecter au conteneur MySQL
                         docker exec atlas-mysql mysql -uroot -p123456789 -e "DROP DATABASE IF EXISTS atlas_roads;" || true
                         docker exec atlas-mysql mysql -uroot -p123456789 -e "CREATE DATABASE IF NOT EXISTS atlas_roads;"
-                        docker exec atlas-mysql mysql -uroot -p123456789 -e "CREATE USER IF NOT EXISTS 'laravel'@'%' IDENTIFIED BY 'laravel123';" || true
-                        docker exec atlas-mysql mysql -uroot -p123456789 -e "GRANT ALL PRIVILEGES ON atlas_roads.* TO 'laravel'@'%';"
-                        docker exec atlas-mysql mysql -uroot -p123456789 -e "FLUSH PRIVILEGES;"
                     '''
                     sh '''
                         # Clear Laravel cache before migration
@@ -403,8 +400,8 @@ pipeline {
                             -e DB_HOST=atlas-mysql \\
                             -e DB_PORT=3306 \\
                             -e DB_DATABASE=atlas_roads \\
-                            -e DB_USERNAME=laravel \\
-                            -e DB_PASSWORD=laravel123 \\
+                            -e DB_USERNAME=root \\
+                            -e DB_PASSWORD=123456789 \\
                             atlas-laravel:latest
                         
                         # Attendre que l'application soit prête
