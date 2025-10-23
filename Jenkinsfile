@@ -253,6 +253,11 @@ pipeline {
                         docker exec atlas-mysql mysql -uroot -p123456789 -e "FLUSH PRIVILEGES;"
                     '''
                     sh '''
+                        # Clear Laravel cache before migration
+                        php artisan config:clear
+                        php artisan cache:clear
+                        
+                        # Run migrations
                         php artisan migrate:fresh --force --seed
                     '''
                     echo 'Database setup completed'
