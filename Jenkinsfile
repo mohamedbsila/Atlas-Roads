@@ -144,12 +144,46 @@ pipeline {
                         fi
                     '''
                     sh '''
-                        sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
-                        sed -i "s/DB_HOST=.*/DB_HOST=127.0.0.1/" .env
-                        sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env
-                        sed -i "s/DB_DATABASE=.*/DB_DATABASE=atlas_roads/" .env
-                        sed -i "s/DB_USERNAME=.*/DB_USERNAME=laravel/" .env
-                        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=laravel123/" .env
+                        # Mettre à jour ou ajouter les variables DB dans .env
+                        if grep -q "^DB_CONNECTION=" .env; then
+                            sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+                        else
+                            echo "DB_CONNECTION=mysql" >> .env
+                        fi
+                        
+                        if grep -q "^DB_HOST=" .env; then
+                            sed -i "s/^DB_HOST=.*/DB_HOST=127.0.0.1/" .env
+                        else
+                            echo "DB_HOST=127.0.0.1" >> .env
+                        fi
+                        
+                        if grep -q "^DB_PORT=" .env; then
+                            sed -i "s/^DB_PORT=.*/DB_PORT=3306/" .env
+                        else
+                            echo "DB_PORT=3306" >> .env
+                        fi
+                        
+                        if grep -q "^DB_DATABASE=" .env; then
+                            sed -i "s/^DB_DATABASE=.*/DB_DATABASE=atlas_roads/" .env
+                        else
+                            echo "DB_DATABASE=atlas_roads" >> .env
+                        fi
+                        
+                        if grep -q "^DB_USERNAME=" .env; then
+                            sed -i "s/^DB_USERNAME=.*/DB_USERNAME=laravel/" .env
+                        else
+                            echo "DB_USERNAME=laravel" >> .env
+                        fi
+                        
+                        if grep -q "^DB_PASSWORD=" .env; then
+                            sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=laravel123/" .env
+                        else
+                            echo "DB_PASSWORD=laravel123" >> .env
+                        fi
+                        
+                        # Afficher les valeurs DB pour debug
+                        echo "=== Database config in .env ==="
+                        grep "^DB_" .env || echo "No DB_ variables found!"
                     '''
                 }
             }
