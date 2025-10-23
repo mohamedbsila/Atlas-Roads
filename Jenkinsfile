@@ -57,11 +57,12 @@ pipeline {
                             docker run -d \\
                                 --name atlas-mysql \\
                                 --network atlas-network \\
+                                --restart unless-stopped \\
                                 -p 3306:3306 \\
-                                -e MYSQL_ROOT_PASSWORD=rootpass \\
-                                -e MYSQL_DATABASE=atlas_roads_test \\
-                                -e MYSQL_USER=jenkins \\
-                                -e MYSQL_PASSWORD=jenkins123 \\
+                                -e MYSQL_ROOT_PASSWORD=123456789 \\
+                                -e MYSQL_DATABASE=atlas_roads \\
+                                -e MYSQL_USER=laravel \\
+                                -e MYSQL_PASSWORD=laravel123 \\
                                 mysql:8.0
                         elif ! docker ps | grep -q atlas-mysql; then
                             echo "Starting existing MySQL container..."
@@ -326,9 +327,52 @@ pipeline {
             }
         }
 
-        // Déploiement (à personnaliser si besoin)
-        // stage('Deploy to Staging') { ... }
-        // stage('Deploy to Production') { ... }
+        stage('Deploy Application') {
+            steps {
+                echo 'Deploying Laravel application...'
+                script {
+                    sh '''
+                        # Arrêter et supprimer l'ancien conteneur s'il existe
+                        docker stop atlas-app 2>/dev/null || true
+                        docker rm atlas-app 2>/dev/null || true
+                        
+                        # Démarrer le nouveau conteneur Laravel
+                        echo "Starting Laravel application container..."
+                        docker run -d \\
+                            --name atlas-app \\
+                            --network atlas-network \\
+                            --restart unless-stopped \\
+                            -p 8000:80 \\
+                            -e APP_NAME="Atlas Roads Library" \\
+                            -e APP_ENV=production \\
+                            -e APP_DEBUG=false \\
+                            -e APP_URL=http://localhost:8000 \\
+                            -e DB_CONNECTION=mysql \\
+                            -e DB_HOST=atlas-mysql \\
+                            -e DB_PORT=3306 \\
+                            -e DB_DATABASE=atlas_roads \\
+                            -e DB_USERNAME=laravel \\
+                            -e DB_PASSWORD=laravel123 \\
+                            atlas-laravel:latest
+                        
+                        # Attendre que l'application soit prête
+                        echo "Waiting for application to start..."
+                        sleep 10
+                        
+                        # Vérifier le statut
+                        if docker ps | grep -q atlas-app; then
+                            echo "✓ Application deployed successfully!"
+                            echo "Access at: http://localhost:8000"
+                            docker logs atlas-app --tail 20
+                        else
+                            echo "✗ Application failed to start!"
+                            docker logs atlas-app --tail 50
+                            exit 1
+                        fi
+                    '''
+                }
+            }
+        }
 
         stage('Cleanup') {
             steps {
@@ -354,11 +398,16 @@ pipeline {
             script {
                 echo 'Pipeline execution completed'
                 
-                // Arrêter les conteneurs Docker (commentez cette section si vous voulez les garder)
+                // Garder les conteneurs en cours d'exécution (MySQL, Nexus, Application)
                 sh '''
-                    echo "Stopping Docker containers..."
-                    docker stop atlas-mysql atlas-nexus 2>/dev/null || true
-                    echo "Containers stopped (will restart on next build)"
+                    echo "Docker containers status:"
+                    docker ps --filter "name=atlas-" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+                    echo ""
+                    echo "✓ MySQL running on port 3306"
+                    echo "✓ Nexus running on port 8081"
+                    echo "✓ Laravel app running on port 8000"
+                    echo ""
+                    echo "Application URL: http://localhost:8000"
                 ''' 
                 
                 try {

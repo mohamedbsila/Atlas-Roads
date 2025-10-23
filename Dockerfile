@@ -50,30 +50,24 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Port exposé
 EXPOSE 80
 
-# Créer un script d'entrypoint simple
+# Créer un script d'entrypoint
 RUN echo '#!/bin/bash\n\
 set -e\n\
 \n\
-echo "Starting Laravel application..."\n\
+# Attendre que MySQL soit prêt\n\
+echo "Waiting for MySQL..."\n\
+until php artisan migrate:status 2>/dev/null; do\n\
+  echo "MySQL not ready, waiting..."\n\
+  sleep 2\n\
+done\n\
 \n\
-# Vérifier si la DB est accessible (optionnel)\n\
-if [ ! -z "$DB_HOST" ]; then\n\
-  echo "Waiting for database..."\n\
-  for i in {1..30}; do\n\
-    if php artisan migrate:status 2>/dev/null; then\n\
-      echo "Database is ready!"\n\
-      php artisan migrate --force 2>/dev/null || echo "Migrations already up to date"\n\
-      break\n\
-    fi\n\
-    echo "Waiting... ($i/30)"\n\
-    sleep 2\n\
-  done\n\
-fi\n\
+echo "Running migrations..."\n\
+php artisan migrate --force || true\n\
 \n\
-# Optimiser Laravel\n\
-php artisan config:clear\n\
-php artisan cache:clear\n\
-php artisan view:clear\n\
+echo "Optimizing Laravel..."\n\
+php artisan config:cache\n\
+php artisan route:cache\n\
+php artisan view:cache\n\
 \n\
 echo "Starting Apache..."\n\
 exec apache2-foreground' > /usr/local/bin/docker-entrypoint.sh
