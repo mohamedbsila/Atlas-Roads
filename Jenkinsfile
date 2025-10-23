@@ -129,7 +129,12 @@ pipeline {
                     steps {
                         echo 'Checking PHP syntax...'
                         sh '''
-                            find app -name "*.php" -exec php -l {} \\; | grep -v "No syntax errors"
+                            find app -name "*.php" -exec php -l {} \\; > /tmp/php-syntax-check.log 2>&1
+                            if grep -q "Parse error" /tmp/php-syntax-check.log; then
+                                cat /tmp/php-syntax-check.log
+                                exit 1
+                            fi
+                            echo "All PHP files have valid syntax"
                         '''
                         echo 'PHP syntax check passed'
                     }
@@ -280,4 +285,8 @@ pipeline {
         // Notifs par mail (à adapter au besoin)
         // ...
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 03b6acf (fix files)

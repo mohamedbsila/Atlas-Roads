@@ -12,7 +12,7 @@ class GeminiAIService
 
     public function __construct()
     {
-        $this->apiKey = config('services.gemini.api_key', 'AIzaSyBlkzIAZgL-LbIEDRQjEKP13N8b93j0GF8');
+        $this->apiKey = config('services.gemini.api_key');
     }
 
     /**
