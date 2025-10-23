@@ -282,24 +282,47 @@ pipeline {
             }
         }
 
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image for Laravel app...'
+                script {
+                    sh """
+                        docker build -t atlas-laravel:${env.GIT_COMMIT_SHORT} .
+                        docker tag atlas-laravel:${env.GIT_COMMIT_SHORT} atlas-laravel:latest
+                        echo "Docker image built: atlas-laravel:${env.GIT_COMMIT_SHORT}"
+                        docker images | grep atlas-laravel
+                    """
+                }
+            }
+        }
+
         stage('Package & Upload to Nexus') {
             steps {
                 echo 'Packaging Laravel app as ZIP...'
                 sh 'zip -r lara-app.zip .'
-                echo 'Uploading package to Nexus...'
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "${NEXUS_URL}",
-                    groupId: 'laravel',
-                    version: "${env.GIT_COMMIT_SHORT ?: '1.0.0'}",
-                    repository: 'lara',
-                    credentialsId: 'nexus-creds',
-                    artifacts: [
-                        [artifactId: 'lara-app', classifier: '', file: 'lara-app.zip', type: 'zip']
-                    ]
-                )
-                echo 'Package uploaded to Nexus (lara)'
+                echo 'Package created successfully'
+                
+                // Upload to Nexus (temporarily disabled - configure nexus-creds in Jenkins)
+                script {
+                    try {
+                        nexusArtifactUploader(
+                            nexusVersion: 'nexus3',
+                            protocol: 'http',
+                            nexusUrl: "${NEXUS_URL}",
+                            groupId: 'laravel',
+                            version: "${env.GIT_COMMIT_SHORT ?: '1.0.0'}",
+                            repository: 'lara',
+                            credentialsId: 'nexus-creds',
+                            artifacts: [
+                                [artifactId: 'lara-app', classifier: '', file: 'lara-app.zip', type: 'zip']
+                            ]
+                        )
+                        echo 'Package uploaded to Nexus'
+                    } catch (Exception e) {
+                        echo "WARNING: Nexus upload failed: ${e.message}"
+                        echo 'Continuing pipeline without Nexus upload...'
+                    }
+                }
             }
         }
 
