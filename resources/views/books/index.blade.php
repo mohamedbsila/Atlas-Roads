@@ -151,10 +151,12 @@
                                 <p class="mb-1.5 text-xs text-slate-500 flex items-center">
                                     <i class="ni ni-tag mr-2 text-slate-400"></i> 
                                     <span>
-                                        @if($book->category_id && $book->relationLoaded('category') && $book->category)
+                                        @if($book->category_id && $book->relationLoaded('category') && is_object($book->category))
                                             {{ $book->category->category_name }}
+                                        @elseif($book->category)
+                                            {{ $book->category }}
                                         @else
-                                            {{ $book->category ?? 'Uncategorized' }}
+                                            Uncategorized
                                         @endif
                                     </span>
                                 </p>
