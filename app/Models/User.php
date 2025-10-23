@@ -48,6 +48,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_admin' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     // Relationships - Wishlist and Reviews
@@ -89,5 +90,15 @@ class User extends Authenticatable implements CanResetPasswordContract
     public function receivedBorrowRequests(): HasMany
     {
         return $this->hasMany(BorrowRequest::class, 'owner_id');
+    }
+
+    /**
+     * Check if the user is an admin
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
     }
 }

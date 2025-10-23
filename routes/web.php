@@ -42,6 +42,49 @@ Route::patch('/reviews/{review}/flag', [ReviewController::class, 'flag'])->name(
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('book.show');
 
+// Routes pour les réclamations (protégées par authentification)
+Route::middleware('auth')->group(function () {
+    // Routes pour les réclamations
+    Route::resource('reclamations', ReclamationController::class)
+        ->only(['index', 'create', 'store', 'show'])
+        ->names('reclamations');
+        
+    // Route pour générer une solution avec Gemini
+    Route::post('/reclamations/{reclamation}/generate-solution', [ReclamationController::class, 'generateSolution'])
+        ->name('reclamations.generate-solution');
+    
+
+        // Route pour régénérer les solutions IA
+Route::post('/reclamations/{reclamation}/regenerate', [ReclamationController::class, 'regenerate'])
+    ->name('reclamations.regenerate');
+    
+    // Routes pour le chatbot
+    Route::get('/chatbot', [ReclamationController::class, 'chatbot'])
+        ->name('reclamations.chatbot');
+    Route::post('/chatbot/generate', [ReclamationController::class, 'chatbotGenerate'])
+        ->name('reclamations.chatbot.generate');
+    // Routes pour les solutions
+    Route::get('/solutions', \App\Http\Livewire\Solutions\Index::class)->name('solutions.index');
+    
+    // Routes pour les solutions (imbriquées dans les réclamations)
+    Route::resource('reclamations.solutions', \App\Http\Controllers\SolutionController::class)
+        ->only(['create', 'store', 'edit', 'update', 'destroy'])
+        ->names('solutions');
+        
+    // Middleware pour s'assurer que l'utilisateur est admin
+    Route::middleware('admin')->group(function () {
+        Route::get('/admin/reclamations', [ReclamationController::class, 'adminIndex'])
+            ->name('admin.reclamations.index');
+        Route::put('/admin/reclamations/{reclamation}/status', [ReclamationController::class, 'updateStatus'])
+            ->name('admin.reclamations.update-status');
+    });
+    // Route de déconnexion
+    Route::post('/logout', function () {
+        auth()->logout();
+        return redirect('/');
+    })->name('logout');
+});
+
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
     Route::get('/login', Login::class)->name('login');
