@@ -45,28 +45,58 @@ pipeline {
 
         stage('Start Docker Services') {
             steps {
-                echo 'Checking Docker services...'
+                echo 'Starting MySQL and Nexus containers...'
                 script {
                     sh '''
-                        # Vérifier si MySQL tourne déjà
-                        if docker ps | grep -q atlas-mysql; then
-                            echo "MySQL container already running"
+                        # Créer un réseau Docker s'il n'existe pas
+                        docker network create atlas-network 2>/dev/null || true
+                        
+                        # Démarrer MySQL
+                        if ! docker ps -a | grep -q atlas-mysql; then
+                            echo "Creating MySQL container..."
+                            docker run -d \\
+                                --name atlas-mysql \\
+                                --network atlas-network \\
+                                -p 3306:3306 \\
+                                -e MYSQL_ROOT_PASSWORD=rootpass \\
+                                -e MYSQL_DATABASE=atlas_roads_test \\
+                                -e MYSQL_USER=jenkins \\
+                                -e MYSQL_PASSWORD=jenkins123 \\
+                                mysql:8.0
+                        elif ! docker ps | grep -q atlas-mysql; then
+                            echo "Starting existing MySQL container..."
+                            docker start atlas-mysql
                         else
-                            echo "WARNING: MySQL container not running!"
-                            echo "Please start it manually: docker compose up -d"
-                            exit 1
+                            echo "MySQL container already running"
+                        fi
+                        
+                        # Démarrer Nexus
+                        if ! docker ps -a | grep -q atlas-nexus; then
+                            echo "Creating Nexus container..."
+                            docker run -d \\
+                                --name atlas-nexus \\
+                                --network atlas-network \\
+                                -p 8081:8081 \\
+                                sonatype/nexus3:latest
+                        elif ! docker ps | grep -q atlas-nexus; then
+                            echo "Starting existing Nexus container..."
+                            docker start atlas-nexus
+                        else
+                            echo "Nexus container already running"
                         fi
                         
                         # Attendre que MySQL soit prêt
                         echo "Waiting for MySQL to be ready..."
-                        for i in {1..10}; do
+                        for i in {1..30}; do
                             if docker exec atlas-mysql mysqladmin ping -h localhost --silent 2>/dev/null; then
                                 echo "MySQL is ready!"
                                 break
                             fi
-                            echo "Waiting for MySQL... ($i/10)"
+                            echo "Waiting for MySQL... ($i/30)"
                             sleep 2
                         done
+                        
+                        echo "Docker services started successfully!"
                     '''
                 }
             }
@@ -301,9 +331,11 @@ pipeline {
             script {
                 echo 'Pipeline execution completed'
                 
-                // Les conteneurs Docker restent actifs pour le prochain build
+                // Arrêter les conteneurs Docker (commentez cette section si vous voulez les garder)
                 sh '''
-                    echo "Docker containers will remain running for next build"
+                    echo "Stopping Docker containers..."
+                    docker stop atlas-mysql atlas-nexus 2>/dev/null || true
+                    echo "Containers stopped (will restart on next build)"
                 ''' 
                 
                 try {
