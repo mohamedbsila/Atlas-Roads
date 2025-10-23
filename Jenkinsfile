@@ -99,7 +99,7 @@ pipeline {
                     steps {
                         echo 'Installing Node dependencies...'
                         sh '''
-                            npm ci --silent
+                            npm ci
                         '''
                         echo 'Node dependencies installed'
                     }
