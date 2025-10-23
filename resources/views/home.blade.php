@@ -1,23 +1,5 @@
 <x-layouts.base>
-    {{-- 
-        ═══════════════════════════════════════════════════════════════════
-        🎨 VARIANTE 2: HOME PAGE - CREATIVE & VIBRANT
-        ═══════════════════════════════════════════════════════════════════
-        
-        🎯 UX PRINCIPLES APPLIED:
-        • Delight: Gradients subtils, micro-animations engageantes
-        • Personality: Design moderne avec touches de couleur
-        • Hierarchy: Structure visuelle claire malgré la créativité
-        • Accessibility: Toujours WCAG 2.2 AA (contraste 4.5:1+)
-        • Performance: Animations GPU-accelerated, lazy loading
-        
-        🎨 DESIGN SYSTEM:
-        • Colors: Gradients vibrants (bleu→violet, vert→cyan)
-        • Glassmorphism: Effets de verre subtils avec backdrop-blur
-        • Patterns: Motifs géométriques en arrière-plan
-        • Animations: Micro-interactions fluides (hover, focus)
-        • Typography: Scale dynamique avec line-height optimisés
-    --}}
+  
     
     @push('styles')
         <style>
