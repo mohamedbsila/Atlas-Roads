@@ -16,7 +16,7 @@ pipeline {
         DB_PASSWORD = 'jenkins123'
         PHPUNIT_COVERAGE = 'false'
         DEPLOY_PATH = '/var/www/atlas-roads'
-        NEXUS_URL = 'http://localhost:8081'
+        NEXUS_URL = 'localhost:8081'
     }
 
     options {
