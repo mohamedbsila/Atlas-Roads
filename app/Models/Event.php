@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Event extends Model
 {
@@ -22,4 +23,25 @@ class Event extends Model
             }
         });
     }
+
+    public function communities(): BelongsToMany
+    {
+        return $this->belongsToMany(Community::class)
+            ->withTimestamps();
+    }
+
+        public static function createWithCommunities(array $attributes, array $communityIds = []): self
+        {
+            $event = static::create($attributes);
+            if (!empty($communityIds)) {
+                $event->communities()->attach($communityIds);
+            }
+            return $event;
+        }
+
+        public function deleteWithCommunities(): bool
+        {
+            $this->communities()->detach();
+            return $this->delete();
+        }
 }

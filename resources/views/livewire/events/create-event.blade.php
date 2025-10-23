@@ -21,6 +21,19 @@
             </div>
         </div>
         <div>
+            <label for="communities" class="block text-sm font-medium text-gray-700">Communities</label>
+            @if(isset($availableCommunities) && $availableCommunities->count())
+                <select id="communities" wire:model="communities" multiple class="w-full border rounded-md shadow-sm py-2 px-3">
+                    @foreach($availableCommunities as $community)
+                        <option value="{{ $community->id }}">{{ $community->name }}</option>
+                    @endforeach
+                </select>
+            @else
+                <div class="text-gray-500 text-sm">No communities available.</div>
+            @endif
+            @error('communities') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+        </div>
+        <div>
             <label for="location" class="block text-sm">Location</label>
             <input id="location" wire:model="location" class="w-full border rounded px-3 py-2" />
         </div>

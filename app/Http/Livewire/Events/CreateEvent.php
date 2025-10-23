@@ -18,16 +18,20 @@ class CreateEvent extends Component
     public $endDate = '';
     public $maxParticipants = null;
     public $isPublic = true;
+    public $communities = [];
+    public $availableCommunities = [];
 
     protected $rules = [
         'title' => 'required|string|max:255',
         'description' => 'nullable|string',
         'location' => 'nullable|string|max:255',
         'startDate' => 'nullable|date',
-    'endDate' => 'nullable|date|after_or_equal:startDate',
-    'maxParticipants' => 'nullable|integer|min:1',
-    'isPublic' => 'boolean',
-    'thumbnail' => 'nullable|image|max:2048',
+        'endDate' => 'nullable|date|after_or_equal:startDate',
+        'maxParticipants' => 'nullable|integer|min:1',
+        'isPublic' => 'boolean',
+        'thumbnail' => 'nullable|image|max:2048',
+        'communities' => 'nullable|array',
+        'communities.*' => 'exists:communities,id',
     ];
 
     public function create()
@@ -38,7 +42,7 @@ class CreateEvent extends Component
         if ($this->thumbnail) {
             $thumbnailPath = $this->thumbnail->store('events', 'public');
         }
-        Event::create([
+        $event = Event::create([
             'organizer_id' => auth()->id(),
             'title' => $this->title,
             'description' => $this->description,
@@ -51,10 +55,29 @@ class CreateEvent extends Component
             'status' => 'PUBLISHED'
         ]);
 
+        // Attach selected communities if any
+        if (!empty($this->communities)) {
+            $event->communities()->attach($this->communities);
+        }
+
         session()->flash('status', 'Event created successfully.');
         // use Livewire's redirect helper to ensure the browser navigates away
         $this->redirectRoute('events.index');
     }
+
+    public function mount()
+    {
+        // Load available communities when component is mounted
+        $this->loadAvailableCommunities();
+    }
+
+    public function loadAvailableCommunities()
+    {
+        // Load all communities that the user can select from
+        $this->availableCommunities = \App\Models\Community::orderBy('name')->get();
+    }
+
+
 
     public function render()
     {

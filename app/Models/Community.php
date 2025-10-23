@@ -31,6 +31,27 @@ class Community extends Model
             ->wherePivot('role', 'admin');
     }
 
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class)
+                ->withTimestamps();
+    }
+
+        public static function createWithEvents(array $attributes, array $eventIds = []): self
+        {
+            $community = static::create($attributes);
+            if (!empty($eventIds)) {
+                $community->events()->attach($eventIds);
+            }
+            return $community;
+        }
+
+        public function deleteWithEvents(): bool
+        {
+            $this->events()->detach();
+            return $this->delete();
+        }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

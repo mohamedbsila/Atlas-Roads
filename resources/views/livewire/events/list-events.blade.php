@@ -18,6 +18,7 @@
                     <th class="pb-2">Start</th>
                     <th class="pb-2">End</th>
                     <th class="pb-2">Actions</th>
+                    <th class="pb-2">Communities</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,6 +47,17 @@
                                 @endcan
 
                                 <button wire:click.prevent="confirmDelete('{{ $event->id }}')" class="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
+                            </td>
+                            <td class="py-3">
+                                @if($event->communities && $event->communities->count())
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($event->communities as $c)
+                                            <span class="px-2 py-1 bg-gray-100 rounded text-sm">{{ $c->name }}</span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    -
+                                @endif
                             </td>
                         </tr>
                 @endforeach

@@ -13,6 +13,9 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\StaticSignIn;
 use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Rtl;
+use App\Http\Livewire\Community;
+use App\Http\Livewire\CreateCommunity;
+use App\Http\Livewire\EditCommunity;
 
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
@@ -81,6 +84,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/communities', function() {
         return view('communities.index');
     })->name('communities.index');
+    
+    // Community page (singular)
+    Route::get('/community', Community::class)->name('community.index');
+    Route::get('/community/create', CreateCommunity::class)->name('community.create');
+    Route::get('/community/{id}/edit', EditCommunity::class)->name('community.edit');
     
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);

@@ -1,0 +1,73 @@
+<div>
+    <div class="p-6 bg-white rounded shadow">
+        <div class="mb-4">
+            <h3 class="text-lg font-bold">Create New Community</h3>
+        </div>
+
+        <form wire:submit.prevent="store">
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-semibold mb-2">Community Name <span class="text-red-600">*</span></label>
+                <input type="text" id="name" wire:model="name" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                @error('name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="slug" class="block text-sm font-semibold mb-2">Slug (URL-friendly name)</label>
+                <input type="text" id="slug" wire:model="slug" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Leave empty to auto-generate">
+                @error('slug') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                <p class="text-sm text-gray-500 mt-1">Leave empty to auto-generate from name</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="description" class="block text-sm font-semibold mb-2">Description</label>
+                <textarea id="description" wire:model="description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                @error('description') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="coverImage" class="block text-sm font-semibold mb-2">Cover Image</label>
+                
+                <input type="file" id="coverImage" wire:model="coverImage" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                @error('coverImage') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                <p class="text-sm text-gray-500 mt-1">Maximum file size: 2MB. Supported formats: JPG, PNG, GIF</p>
+                
+                @if($coverImage)
+                    <div class="mt-3">
+                        <p class="text-sm text-gray-600 mb-2">Preview:</p>
+                        <img src="{{ $coverImage->temporaryUrl() }}" alt="Preview" class="w-48 h-32 object-cover rounded border">
+                    </div>
+                @endif
+            </div>
+
+            <div class="mb-6">
+                <label class="flex items-center">
+                    <input type="checkbox" wire:model="is_public" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" checked>
+                    <span class="text-sm font-semibold">Public Community</span>
+                </label>
+                <p class="text-sm text-gray-500 mt-1 ml-6">Public communities are visible to all users</p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2">Associated Events</label>
+                @if(!empty($associatedEvents) && count($associatedEvents))
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach($associatedEvents as $ev)
+                            <li>{{ $ev->title }} ({{ $ev->start_date ?? 'N/A' }})</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="text-sm text-gray-500">No associated events yet.</p>
+                @endif
+            </div>
+
+            <div class="flex justify-between">
+                <a href="{{ route('community.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Communities
+                </a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    <i class="fas fa-plus mr-2"></i>Create Community
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

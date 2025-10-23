@@ -38,6 +38,20 @@
             @error('thumbnail') <span class="text-red-600">{{ $message }}</span> @enderror
         </div>
 
+        <div class="mb-3">
+            <label for="communitiesSelect" class="block text-sm font-medium">Communities</label>
+            @if(isset($availableCommunities) && $availableCommunities->count())
+                <select id="communitiesSelect" wire:model="communities" multiple class="mt-1 block w-full border rounded px-2 py-1">
+                    @foreach($availableCommunities as $community)
+                        <option value="{{ $community->id }}" @if(in_array((string)$community->id, (array)$communities)) selected @endif>{{ $community->name }}</option>
+                    @endforeach
+                </select>
+            @else
+                <div class="mt-1 block w-full border rounded px-2 py-1 text-gray-500">No communities available. <a href="{{ route('community.create') }}" class="text-blue-600 underline">Create one</a></div>
+            @endif
+            @error('communities') <span class="text-red-600">{{ $message }}</span> @enderror
+        </div>
+
         <div class="flex items-center gap-2">
             <button type="submit" class="px-3 py-2 bg-green-600 text-white rounded">Update</button>
             <a href="{{ route('events.index') }}" class="px-3 py-2 bg-gray-200 rounded">Cancel</a>

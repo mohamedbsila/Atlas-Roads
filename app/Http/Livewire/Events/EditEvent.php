@@ -20,6 +20,8 @@ class EditEvent extends Component
     public $endDate = '';
     public $maxParticipants = null;
     public $isPublic = true;
+    public $communities = [];
+    public $availableCommunities = [];
 
     protected $rules = [
         'title' => 'required|string|max:255',
@@ -29,7 +31,9 @@ class EditEvent extends Component
         'endDate' => 'nullable|date|after_or_equal:startDate',
         'maxParticipants' => 'nullable|integer|min:1',
         'isPublic' => 'boolean',
-        'thumbnail' => 'nullable|image|max:2048'
+        'thumbnail' => 'nullable|image|max:2048',
+        'communities' => 'nullable|array',
+        'communities.*' => 'exists:communities,id'
     ];
 
     public function mount($id)
@@ -44,6 +48,9 @@ class EditEvent extends Component
         $this->endDate = $event->end_date;
         $this->maxParticipants = $event->max_participants;
         $this->isPublic = (bool)$event->is_public;
+        // load related communities
+        $this->communities = $event->communities()->pluck('communities.id')->map(function($id){ return (string)$id; })->toArray();
+        $this->availableCommunities = \App\Models\Community::orderBy('name')->get();
     }
 
     public function update()
@@ -66,6 +73,9 @@ class EditEvent extends Component
         $event->max_participants = $this->maxParticipants;
         $event->is_public = $this->isPublic;
         $event->save();
+
+    // Sync communities selection
+    $event->communities()->sync($this->communities ?? []);
 
         session()->flash('status', 'Event updated.');
         return redirect()->route('events.index');
