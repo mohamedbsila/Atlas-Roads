@@ -56,6 +56,9 @@ class DatabaseSeeder extends Seeder
             ]),
         ];
 
+        // Seed categories
+        $this->call(CategorySeeder::class);
+
         // Create books
         $books = [
             Book::create([
