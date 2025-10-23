@@ -48,7 +48,8 @@ class BookController extends Controller
 
     public function create()
     {
-        return view('books.create');
+        $categories = \App\Models\Category::all();
+        return view('books.create', compact('categories'));
     }
 
     public function store(BookRequest $request)
@@ -82,7 +83,8 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
-        return view('books.edit', compact('book'));
+        $categories = \App\Models\Category::all();
+        return view('books.edit', compact('book', 'categories'));
     }
 
     public function update(BookRequest $request, Book $book)
