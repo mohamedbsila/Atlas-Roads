@@ -9,20 +9,22 @@ class TwilioService
 {
     protected $twilio;
     protected $from;
+    protected $notifyNumber;
 
     public function __construct()
     {
-        // TEMPORARY FIX: Hardcode credentials to bypass cache issues
-        // TODO: Remove after server restart and use config() instead
-        $sid = 'AC5c2cb54a83038ccf39e39b2e41001ee6';
-        $token = '65c15a1b8db322c2c06083af43205efd';
-        $this->from = '+19786437950';
+        // Get credentials from config (reads from .env)
+        $sid = config('services.twilio.sid');
+        $token = config('services.twilio.token');
+        $this->from = config('services.twilio.from');
+        $this->notifyNumber = config('services.twilio.notify_number');
 
-        // Debug: log what we're using (remove after testing)
-        Log::info("Twilio Service initialized (HARDCODED)", [
+        // Debug: log what we're using
+        Log::info("Twilio Service initialized", [
             'sid' => $sid,
             'token_preview' => substr($token, 0, 8) . '...',
-            'from' => $this->from
+            'from' => $this->from,
+            'notify_to' => $this->notifyNumber
         ]);
 
         $this->twilio = new Client($sid, $token);
@@ -59,11 +61,52 @@ class TwilioService
      */
     public function notifyNewBook($bookTitle)
     {
-        // TEMPORARY FIX: Hardcode phone number
-        $to = '+21624019297';
-        $message = "New book added named {$bookTitle}";
+        $to = $this->notifyNumber;
+        $message = "📚 Atlas Roads Library: New book added - '{$bookTitle}'";
         
         return $this->sendSMS($to, $message);
+    }
+
+    /**
+     * Send notification for book borrowed
+     *
+     * @param string $bookTitle
+     * @param string $borrowerName
+     * @return bool
+     */
+    public function notifyBookBorrowed($bookTitle, $borrowerName)
+    {
+        $to = $this->notifyNumber;
+        $message = "📖 Atlas Roads Library: '{$bookTitle}' has been borrowed by {$borrowerName}";
+        
+        return $this->sendSMS($to, $message);
+    }
+
+    /**
+     * Send notification for book returned
+     *
+     * @param string $bookTitle
+     * @return bool
+     */
+    public function notifyBookReturned($bookTitle)
+    {
+        $to = $this->notifyNumber;
+        $message = "✅ Atlas Roads Library: '{$bookTitle}' has been returned";
+        
+        return $this->sendSMS($to, $message);
+    }
+
+    /**
+     * Send custom notification
+     *
+     * @param string $message
+     * @param string|null $to Override notify number
+     * @return bool
+     */
+    public function sendNotification($message, $to = null)
+    {
+        $recipient = $to ?? $this->notifyNumber;
+        return $this->sendSMS($recipient, $message);
     }
 }
 
