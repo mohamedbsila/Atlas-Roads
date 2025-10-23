@@ -119,5 +119,17 @@ class BookController extends Controller
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully deleted!');
     }
+
+    /**
+     * Download book details as PDF
+     */
+    public function downloadPdf(Book $book)
+    {
+        $pdf = \PDF::loadView('books.pdf', compact('book'));
+        
+        $filename = 'book_' . \Str::slug($book->title) . '_' . time() . '.pdf';
+        
+        return $pdf->download($filename);
+    }
 }
 

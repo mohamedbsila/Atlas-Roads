@@ -83,7 +83,14 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-slate-400 uppercase mb-1">Category</p>
-                                    <p class="text-lg font-semibold text-slate-700">{{ $book->category }}</p>
+                                    <p class="text-lg font-semibold text-slate-700">
+                                        @if($book->category_id && $book->relationLoaded('category'))
+                                            @php $cat = $book->getRelation('category'); @endphp
+                                            {{ $cat ? $cat->category_name : 'N/A' }}
+                                        @else
+                                            {{ $book->getAttribute('category') ?? 'N/A' }}
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
 
@@ -131,6 +138,12 @@
                                     <a href="{{ route('home') }}" 
                                        class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-r from-purple-500 to-purple-700 rounded-lg cursor-pointer text-xs hover:scale-105 hover:shadow-lg">
                                         <i class="ni ni-bold-left mr-1"></i> Back
+                                    </a>
+                                    
+                                    <!-- PDF Download Button -->
+                                    <a href="{{ route('books.download-pdf', $book) }}" 
+                                       class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-r from-red-500 to-red-700 rounded-lg cursor-pointer text-xs hover:scale-105 hover:shadow-lg">
+                                        <i class="fas fa-file-pdf mr-1"></i> Download PDF
                                     </a>
                                     
                                     @guest

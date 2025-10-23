@@ -41,6 +41,8 @@ Route::patch('/reviews/{review}/flag', [ReviewController::class, 'flag'])->name(
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('book.show');
+// Book PDF Download (public)
+Route::get('books/{book}/download-pdf', [\App\Http\Controllers\BookController::class, 'downloadPdf'])->name('books.download-pdf');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
@@ -81,8 +83,6 @@ Route::middleware('auth')->group(function () {
     // Books CRUD (admin only)
     Route::middleware(['admin'])->group(function () {
         Route::resource('books', \App\Http\Controllers\BookController::class);
-        // Book PDF Download
-        Route::get('books/{book}/download-pdf', [\App\Http\Controllers\BookController::class, 'downloadPdf'])->name('books.download-pdf');
         // Categories CRUD
         Route::resource('categories', \App\Http\Controllers\CategoryController::class);
     });
