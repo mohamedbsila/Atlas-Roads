@@ -138,52 +138,45 @@ pipeline {
                 echo 'Preparing Laravel environment...'
                 script {
                     sh '''
-                        if [ ! -f .env ]; then
-                            cp .env.example .env
-                            echo "Created .env file"
-                        fi
-                    '''
-                    sh '''
-                        # Mettre à jour ou ajouter les variables DB dans .env
-                        if grep -q "^DB_CONNECTION=" .env; then
-                            sed -i "s/^DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
-                        else
-                            echo "DB_CONNECTION=mysql" >> .env
-                        fi
+                        # Créer un .env propre avec les bonnes credentials
+                        cat > .env << 'EOF'
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+LOG_CHANNEL=stack
+LOG_LEVEL=debug
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=atlas_roads
+DB_USERNAME=root
+DB_PASSWORD=123456789
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS=hello@example.com
+MAIL_FROM_NAME="${APP_NAME}"
+
+GEMINI_API_KEY=
+EOF
                         
-                        if grep -q "^DB_HOST=" .env; then
-                            sed -i "s/^DB_HOST=.*/DB_HOST=127.0.0.1/" .env
-                        else
-                            echo "DB_HOST=127.0.0.1" >> .env
-                        fi
-                        
-                        if grep -q "^DB_PORT=" .env; then
-                            sed -i "s/^DB_PORT=.*/DB_PORT=3306/" .env
-                        else
-                            echo "DB_PORT=3306" >> .env
-                        fi
-                        
-                        if grep -q "^DB_DATABASE=" .env; then
-                            sed -i "s/^DB_DATABASE=.*/DB_DATABASE=atlas_roads/" .env
-                        else
-                            echo "DB_DATABASE=atlas_roads" >> .env
-                        fi
-                        
-                        if grep -q "^DB_USERNAME=" .env; then
-                            sed -i "s/^DB_USERNAME=.*/DB_USERNAME=root/" .env
-                        else
-                            echo "DB_USERNAME=root" >> .env
-                        fi
-                        
-                        if grep -q "^DB_PASSWORD=" .env; then
-                            sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=123456789/" .env
-                        else
-                            echo "DB_PASSWORD=123456789" >> .env
-                        fi
-                        
-                        # Afficher les valeurs DB pour debug
-                        echo "=== Database config in .env ==="
-                        grep "^DB_" .env || echo "No DB_ variables found!"
+                        echo "=== Fresh .env created with root credentials ==="
+                        grep "^DB_" .env
                     '''
                 }
             }
