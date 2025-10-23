@@ -11,7 +11,7 @@ pipeline {
         DB_CONNECTION = 'mysql'
         DB_HOST = '127.0.0.1'
         DB_PORT = '3306'
-        DB_DATABASE = 'atlas_roads_test'
+        DB_DATABASE = 'atlas_roads'
         DB_USERNAME = 'root'
         DB_PASSWORD = '123456789'
         PHPUNIT_COVERAGE = 'false'
