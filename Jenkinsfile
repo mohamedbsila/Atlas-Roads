@@ -138,10 +138,10 @@ pipeline {
                 echo 'Preparing Laravel environment...'
                 script {
                     sh '''
-                        if [ ! -f .env ]; then
-                            cp .env.example .env
-                            echo "Created .env file"
-                        fi
+                        # Forcer la régénération du .env depuis .env.example
+                        rm -f .env
+                        cp .env.example .env
+                        echo "Created fresh .env file from .env.example"
                     '''
                     sh '''
                         # Mettre à jour ou ajouter les variables DB dans .env
