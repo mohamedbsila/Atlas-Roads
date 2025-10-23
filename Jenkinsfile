@@ -45,36 +45,28 @@ pipeline {
 
         stage('Start Docker Services') {
             steps {
-                echo 'Starting MySQL and Nexus Docker containers...'
+                echo 'Checking Docker services...'
                 script {
                     sh '''
-                        # Vérifier si docker compose est disponible
-                        if command -v docker-compose &> /dev/null; then
-                            DOCKER_COMPOSE="docker-compose"
+                        # Vérifier si MySQL tourne déjà
+                        if docker ps | grep -q atlas-mysql; then
+                            echo "MySQL container already running"
                         else
-                            DOCKER_COMPOSE="docker compose"
+                            echo "WARNING: MySQL container not running!"
+                            echo "Please start it manually: docker compose up -d"
+                            exit 1
                         fi
-                        
-                        # Arrêter les anciens conteneurs s'ils existent
-                        $DOCKER_COMPOSE down || true
-                        
-                        # Démarrer les services
-                        $DOCKER_COMPOSE up -d
                         
                         # Attendre que MySQL soit prêt
                         echo "Waiting for MySQL to be ready..."
-                        for i in {1..30}; do
-                            if $DOCKER_COMPOSE exec -T mysql mysqladmin ping -h localhost --silent 2>/dev/null; then
+                        for i in {1..10}; do
+                            if docker exec atlas-mysql mysqladmin ping -h localhost --silent 2>/dev/null; then
                                 echo "MySQL is ready!"
                                 break
                             fi
-                            echo "Waiting for MySQL... ($i/30)"
+                            echo "Waiting for MySQL... ($i/10)"
                             sleep 2
                         done
-                        
-                        # Vérifier que Nexus démarre (il prend du temps)
-                        echo "Nexus is starting in background..."
-                        $DOCKER_COMPOSE ps
                     '''
                 }
             }
@@ -309,14 +301,9 @@ pipeline {
             script {
                 echo 'Pipeline execution completed'
                 
-                // Arrêter les conteneurs Docker (optionnel - commentez si vous voulez les garder)
+                // Les conteneurs Docker restent actifs pour le prochain build
                 sh '''
-                    echo "Stopping Docker containers..."
-                    if command -v docker-compose &> /dev/null; then
-                        docker-compose down || true
-                    else
-                        docker compose down || true
-                    fi
+                    echo "Docker containers will remain running for next build"
                 ''' 
                 
                 try {
