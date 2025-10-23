@@ -18,6 +18,17 @@ class Category extends Model
     ];
 
     /**
+     * Boot method to add model event listeners
+     */
+    protected static function booted(): void
+    {
+        // When a category is deleted, also delete all related books
+        static::deleting(function (Category $category) {
+            $category->books()->delete();
+        });
+    }
+
+    /**
      * Get the books for the category
      */
     public function books(): HasMany

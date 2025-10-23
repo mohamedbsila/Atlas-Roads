@@ -38,7 +38,7 @@ class BookController extends Controller
             $query->where('is_available', $request->available === '1');
         }
 
-        $books = $query->latest()->paginate(15);
+        $books = $query->with('category')->latest()->paginate(15);
         $categories = Book::distinct()->pluck('category')->sort();
         $languages = Book::distinct()->pluck('language')->sort();
         $years = Book::distinct()->pluck('published_year')->sortDesc();

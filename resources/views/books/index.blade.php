@@ -150,7 +150,13 @@
                                 </p>
                                 <p class="mb-1.5 text-xs text-slate-500 flex items-center">
                                     <i class="ni ni-tag mr-2 text-slate-400"></i> 
-                                    <span>{{ $book->category }}</span>
+                                    <span>
+                                        @if($book->category_id && $book->relationLoaded('category') && $book->category)
+                                            {{ $book->category->category_name }}
+                                        @else
+                                            {{ $book->category ?? 'Uncategorized' }}
+                                        @endif
+                                    </span>
                                 </p>
                                 <p class="mb-0 text-xs text-slate-500 flex items-center">
                                     <i class="ni ni-calendar-grid-58 mr-2 text-slate-400"></i> 

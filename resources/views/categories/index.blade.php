@@ -119,7 +119,7 @@
                                             </a>
                                             {{-- Delete --}}
                                             <form action="{{ route('categories.destroy', $category) }}" method="POST" class="inline"
-                                                  onsubmit="return confirm('Are you sure you want to delete this category?')">
+                                                  onsubmit="return confirm('⚠️ WARNING: This will delete the category \"{{ $category->category_name }}\" and ALL {{ $category->books_count }} related book(s)!\n\nThis action is IRREVERSIBLE.\n\nAre you sure you want to continue?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" 

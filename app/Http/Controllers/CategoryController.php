@@ -78,14 +78,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if ($category->books()->count() > 0) {
-            return redirect()->route('categories.index')
-                ->with('error', 'Cannot delete category with associated books.');
-        }
-
+        $bookCount = $category->books()->count();
+        $categoryName = $category->category_name;
+        
+        // Delete category (will cascade delete all related books via model event)
         $category->delete();
 
+        $message = $bookCount > 0 
+            ? "Category '{$categoryName}' and {$bookCount} related book(s) deleted successfully."
+            : "Category '{$categoryName}' deleted successfully.";
+
         return redirect()->route('categories.index')
-            ->with('success', 'Category deleted successfully.');
+            ->with('success', $message);
     }
 }
