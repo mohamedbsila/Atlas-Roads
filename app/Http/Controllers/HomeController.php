@@ -21,9 +21,9 @@ class HomeController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate(12);
         
-        // Load latest public events that have a thumbnail
-        $events = Event::where('is_public', true)
-            ->whereNotNull('thumbnail')
+        // Load latest public events with their communities
+        $events = Event::with('communities')
+            ->where('is_public', true)
             ->orderBy('start_date', 'desc')
             ->take(6)
             ->get();

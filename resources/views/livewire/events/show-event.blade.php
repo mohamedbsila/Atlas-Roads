@@ -231,7 +231,7 @@
                 <!-- Event Header with Image -->
                 <div class="event-details-header">
                     @if($event->thumbnail)
-                        <img src="{{ asset('storage/' . $event->thumbnail) }}" 
+                        <img src="{{ Storage::url($event->thumbnail) }}" 
                              alt="{{ $event->title }}" 
                              class="event-details-image"
                              onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
@@ -313,12 +313,7 @@
 
                     <!-- Action Buttons -->
                     <div class="event-details-actions">
-                        @can('update', $event)
-                            <a href="{{ route('events.edit', $event->id) }}" class="event-action-button event-action-primary">
-                                <i class="fas fa-edit mr-2"></i>
-                                Edit Event
-                            </a>
-                        @endcan
+                       
                         
                         <a href="{{ route('home') }}#events" class="event-action-button event-action-secondary">
                             <i class="fas fa-arrow-left mr-2"></i>

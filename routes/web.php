@@ -16,6 +16,7 @@ use App\Http\Livewire\Rtl;
 use App\Http\Livewire\Community;
 use App\Http\Livewire\CreateCommunity;
 use App\Http\Livewire\EditCommunity;
+use App\Http\Livewire\Communities\ShowCommunity;
 
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
@@ -65,6 +66,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/events/{id}/edit', \App\Http\Livewire\Events\EditEvent::class)
         ->name('events.edit');
 
+    Route::get('/events/{event}', \App\Http\Livewire\Events\ShowEvent::class)
+        ->name('events.show');
+
     // Event details page (was protected) - moved to be public below
 });
 
@@ -89,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/community', Community::class)->name('community.index');
     Route::get('/community/create', CreateCommunity::class)->name('community.create');
     Route::get('/community/{id}/edit', EditCommunity::class)->name('community.edit');
+    Route::get('/communities/{community}', \App\Http\Livewire\Communities\ShowCommunity::class)->name('communities.show');
     
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);

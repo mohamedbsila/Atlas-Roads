@@ -3,6 +3,30 @@
     @push('styles')
         <link rel="stylesheet" href="{{ asset('assets/css/home/style.css') }}">
         <style>
+            /* Communities modal styles */
+            .modal-backdrop {
+                animation: fadeIn 0.2s ease-out;
+            }
+            
+            .modal-content {
+                animation: slideIn 0.3s ease-out;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes slideIn {
+                from { 
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to { 
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
             /* Fix pour afficher tous les livres du carousel */
             .carousel .list .item:nth-child(n + 6){
                 opacity: 1 !important;
@@ -469,7 +493,7 @@
                 @foreach ($events as $event)
                     <div class="item">
                         <a href="{{ route('events.show', $event->id) }}">
-                            <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/home/images/img1.png') }}" class="img" alt="{{ $event->title }}">
+                            <img src="{{ $event->thumbnail ? Storage::url($event->thumbnail) : asset('assets/img/home/images/img1.png') }}" class="img" alt="{{ $event->title }}">
                         </a>
                         <div class="content">
                             <div class="author">{{ config('app.name', 'Atlas Roads') }}</div>
@@ -546,7 +570,7 @@
                     <div class="event-card">
                         <div class="event-image-container">
                             <a href="{{ route('events.show', $event->id) }}">
-                                <img src="{{ $event->thumbnail ? asset('storage/' . $event->thumbnail) : asset('assets/img/curved-images/curved14.jpg') }}"
+                                <img src="{{ $event->thumbnail ? Storage::url($event->thumbnail) : asset('assets/img/curved-images/curved14.jpg') }}"
                                      alt="{{ $event->title ?? 'Event' }}"
                                  class="event-image"
                                  loading="lazy"
@@ -577,10 +601,58 @@
                                 <span>{{ $event->date ? $event->date->format('M j, Y \\a\\t g:i A') : 'Date TBA' }}</span>
                             </div>
                             
-                            <a href="{{ route('events.show', $event->id) }}" class="event-button">
-                                <i class="fas fa-calendar-alt mr-2"></i>
-                                View Details
-                            </a>
+                            <div class="flex gap-2 mt-4">
+                                <a href="{{ route('events.show', $event->id) }}" class="event-button">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    View Details
+                                </a>
+
+                                <button onclick="showCommunities('{{ $event->id }}')" class="event-button bg-indigo-600 hover:bg-indigo-700">
+                                    <i class="fas fa-users mr-2"></i>
+                                    Available Communities
+                                </button>
+                            </div>
+
+                            <!-- Communities Modal -->
+                            <div id="communities-modal-{{ $event->id }}" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                                <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="text-lg font-semibold">Available Communities</h3>
+                                        <button onclick="hideCommunities('{{ $event->id }}')" class="text-gray-500 hover:text-gray-700">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    @if($event->communities && $event->communities->count())
+                                        <ul class="space-y-2">
+                                            @foreach($event->communities as $community)
+                                                <li>
+                                                    <a href="{{ route('communities.show', $community->id) }}" 
+                                                       class="flex items-center gap-3 p-2 bg-gray-50 rounded hover:bg-gray-100 transition-colors cursor-pointer">
+                                                        @if($community->cover_image)
+                                                            <img src="{{ asset('storage/' . $community->cover_image) }}" alt="{{ $community->name }}"
+                                                                 class="w-10 h-10 rounded object-cover">
+                                                        @else
+                                                            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center">
+                                                                <i class="fas fa-users text-gray-400"></i>
+                                                            </div>
+                                                        @endif
+                                                        <div>
+                                                            <div class="font-medium">{{ $community->name }}</div>
+                                                            @if($community->is_public)
+                                                                <span class="text-xs text-green-600">Public Community</span>
+                                                            @else
+                                                                <span class="text-xs text-gray-600">Private Community</span>
+                                                            @endif
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <p class="text-gray-500 text-center py-4">No communities assigned to this event.</p>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -798,6 +870,28 @@
         <script src="{{ asset('assets/js/home/scroll-animation.js') }}"></script>
         
         <script>
+            // Communities modal functions
+            function showCommunities(eventId) {
+                document.getElementById('communities-modal-' + eventId).style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function hideCommunities(eventId) {
+                document.getElementById('communities-modal-' + eventId).style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            // Close modals when clicking outside
+            document.addEventListener('click', function(event) {
+                const modals = document.querySelectorAll('[id^="communities-modal-"]');
+                modals.forEach(modal => {
+                    if (event.target === modal) {
+                        const eventId = modal.id.replace('communities-modal-', '');
+                        hideCommunities(eventId);
+                    }
+                });
+            });
+
             function openBorrowModal(bookId, bookTitle, bookAuthor) {
                 document.getElementById('modal_book_id').value = bookId;
                 document.getElementById('modal_book_title').textContent = bookTitle;

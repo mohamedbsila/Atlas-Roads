@@ -38,7 +38,7 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="py-3">
                                     @if($community->cover_image)
-                                        <img src="{{ asset('storage/' . $community->cover_image) }}" alt="Cover" class="w-16 h-12 object-cover rounded border" />
+                                        <img src="{{ Storage::url($community->cover_image) }}" alt="Cover" class="w-16 h-12 object-cover rounded border" />
                                     @else
                                         <div class="w-16 h-12 bg-gray-100 rounded border flex items-center justify-center text-gray-400">N/A</div>
                                     @endif

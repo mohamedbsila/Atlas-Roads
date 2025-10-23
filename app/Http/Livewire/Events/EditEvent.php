@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Events;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Event;
 
 class EditEvent extends Component
@@ -16,6 +17,7 @@ class EditEvent extends Component
     public $description = '';
     public $location = '';
     public $thumbnail = null;
+    public $currentThumbnailPath = null;
     public $startDate = '';
     public $endDate = '';
     public $maxParticipants = null;
@@ -48,6 +50,7 @@ class EditEvent extends Component
         $this->endDate = $event->end_date;
         $this->maxParticipants = $event->max_participants;
         $this->isPublic = (bool)$event->is_public;
+        $this->currentThumbnailPath = $event->thumbnail;
         // load related communities
         $this->communities = $event->communities()->pluck('communities.id')->map(function($id){ return (string)$id; })->toArray();
         $this->availableCommunities = \App\Models\Community::orderBy('name')->get();
@@ -60,14 +63,24 @@ class EditEvent extends Component
 
         $this->validate();
 
+        // Determine the thumbnail path to persist
+        $thumbnailPath = $this->currentThumbnailPath;
         if ($this->thumbnail) {
-            $path = $this->thumbnail->store('events', 'public');
-            $event->thumbnail = $path;
+            // Delete old file if it exists (best-effort)
+            if ($this->currentThumbnailPath) {
+                try {
+                    Storage::disk('public')->delete($this->currentThumbnailPath);
+                } catch (\Throwable $_) {
+                    // ignore cleanup failures
+                }
+            }
+            $thumbnailPath = $this->thumbnail->store('events', 'public');
         }
 
         $event->title = $this->title;
         $event->description = $this->description;
         $event->location = $this->location;
+        $event->thumbnail = $thumbnailPath;
         $event->start_date = $this->startDate ?: null;
         $event->end_date = $this->endDate ?: null;
         $event->max_participants = $this->maxParticipants;

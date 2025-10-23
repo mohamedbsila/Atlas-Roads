@@ -26,7 +26,7 @@
                     <tr class="border-t align-top">
                             <td class="py-3 flex items-start gap-3">
                                 @if($event->thumbnail)
-                                    <img src="{{ asset('storage/' . $event->thumbnail) }}" alt="" class="w-14 h-10 object-cover rounded" />
+                                    <img src="{{ Storage::url($event->thumbnail) }}" alt="" class="w-14 h-10 object-cover rounded" />
                                 @else
                                     <div class="w-14 h-10 bg-gray-100 rounded"></div>
                                 @endif
@@ -52,7 +52,7 @@
                                 @if($event->communities && $event->communities->count())
                                     <div class="flex flex-wrap gap-2">
                                         @foreach($event->communities as $c)
-                                            <span class="px-2 py-1 bg-gray-100 rounded text-sm">{{ $c->name }}</span>
+                                            <a href="{{ route('communities.show', $c->id) }}" class="px-2 py-1 bg-gray-100 rounded text-sm hover:bg-gray-200 transition cursor-pointer">{{ $c->name }}</a>
                                         @endforeach
                                     </div>
                                 @else
