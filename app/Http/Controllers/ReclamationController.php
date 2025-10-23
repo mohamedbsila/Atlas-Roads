@@ -56,13 +56,16 @@ class ReclamationController extends Controller
         return redirect()->route('reclamations.index')->with('success', 'Réclamation ajoutée avec succès');
     }
 
-    public function show(Reclamation $reclamation)
-    {
-        $regenerate = request()->has('regenerate');
-        $aiSolution = $this->generateAISolution($reclamation, $regenerate);
-        
-        return view('reclamations.show', compact('reclamation', 'aiSolution'));
-    }
+public function show(Reclamation $reclamation)
+{
+    $regenerate = request()->has('regenerate');
+    $aiSolution = $this->generateAISolution($reclamation, $regenerate);
+    
+    // DEBUG - à supprimer après
+    Log::info('Solution générée:', ['solution' => $aiSolution, 'length' => strlen($aiSolution)]);
+    
+    return view('reclamations.show', compact('reclamation', 'aiSolution'));
+}
 
     /**
      * Génère une solution IA adaptée à la description de la réclamation
@@ -98,14 +101,21 @@ class ReclamationController extends Controller
     private function callGeminiAPI(Reclamation $reclamation)
     {
         $client = new Client();
-        $apiKey = env('GEMINI_API_KEY');
+$apiKey = config('gemini.api_key');
         
         if (empty($apiKey)) {
             throw new \Exception('Clé API Gemini non configurée');
         }
 
-        $model = 'gemini-pro';
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+$model = config('gemini.model');
+
+        
+        // Choisir la version d'API selon le modèle
+  if (str_contains($model, '1.5') || str_contains($model, '2.0')) {
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+} else {
+    $url = "https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key={$apiKey}";
+}
 
         $prompt = $this->buildDirectPrompt($reclamation);
 
@@ -119,15 +129,15 @@ class ReclamationController extends Controller
                     ]
                 ],
                 'generationConfig' => [
-                    'temperature' => 0.8,
-                    'maxOutputTokens' => 500,
-                    'topP' => 0.9
+                    'temperature' => 0.7,
+                    'maxOutputTokens' => 300,
+                    'topP' => 0.8
                 ]
             ],
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
-            'timeout' => 30
+            'timeout' => 60
         ]);
 
         $statusCode = $response->getStatusCode();
@@ -147,62 +157,21 @@ class ReclamationController extends Controller
     }
 
     /**
-     * Construit un prompt direct et simple adapté par catégorie
+     * Construit un prompt simplifié et efficace
      */
     private function buildDirectPrompt(Reclamation $reclamation)
     {
         $description = $reclamation->description;
         $title = $reclamation->titre;
         $category = $reclamation->categorie;
-        $priority = $reclamation->priorite;
 
-        $prompt = "Tu es un assistant expert en résolution de problèmes pour une bibliothèque. Analyse cette réclamation et fournis une solution directe et pratique.\n\n";
-        $prompt .= "INFORMATIONS DE LA RÉCLAMATION :\n";
-        $prompt .= "Titre : {$title}\n";
-        $prompt .= "Description : {$description}\n";
-        $prompt .= "Catégorie : {$category}\n";
-        $prompt .= "Priorité : {$priority}\n\n";
-        
-        // Instructions spécifiques par catégorie
-        $categoryInstructions = $this->getCategoryInstructions($category);
-        $prompt .= "CONTEXTE SPÉCIFIQUE ({$category}) :\n";
-        $prompt .= $categoryInstructions . "\n\n";
-        
-        $prompt .= "INSTRUCTIONS GÉNÉRALES :\n";
-        $prompt .= "- Réponds UNIQUEMENT en français\n";
-        $prompt .= "- Sois direct et concis (maximum 200 mots)\n";
-        $prompt .= "- Propose une solution pratique et réalisable\n";
-        $prompt .= "- Adapte ton ton selon la priorité (urgent pour haute priorité)\n";
-        $prompt .= "- Ne donne pas d'étapes numérotées, mais une réponse fluide\n";
-        $prompt .= "- Commence directement par la solution sans introduction\n";
-        $prompt .= "- Utilise un ton professionnel mais accessible\n\n";
-        $prompt .= "SOLUTION :";
+        $prompt = "Tu es un assistant de bibliothèque expert. Réponds en français de manière professionnelle.\n\n";
+        $prompt .= "Réclamation : {$title}\n";
+        $prompt .= "Détails : {$description}\n";
+        $prompt .= "Catégorie : {$category}\n\n";
+        $prompt .= "Fournis une solution pratique en 100 mots maximum. Sois direct et professionnel.";
 
         return $prompt;
-    }
-
-    /**
-     * Retourne les instructions spécifiques selon la catégorie
-     */
-    private function getCategoryInstructions($category)
-    {
-        $instructions = [
-            'technique' => "Concentre-toi sur les solutions techniques : diagnostic, résolution de bugs, optimisation de performance, problèmes de connexion, etc. Propose des étapes de dépannage et des solutions de contournement si nécessaire.",
-            
-            'livre' => "Concentre-toi sur les services liés aux livres : résumés, recommandations, disponibilité, informations sur les ouvrages, suggestions de lecture, etc. Sois précis sur les délais et les modalités.",
-            
-            'compte' => "Concentre-toi sur les problèmes de compte utilisateur : connexion, mot de passe, profil, permissions, accès, etc. Propose des solutions de récupération et des alternatives.",
-            
-            'service' => "Concentre-toi sur l'amélioration des services : suggestions, retours d'expérience, qualité, satisfaction client, etc. Montre que les retours sont pris en compte.",
-            
-            'bibliotheque' => "Concentre-toi sur les informations générales de la bibliothèque : horaires, localisation, services, procédures, règlement, etc. Fournis des informations précises et utiles.",
-            
-            'emprunt' => "Concentre-toi sur les questions d'emprunt : délais, prolongations, limites, retours, réservations, etc. Explique clairement les règles et les possibilités d'extension.",
-            
-            'autre' => "Concentre-toi sur une approche générale mais personnalisée. Analyse le contenu de la demande pour proposer la solution la plus adaptée possible."
-        ];
-        
-        return $instructions[strtolower($category)] ?? $instructions['autre'];
     }
 
     /**
@@ -343,7 +312,7 @@ class ReclamationController extends Controller
      */
     private function getGeneralSolution($title, $description)
     {
-        return "Votre demande est bien reçue. Notre équipe va analyser votre situation et vous apporter une réponse personnalisée rapidement. Nous vous tiendrons informé de l'avancement.";
+        return "Votre demande est bien reçue. Notre équipe va analyser votre situation et vous apporter une réponse personnalisée rapidement.";
     }
 
     public function edit(Reclamation $reclamation)
@@ -384,62 +353,199 @@ class ReclamationController extends Controller
     /**
      * Route pour régénérer une solution via AJAX
      */
-    public function regenerate(Reclamation $reclamation)
-    {
-        try {
-            // Vérifier que l'utilisateur a le droit de voir cette réclamation
-            if (!Auth::check()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Authentification requise'
-                ], 401);
-            }
+  /**
+ * Route pour régénérer une solution via AJAX
+ */
+public function regenerate(Reclamation $reclamation)
+{
+$apiKey = config('gemini.api_key');
+$model = config('gemini.model');
 
-            // Vérifier que l'utilisateur peut accéder à cette réclamation
-            if (Auth::user()->role !== 'admin' && $reclamation->user_id !== Auth::id()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Accès non autorisé à cette réclamation'
-                ], 403);
-            }
-
-            $cacheKey = 'ai_solution_' . $reclamation->id;
-            Cache::forget($cacheKey);
-            
-            $newSolution = $this->generateAISolution($reclamation, true);
-            
-            // Vérifier que la solution n'est pas vide
-            if (empty(trim($newSolution))) {
-                throw new \Exception('Solution générée vide');
-            }
-            
-            return response()->json([
-                'success' => true,
-                'solution' => $newSolution,
-                'timestamp' => now()->format('d/m/Y H:i:s')
-            ]);
-            
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            Log::error('Erreur API Gemini lors de la régénération: ' . $e->getMessage());
+    
+    Log::info('DEBUG regenerate - Configuration', [
+        'api_key_exists' => !empty($apiKey),
+        'api_key_length' => strlen($apiKey ?? ''),
+        'model' => $model,
+        'env_app_env' => env('APP_ENV'),
+    ]);
+    
+    if (empty($apiKey)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'DEBUG: Clé API non trouvée dans Laravel',
+            'env_check' => [
+                'GEMINI_API_KEY' => env('GEMINI_API_KEY') ? 'présente' : 'absente',
+                'GEMINI_MODEL' => env('GEMINI_MODEL'),
+            ]
+        ], 500);
+    }
+    try {
+        // Vérifier l'authentification
+        if (!Auth::check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur de connexion avec le service IA. Veuillez réessayer.'
-            ], 503);
+                'message' => 'Authentification requise'
+            ], 401);
+        }
+
+        // Vérifier les permissions - permettre aux admins ET aux propriétaires de la réclamation
+        $user = Auth::user();
+        $isAdmin = $user->is_admin == 1;
+        $isOwner = $reclamation->user_id === $user->id;
+        
+        if (!$isAdmin && !$isOwner) {
+            Log::warning('Accès refusé pour régénération', [
+                'user_id' => $user->id,
+                'is_admin' => $user->is_admin,
+                'reclamation_id' => $reclamation->id,
+                'reclamation_owner' => $reclamation->user_id
+            ]);
             
-        } catch (\Exception $e) {
-            Log::error('Erreur lors de la régénération: ' . $e->getMessage());
-            
-            // Fournir une solution de secours
+            return response()->json([
+                'success' => false,
+                'message' => 'Accès non autorisé à cette réclamation'
+            ], 403);
+        }
+
+        // Log pour debug
+        Log::info('Régénération de solution demandée', [
+            'user_id' => $user->id,
+            'is_admin' => $user->is_admin,
+            'reclamation_id' => $reclamation->id,
+            'is_owner' => $isOwner
+        ]);
+
+        // Supprimer le cache existant
+        $cacheKey = 'ai_solution_' . $reclamation->id;
+        Cache::forget($cacheKey);
+        
+        // Appeler directement l'API Gemini
+        $client = new Client();
+$apiKey = config('gemini.api_key');
+        
+        if (empty($apiKey)) {
+            throw new \Exception('Clé API Gemini non configurée');
+        }
+
+        // Utiliser le modèle configuré dans .env
+$model = config('gemini.model');
+
+        
+        // Choisir la version d'API selon le modèle
+        if (str_contains($model, '1.5') || str_contains($model, '2.0')) {
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+        } else {
+            $url = "https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key={$apiKey}";
+        }
+
+        // Construire le prompt
+        $prompt = $this->buildDirectPrompt($reclamation);
+
+        // Appel API avec timeout plus long
+        $response = $client->post($url, [
+            'json' => [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ],
+                'generationConfig' => [
+                    'temperature' => 0.7,
+                    'maxOutputTokens' => 300,
+                    'topP' => 0.8
+                ]
+            ],
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'timeout' => 60
+        ]);
+
+        $statusCode = $response->getStatusCode();
+        $responseBody = $response->getBody()->getContents();
+
+        if ($statusCode !== 200) {
+            throw new \Exception("Erreur HTTP: {$statusCode}");
+        }
+
+        $responseData = json_decode($responseBody, true);
+
+        // Vérifier la structure de la réponse
+        if (!isset($responseData['candidates'][0]['content']['parts'][0]['text'])) {
+            Log::error('Structure de réponse API invalide', ['response' => $responseData]);
+            throw new \Exception('Structure de réponse API invalide');
+        }
+
+        $newSolution = $responseData['candidates'][0]['content']['parts'][0]['text'];
+        
+        // Vérifier que la solution n'est pas vide
+        if (empty(trim($newSolution))) {
+            throw new \Exception('Solution générée vide');
+        }
+        
+        // Mettre en cache la nouvelle solution
+        Cache::put($cacheKey, $newSolution, 3600);
+        
+        Log::info('Solution régénérée avec succès', [
+            'reclamation_id' => $reclamation->id,
+            'solution_length' => strlen($newSolution)
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'solution' => $newSolution,
+            'timestamp' => now()->format('d/m/Y H:i:s'),
+            'model' => $model
+        ]);
+        
+    } catch (\GuzzleHttp\Exception\RequestException $e) {
+        Log::error('Erreur API Gemini lors de la régénération', [
+            'message' => $e->getMessage(),
+            'reclamation_id' => $reclamation->id
+        ]);
+        
+        // Tenter de fournir une solution de secours
+        try {
             $fallbackSolution = $this->getDirectSolution($reclamation);
-            
             return response()->json([
                 'success' => true,
                 'solution' => $fallbackSolution,
                 'fallback' => true,
-                'message' => 'Solution générée automatiquement (service IA temporairement indisponible)'
+                'message' => 'Service IA temporairement indisponible. Solution automatique générée.'
             ]);
+        } catch (\Exception $fallbackError) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur de connexion avec le service IA. Veuillez réessayer dans quelques instants.'
+            ], 503);
+        }
+        
+    } catch (\Exception $e) {
+        Log::error('Erreur lors de la régénération', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'reclamation_id' => $reclamation->id
+        ]);
+        
+        // Fournir une solution de secours
+        try {
+            $fallbackSolution = $this->getDirectSolution($reclamation);
+            return response()->json([
+                'success' => true,
+                'solution' => $fallbackSolution,
+                'fallback' => true,
+                'message' => 'Solution générée automatiquement'
+            ]);
+        } catch (\Exception $fallbackError) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue. Veuillez réessayer.'
+            ], 500);
         }
     }
+}
 
     /**
      * Affiche l'interface du chatbot
@@ -501,7 +607,7 @@ class ReclamationController extends Controller
     {
         try {
             $client = new Client();
-            $apiKey = env('GEMINI_API_KEY');
+$apiKey = config('gemini.api_key');
             
             if (empty($apiKey)) {
                 return response()->json([
@@ -510,12 +616,22 @@ class ReclamationController extends Controller
                 ], 500);
             }
 
+$model = config('gemini.model');
+
+            
+            // Choisir la version d'API selon le modèle
+         if (str_contains($model, '1.5') || str_contains($model, '2.0')) {
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+} else {
+    $url = "https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key={$apiKey}";
+}
+
             $prompt = "Réponds directement en français à cette recherche de livre :\n\n";
             $prompt .= "Titre : " . $reclamation->titre . "\n";
             $prompt .= "Description : " . $reclamation->description . "\n\n";
-            $prompt .= "Donne des suggestions de livres directement.";
+            $prompt .= "Donne des suggestions de livres directement en 100 mots maximum.";
 
-            $response = $client->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={$apiKey}", [
+            $response = $client->post($url, [
                 'json' => [
                     'contents' => [
                         'parts' => [
@@ -524,13 +640,13 @@ class ReclamationController extends Controller
                     ],
                     'generationConfig' => [
                         'temperature' => 0.7,
-                        'maxOutputTokens' => 500,
+                        'maxOutputTokens' => 300,
                     ]
                 ],
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
-                'timeout' => 30
+                'timeout' => 60
             ]);
 
             $responseData = json_decode($response->getBody()->getContents(), true);
