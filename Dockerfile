@@ -26,7 +26,9 @@ WORKDIR /var/www/html
 COPY . .
 
 # Créer le fichier .env à partir de .env.example
-RUN cp .env.example .env || echo "APP_NAME=Laravel" > .env
+RUN if [ -f .env.example ]; then cp .env.example .env; else \
+    echo "APP_NAME=Laravel\nAPP_ENV=production\nAPP_KEY=\nAPP_DEBUG=false\nAPP_URL=http://localhost" > .env; \
+    fi
 
 # Installer les dépendances PHP
 RUN composer install --no-dev --optimize-autoloader
