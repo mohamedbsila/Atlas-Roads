@@ -135,12 +135,12 @@ pipeline {
                         fi
                     '''
                     sh '''
-                        sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=${DB_CONNECTION}/" .env
-                        sed -i "s/DB_HOST=.*/DB_HOST=${DB_HOST}/" .env
-                        sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT}/" .env
-                        sed -i "s/DB_DATABASE=.*/DB_DATABASE=${DB_DATABASE}/" .env
-                        sed -i "s/DB_USERNAME=.*/DB_USERNAME=${DB_USERNAME}/" .env
-                        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD}/" .env
+                        sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+                        sed -i "s/DB_HOST=.*/DB_HOST=atlas-mysql/" .env
+                        sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env
+                        sed -i "s/DB_DATABASE=.*/DB_DATABASE=atlas_roads/" .env
+                        sed -i "s/DB_USERNAME=.*/DB_USERNAME=laravel/" .env
+                        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=laravel123/" .env
                     '''
                 }
             }
@@ -236,8 +236,10 @@ pipeline {
                 echo 'Setting up test database...'
                 script {
                     sh '''
-                        mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD} -e "DROP DATABASE IF EXISTS ${DB_DATABASE};" || true
-                        mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${DB_DATABASE};"
+                        # Utiliser docker exec pour se connecter au conteneur MySQL
+                        docker exec atlas-mysql mysql -uroot -p123456789 -e "DROP DATABASE IF EXISTS atlas_roads;" || true
+                        docker exec atlas-mysql mysql -uroot -p123456789 -e "CREATE DATABASE IF NOT EXISTS atlas_roads;"
+                        docker exec atlas-mysql mysql -uroot -p123456789 -e "GRANT ALL PRIVILEGES ON atlas_roads.* TO 'laravel'@'%';" || true
                     '''
                     sh '''
                         php artisan migrate:fresh --force --seed
