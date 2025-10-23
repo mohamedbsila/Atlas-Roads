@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Reclamation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+<<<<<<< HEAD
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -29,6 +30,15 @@ class ReclamationController extends Controller
             'currentStatus' => $request->input('status', 'all'),
             'currentPriority' => $request->input('priority', 'all')
         ]);
+=======
+
+class ReclamationController extends Controller
+{
+    public function index()
+    {
+        $reclamations = Reclamation::with('user')->latest()->paginate(10);
+        return view('reclamations.index', compact('reclamations'));
+>>>>>>> origin/complet
     }
 
     public function create()
@@ -58,6 +68,7 @@ class ReclamationController extends Controller
 
     public function show(Reclamation $reclamation)
     {
+<<<<<<< HEAD
         $regenerate = request()->has('regenerate');
         $aiSolution = $this->generateAISolution($reclamation, $regenerate);
         
@@ -344,6 +355,9 @@ class ReclamationController extends Controller
     private function getGeneralSolution($title, $description)
     {
         return "Votre demande est bien reçue. Notre équipe va analyser votre situation et vous apporter une réponse personnalisée rapidement. Nous vous tiendrons informé de l'avancement.";
+=======
+        return view('reclamations.show', compact('reclamation'));
+>>>>>>> origin/complet
     }
 
     public function edit(Reclamation $reclamation)
@@ -371,6 +385,7 @@ class ReclamationController extends Controller
         $reclamation->delete();
         return redirect()->route('reclamations.index')->with('success', 'Réclamation supprimée');
     }
+<<<<<<< HEAD
 
     public function bienRecu(Reclamation $reclamation)
     {
@@ -557,3 +572,15 @@ class ReclamationController extends Controller
         }
     }
 }
+=======
+    public function bienRecu(Reclamation $reclamation)
+{
+    $reclamation->update([
+        'statut' => 'en_cours' // ou "reçue" selon ton workflow
+    ]);
+
+    return redirect()->back()->with('success', 'Réclamation marquée comme bien reçue.');
+}
+
+}
+>>>>>>> origin/complet

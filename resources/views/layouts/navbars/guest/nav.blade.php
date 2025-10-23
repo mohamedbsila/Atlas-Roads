@@ -48,6 +48,27 @@
                         <li>
                             <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
                                 {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+<<<<<<< HEAD
+=======
+                                href="{{ route('rooms.search') }}">
+                                <i class="mr-1 fas fa-door-open opacity-60"></i>
+                                Salles
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
+                                {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+                                href="{{ route('room-reservations.my-reservations') }}">
+                                <i class="mr-1 fas fa-calendar-check opacity-60"></i>
+                                Mes Réservations
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
+                                {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+>>>>>>> origin/complet
                                 href="{{ url('profile') }}">
                                 <i class="mr-1 fa fa-user opacity-60"></i>
                                 Profile

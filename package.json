@@ -6,10 +6,17 @@
     },
     "devDependencies": {
         "autoprefixer": "^10.4.13",
+<<<<<<< HEAD
         "axios": "^0.25",
         "laravel-vite-plugin": "^0.2.1",
         "lodash": "^4.17.19",
         "postcss": "^8.4.21",
+=======
+        "axios": "^1.6.0",
+        "laravel-vite-plugin": "^0.2.1",
+        "lodash": "^4.17.19",
+        "postcss": "^8.4.31",
+>>>>>>> origin/complet
         "tailwindcss": "^3.2.7",
         "vite": "^2.9.11"
     }

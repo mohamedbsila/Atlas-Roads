@@ -24,12 +24,22 @@ class Register extends Component
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
+<<<<<<< HEAD
             'password' => Hash::make($this->password)
+=======
+            'password' => Hash::make($this->password),
+            'is_admin' => false // New users are not admin by default
+>>>>>>> origin/complet
         ]);
 
         auth()->login($user);
 
+<<<<<<< HEAD
         return redirect('/dashboard');
+=======
+        // Regular users go to home page
+        return redirect('/');
+>>>>>>> origin/complet
     }
 
     public function render()

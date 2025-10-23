@@ -48,7 +48,10 @@ class User extends Authenticatable implements CanResetPasswordContract
     protected $casts = [
         'email_verified_at' => 'datetime',
         'is_admin' => 'boolean',
+<<<<<<< HEAD
         'is_active' => 'boolean',
+=======
+>>>>>>> origin/complet
     ];
 
     // Relationships - Wishlist and Reviews
@@ -93,6 +96,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     }
 
     /**
+<<<<<<< HEAD
      * Check if the user is an admin
      *
      * @return bool
@@ -100,5 +104,12 @@ class User extends Authenticatable implements CanResetPasswordContract
     public function isAdmin(): bool
     {
         return (bool) $this->is_admin;
+=======
+     * Room reservations made by this user
+     */
+    public function roomReservations(): HasMany
+    {
+        return $this->hasMany(RoomReservation::class);
+>>>>>>> origin/complet
     }
 }

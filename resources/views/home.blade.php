@@ -240,15 +240,27 @@
                 <i class="fas fa-book mr-1"></i> Books
             </a>
             @auth
+<<<<<<< HEAD
+=======
+                <a href="{{ route('rooms.search') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
+                    <i class="fas fa-door-open mr-1"></i> Rooms
+                </a>
+                <a href="{{ route('room-reservations.my-reservations') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
+                    <i class="fas fa-calendar-check mr-1"></i> My Reservations
+                </a>
+>>>>>>> origin/complet
                 <a href="{{ route('wishlist.index') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                     <i class="fas fa-heart mr-1"></i> My Wishlist
                 </a>
                 <a href="{{ route('wishlist.create') }}" class="px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition">
                     <i class="fas fa-plus mr-1"></i> Request Book
                 </a>
+<<<<<<< HEAD
                 <a href="{{ route('reclamations.create') }}" class="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition">
                     <i class="fas fa-exclamation-triangle mr-1"></i> Report a problem
                 </a>
+=======
+>>>>>>> origin/complet
                 @if(auth()->user() && auth()->user()->is_admin)
                     <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium text-sm transition">
                         <i class="fas fa-tachometer-alt mr-1"></i> Dashboard

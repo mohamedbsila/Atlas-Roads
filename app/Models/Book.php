@@ -18,7 +18,12 @@ class Book extends Model
         'language',
         'published_year',
         'is_available',
+<<<<<<< HEAD
         'ownerId'
+=======
+        'ownerId',
+        'bibliotheque_id'
+>>>>>>> origin/complet
     ];
 
     protected $casts = [
@@ -60,6 +65,17 @@ class Book extends Model
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Bibliotheque du livre
+     */
+    public function bibliotheque(): BelongsTo
+    {
+        return $this->belongsTo(Bibliotheque::class);
+    }
+
+    /**
+>>>>>>> origin/complet
      * Demandes d'emprunt pour ce livre
      */
     public function borrowRequests(): HasMany

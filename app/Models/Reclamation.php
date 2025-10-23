@@ -17,6 +17,7 @@ class Reclamation extends Model
         'statut',
     ];
 
+<<<<<<< HEAD
     protected static function boot()
     {
         parent::boot();
@@ -33,13 +34,18 @@ class Reclamation extends Model
         });
     }
 
+=======
+>>>>>>> origin/complet
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+<<<<<<< HEAD
 
     public function solution()
     {
         return $this->hasOne(Solution::class);
     }
+=======
+>>>>>>> origin/complet
 }
