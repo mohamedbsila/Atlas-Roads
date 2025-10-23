@@ -51,7 +51,16 @@ pipeline {
                         # Créer un réseau Docker s'il n'existe pas
                         docker network create atlas-network 2>/dev/null || true
                         
-                        # Démarrer MySQL
+                        # Démarrer MySQL avec port mapping
+                        if docker ps -a | grep -q atlas-mysql; then
+                            # Vérifier si le port est mappé
+                            if ! docker port atlas-mysql | grep -q 3306; then
+                                echo "Recreating MySQL container with port mapping..."
+                                docker stop atlas-mysql || true
+                                docker rm atlas-mysql || true
+                            fi
+                        fi
+                        
                         if ! docker ps -a | grep -q atlas-mysql; then
                             echo "Creating MySQL container..."
                             docker run -d \\
@@ -136,7 +145,7 @@ pipeline {
                     '''
                     sh '''
                         sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
-                        sed -i "s/DB_HOST=.*/DB_HOST=atlas-mysql/" .env
+                        sed -i "s/DB_HOST=.*/DB_HOST=127.0.0.1/" .env
                         sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env
                         sed -i "s/DB_DATABASE=.*/DB_DATABASE=atlas_roads/" .env
                         sed -i "s/DB_USERNAME=.*/DB_USERNAME=laravel/" .env
@@ -239,7 +248,9 @@ pipeline {
                         # Utiliser docker exec pour se connecter au conteneur MySQL
                         docker exec atlas-mysql mysql -uroot -p123456789 -e "DROP DATABASE IF EXISTS atlas_roads;" || true
                         docker exec atlas-mysql mysql -uroot -p123456789 -e "CREATE DATABASE IF NOT EXISTS atlas_roads;"
-                        docker exec atlas-mysql mysql -uroot -p123456789 -e "GRANT ALL PRIVILEGES ON atlas_roads.* TO 'laravel'@'%';" || true
+                        docker exec atlas-mysql mysql -uroot -p123456789 -e "CREATE USER IF NOT EXISTS 'laravel'@'%' IDENTIFIED BY 'laravel123';" || true
+                        docker exec atlas-mysql mysql -uroot -p123456789 -e "GRANT ALL PRIVILEGES ON atlas_roads.* TO 'laravel'@'%';"
+                        docker exec atlas-mysql mysql -uroot -p123456789 -e "FLUSH PRIVILEGES;"
                     '''
                     sh '''
                         php artisan migrate:fresh --force --seed
