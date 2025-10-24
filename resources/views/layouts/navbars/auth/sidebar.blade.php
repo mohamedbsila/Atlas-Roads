@@ -58,13 +58,38 @@
         </li>
 
         <li class="mt-0.5 w-full">
-          <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('reclamations*') && !Request::is('chatbot*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
              href="{{ route('reclamations.index') }}">
             <div
-              class="bg-gradient-to-tl from-red-600 to-rose-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              class="{{ (Request::is('reclamations*') && !Request::is('chatbot*') ? ' bg-gradient-fuchsia' : '') }} bg-gradient-to-tl from-red-600 to-rose-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
               <i class="fas fa-exclamation-circle text-white"></i>
             </div>
-            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Report a problem</span>
+            <span class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">My Reclamations</span>
+          </a>
+        </li>
+
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('chatbot*') || Request::is('reclamations/*/regenerate') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+             href="{{ route('reclamations.chatbot') }}">
+            <div
+              class="{{ (Request::is('chatbot*') || Request::is('reclamations/*/regenerate') ? ' bg-gradient-fuchsia' : '') }} bg-gradient-to-tl from-purple-600 to-pink-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="fas fa-robot text-white"></i>
+            </div>
+            <span class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">🤖 AI Chatbot</span>
+          </a>
+        </li>
+
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('solutions*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+             href="{{ route('solutions.index') }}">
+            <div
+              class="{{ (Request::is('solutions*') ? ' bg-gradient-fuchsia' : '') }} bg-gradient-to-tl from-green-600 to-teal-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="fas fa-lightbulb text-white"></i>
+            </div>
+            <span class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Solutions</span>
           </a>
         </li>
 
