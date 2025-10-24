@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     Route::get('wishlist-browse', [\App\Http\Controllers\WishlistController::class, 'browse'])->name('wishlist.browse');
     
     // Admin Wishlist Management
-    Route::prefix('admin/wishlist')->name('admin.wishlist.')->group(function () {
+    Route::prefix('admin/wishlist')->name('admin.wishlist.')->middleware('admin')->group(function () {
         Route::get('/', [\App\Http\Controllers\AdminWishlistController::class, 'index'])->name('index');
         Route::get('/dashboard', [\App\Http\Controllers\AdminWishlistController::class, 'dashboard'])->name('dashboard');
         Route::get('/{wishlist}', [\App\Http\Controllers\AdminWishlistController::class, 'show'])->name('show');
@@ -105,6 +105,58 @@ Route::middleware('auth')->group(function () {
         Route::post('/{wishlist}/create-book', [\App\Http\Controllers\AdminWishlistController::class, 'createBook'])->name('create-book');
         Route::post('/bulk-update', [\App\Http\Controllers\AdminWishlistController::class, 'bulkUpdate'])->name('bulk-update');
     });
+
+    // Admin Bibliotheques Management
+    Route::prefix('admin/bibliotheques')->name('admin.bibliotheques.')->middleware('admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\BibliothequeController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\BibliothequeController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\BibliothequeController::class, 'store'])->name('store');
+        Route::get('/statistics', [\App\Http\Controllers\Admin\BibliothequeController::class, 'statistics'])->name('statistics');
+        Route::post('/ai/generate-description', [\App\Http\Controllers\Admin\BibliothequeController::class, 'generateDescription'])->name('ai.description');
+        Route::post('/ai/suggest-names', [\App\Http\Controllers\Admin\BibliothequeController::class, 'suggestNames'])->name('ai.names');
+        Route::post('/ai/generate-image', [\App\Http\Controllers\Admin\BibliothequeController::class, 'generateImage'])->name('ai.image');
+        Route::post('/ai/generate-prompt', [\App\Http\Controllers\Admin\BibliothequeController::class, 'generateImagePrompt'])->name('ai.prompt');
+        Route::get('/ai/test', [\App\Http\Controllers\Admin\BibliothequeController::class, 'testAI'])->name('ai.test');
+        Route::get('/{bibliotheque}', [\App\Http\Controllers\Admin\BibliothequeController::class, 'show'])->name('show');
+        Route::get('/{bibliotheque}/edit', [\App\Http\Controllers\Admin\BibliothequeController::class, 'edit'])->name('edit');
+        Route::put('/{bibliotheque}', [\App\Http\Controllers\Admin\BibliothequeController::class, 'update'])->name('update');
+        Route::delete('/{bibliotheque}', [\App\Http\Controllers\Admin\BibliothequeController::class, 'destroy'])->name('destroy');
+    });
+
+    // Admin Sections Management
+    Route::prefix('admin/sections')->name('admin.sections.')->middleware('admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\SectionController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\SectionController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\SectionController::class, 'store'])->name('store');
+        Route::get('/{section}', [\App\Http\Controllers\Admin\SectionController::class, 'show'])->name('show');
+        Route::get('/{section}/edit', [\App\Http\Controllers\Admin\SectionController::class, 'edit'])->name('edit');
+        Route::put('/{section}', [\App\Http\Controllers\Admin\SectionController::class, 'update'])->name('update');
+        Route::delete('/{section}', [\App\Http\Controllers\Admin\SectionController::class, 'destroy'])->name('destroy');
+    });
+
+    // Admin Rooms Management
+    Route::prefix('admin/rooms')->name('admin.rooms.')->middleware('admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\RoomController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\RoomController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\RoomController::class, 'store'])->name('store');
+        Route::get('/{room}/edit', [\App\Http\Controllers\Admin\RoomController::class, 'edit'])->name('edit');
+        Route::put('/{room}', [\App\Http\Controllers\Admin\RoomController::class, 'update'])->name('update');
+        Route::delete('/{room}', [\App\Http\Controllers\Admin\RoomController::class, 'destroy'])->name('destroy');
+    });
+
+    // Admin Reservations Management
+    Route::prefix('admin/reservations')->name('admin.reservations.')->middleware('admin')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ReservationController::class, 'index'])->name('index');
+    });
+
+    // Room Reservations (Users)
+    Route::get('rooms/search', [\App\Http\Controllers\RoomReservationController::class, 'search'])->name('rooms.search');
+    Route::get('rooms/{room}', [\App\Http\Controllers\RoomReservationController::class, 'show'])->name('rooms.show');
+    Route::post('room-reservations', [\App\Http\Controllers\RoomReservationController::class, 'store'])->name('room-reservations.store');
+    Route::get('my-reservations', [\App\Http\Controllers\RoomReservationController::class, 'myReservations'])->name('room-reservations.my-reservations');
+    Route::post('room-reservations/{reservation}/cancel', [\App\Http\Controllers\RoomReservationController::class, 'cancel'])->name('room-reservations.cancel');
+    Route::post('rooms/check-availability', [\App\Http\Controllers\RoomReservationController::class, 'checkAvailability'])->name('rooms.check-availability');
+    Route::post('rooms/suggest-times', [\App\Http\Controllers\RoomReservationController::class, 'suggestTimes'])->name('rooms.suggest-times');
 
     // Reclamations CRUD
     Route::resource('reclamations', ReclamationController::class);
