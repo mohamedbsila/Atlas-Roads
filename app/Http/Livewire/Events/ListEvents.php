@@ -91,7 +91,7 @@ class ListEvents extends Component
     public function render()
     {
         return view('livewire.events.list-events', [
-            'events' => Event::orderBy('start_date', 'desc')->paginate(10),
+            'events' => Event::with('communities')->orderBy('start_date', 'desc')->paginate(10),
         ]);
     }
 }

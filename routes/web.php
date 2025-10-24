@@ -15,6 +15,10 @@ use App\Http\Livewire\Tables;
 use App\Http\Livewire\StaticSignIn;
 use App\Http\Livewire\StaticSignUp;
 use App\Http\Livewire\Rtl;
+use App\Http\Livewire\Community;
+use App\Http\Livewire\CreateCommunity;
+use App\Http\Livewire\EditCommunity;
+use App\Http\Livewire\Communities\ShowCommunity;
 
 use App\Http\Livewire\LaravelExamples\UserProfile;
 use App\Http\Livewire\LaravelExamples\UserManagement;
@@ -47,6 +51,13 @@ Route::patch('/reviews/{review}/flag', [ReviewController::class, 'flag'])->name(
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/livre/{book}', [App\Http\Controllers\HomeController::class, 'show'])->name('book.show');
+Route::get('/home/events/{event}', [App\Http\Controllers\HomeController::class, 'showEvent'])->name('home.events.show');
+
+// Community join/leave routes for web (session-based auth)
+Route::middleware('auth')->group(function () {
+    Route::post('/communities/{community}/join', [App\Http\Controllers\CommunityController::class, 'join'])->name('communities.join');
+    Route::post('/communities/{community}/leave', [App\Http\Controllers\CommunityController::class, 'leave'])->name('communities.leave');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
@@ -79,6 +90,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/virtual-reality', VirtualReality::class)->name('virtual-reality');
     Route::get('/user-profile', UserProfile::class)->name('user-profile');
     Route::get('/user-management', UserManagement::class)->name('user-management');
+    
+    // Community management (requires auth)
+    Route::get('/community', Community::class)->name('community.index');
+    Route::get('/community/create', CreateCommunity::class)->name('community.create');
+    Route::get('/community/{id}/edit', EditCommunity::class)->name('community.edit');
     
     // Books CRUD
     Route::resource('books', \App\Http\Controllers\BookController::class);
@@ -205,3 +221,12 @@ Route::middleware('auth')->group(function () {
 
 // Route de test pour BorrowRequest
 Route::get('/test-borrow-request', [BorrowRequestTestController::class, 'test']);
+
+// Public pages
+// Community details should be public
+Route::get('/communities/{community}', \App\Http\Livewire\Communities\ShowCommunity::class)
+    ->name('communities.show');
+
+// Public Event details route
+Route::get('/events/{event}', \App\Http\Livewire\Events\ShowEvent::class)
+    ->name('events.show');

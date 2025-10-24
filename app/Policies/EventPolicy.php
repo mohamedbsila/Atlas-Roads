@@ -26,7 +26,7 @@ class EventPolicy
     public function view(?User $user, Event $event)
     {
         // allow admins, the event organizer, or if the event is public
-        return ($user && ($user->is_admin ?? false)) || ($user && $user->id === $event->organizer_id) || $event->is_public;
+    return ($user && ($user->is_admin ?? false)) || ($user && (string)$user->id === (string)$event->organizer_id) || $event->is_public;
     }
 
     public function create(?User $_user)
@@ -46,7 +46,7 @@ class EventPolicy
             return $user !== null;
         }
 
-        return $user && $user->id === $event->organizer_id;
+        return $user && (string)$user->id === (string)$event->organizer_id;
     }
 
     public function delete(?User $user, Event $event)
@@ -60,6 +60,6 @@ class EventPolicy
             return $user !== null;
         }
 
-        return $user && $user->id === $event->organizer_id;
+        return $user && (string)$user->id === (string)$event->organizer_id;
     }
 }

@@ -508,6 +508,278 @@
         }
         
         /* ========================================
+           🎉 EVENTS SECTION
+           ======================================== */
+        .events-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .events-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .events-title {
+            color: white;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .events-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 100%;
+            position: relative;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .event-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+        
+        .event-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .event-card:hover .event-image {
+            transform: scale(1.1);
+        }
+        
+        .event-date {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .event-day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f46e5;
+            line-height: 1;
+        }
+        
+        .event-month {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        
+        .event-content {
+            padding: 24px;
+        }
+        
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .event-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .event-meta {
+            display: flex;
+            align-items: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 20px;
+        }
+        
+        .event-meta i {
+            margin-right: 8px;
+            color: #9ca3af;
+        }
+        
+        .event-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .event-button:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+            color: white;
+        }
+
+        /* Communities badges for events */
+        .event-communities {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .community-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.09);
+            color: #ffffff;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .community-badge img {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .community-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+            background: rgba(255,255,255,0.14);
+        }
+
+        /* Modal community item visual improvements */
+        .modal-content ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .modal-content .join-actions a,
+        .modal-content .join-actions button {
+            font-size: 0.75rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+        
+        .events-cta {
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .events-cta-button {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            color: #4f46e5;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .events-cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            color: #4f46e5;
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+        
+        .no-events-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        .no-events-text {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Communities modal styles */
+        .modal-backdrop {
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        .modal-content {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ========================================
            📚 BOOKS SECTION - Card Grid
            ======================================== */
             .books-section {
@@ -1257,6 +1529,165 @@
     </section>
 
     {{-- ═══════════════════════════════════════════════════════════════════
+         🎉 EVENTS SECTION
+         ═══════════════════════════════════════════════════════════════════ --}}
+    <section id="events" class="events-section">
+        <div class="container mx-auto px-8" style="max-width: 1400px;">
+        <div class="text-center mb-12">
+                <h2 class="events-title">Upcoming Events</h2>
+                <p class="events-subtitle">Join our community activities, workshops, and literary gatherings</p>
+        </div>
+
+            @if(isset($events) && $events->count())
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($events as $event)
+                        <div class="event-card">
+                            <div class="event-image-container">
+                                <a href="{{ route('home.events.show', $event) }}">
+                                    <img src="{{ $event->thumbnail_url }}"
+                                         alt="{{ $event->title ?? 'Event' }}"
+                                         class="event-image"
+                                         loading="lazy"
+                                         onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
+                                </a>
+                                
+                                <div class="event-date">
+                                    @php
+                                        $eventDate = $event->start_date ?? now();
+                                        $day = $eventDate->format('d');
+                                        $month = $eventDate->format('M');
+                                    @endphp
+                                    <span class="event-day">{{ $day }}</span>
+                                    <span class="event-month">{{ $month }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-content">
+                                <h3 class="event-title">{{ $event->title ?? 'Event Title' }}</h3>
+
+                                @if($event->communities && $event->communities->count())
+                                    <div class="event-communities">
+                                        @foreach($event->communities->take(3) as $comm)
+                                            <a href="{{ route('communities.show', $comm) }}" class="community-badge" title="{{ $comm->name }}">
+                                                <img src="{{ $comm->cover_image_url }}" alt="{{ $comm->name }}" />
+                                                <span>{{ Str::limit($comm->name, 18) }}</span>
+                                            </a>
+                                        @endforeach
+                                        @if($event->communities->count() > 3)
+                                            <span class="community-badge">+{{ $event->communities->count() - 3 }} more</span>
+                                        @endif
+                                    </div>
+                                @endif
+
+                                <p class="event-description">
+                                    {{ \Illuminate\Support\Str::limit($event->description ?? 'Event description coming soon.', 120) }}
+                                </p>
+                                
+                                <div class="event-meta">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ $event->start_date ? $event->start_date->format('M j, Y \a\t g:i A') : 'Date TBA' }}</span>
+                                </div>
+                                
+                                <div class="flex gap-2 mt-4">
+                                    <a href="{{ route('home.events.show', $event) }}" class="event-button flex-1" aria-label="View details for {{ $event->title }}">
+                                        <i class="fas fa-calendar-alt mr-2"></i>
+                                        View Details
+                                    </a>
+
+                                    @if($event->communities && $event->communities->count())
+                                        <button onclick="showCommunities('{{ $event->id }}')" class="event-button bg-indigo-600 hover:bg-indigo-700 flex-1" aria-expanded="false" aria-controls="communities-modal-{{ $event->id }}">
+                                            <i class="fas fa-users mr-2"></i>
+                                            Communities ({{ $event->communities->count() }})
+                                        </button>
+                                    @endif
+                                </div>
+
+                                @if($event->communities && $event->communities->count())
+                                    <div id="communities-modal-{{ $event->id }}" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center modal-backdrop">
+                                        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 modal-content" tabindex="-1">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <h3 class="text-lg font-semibold">Available Communities</h3>
+                                                <button onclick="hideCommunities('{{ $event->id }}')" class="text-gray-500 hover:text-gray-700">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <ul class="space-y-3">
+                                                @foreach($event->communities as $community)
+                                                    <li class="border border-gray-200 rounded-lg p-3" id="community-item-{{ $community->id }}">
+                                                        <div class="flex items-start gap-3">
+                                                            <img src="{{ $community->cover_image_url }}" alt="{{ $community->name }}"
+                                                                 class="w-12 h-12 rounded object-cover flex-shrink-0">
+                                                            <div class="flex-grow">
+                                                                <a href="{{ route('communities.show', $community) }}" class="font-medium hover:text-blue-600">{{ $community->name }}</a>
+                                                                <div class="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                                                                    @if($community->is_public)
+                                                                        <span class="text-green-600"><i class="fas fa-globe"></i> Public</span>
+                                                                    @else
+                                                                        <span><i class="fas fa-lock"></i> Private</span>
+                                                                    @endif
+                                                                    <span id="member-count-{{ $community->id }}">
+                                                                        <i class="fas fa-user"></i> {{ $community->members }} members
+                                                                    </span>
+                                                                </div>
+                                                                <div class="mt-2 flex gap-2 join-actions">
+                                                                    @auth
+                                                                        @php
+                                                                            $isMember = $community->communityMembers->contains(auth()->id());
+                                                                        @endphp
+                                                                        @if($isMember)
+                                                                            <a href="{{ route('communities.show', $community) }}" class="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                                                                                <i class="fas fa-comments"></i> Join Discussion
+                                                                            </a>
+                                                                            <button onclick="joinCommunity({{ $community->id }}, '{{ $community->slug }}')" 
+                                                                                    id="join-btn-{{ $community->id }}"
+                                                                                    class="text-xs px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+                                                                                <i class="fas fa-user-minus"></i> Leave
+                                                                            </button>
+                                                                        @else
+                                                                            <button onclick="joinCommunity({{ $community->id }}, '{{ $community->slug }}')" 
+                                                                                    id="join-btn-{{ $community->id }}"
+                                                                                    class="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                                                                <i class="fas fa-user-plus"></i> Join
+                                                                            </button>
+                                                                        @endif
+                                                                    @else
+                                                                        <a href="{{ route('login') }}" class="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                                                            <i class="fas fa-sign-in-alt"></i> Login to Join
+                                                                        </a>
+                                                                    @endauth
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                
+                <div class="events-cta">
+                    <a href="{{ route('events.index') }}" class="events-cta-button">
+                        <i class="fas fa-calendar-week mr-2"></i>
+                        View All Events
+                    </a>
+                </div>
+            @else
+                <div class="no-events">
+                    <div class="no-events-icon">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                    <h3 class="no-events-text">No upcoming events at the moment</h3>
+                    <p class="text-white opacity-80 mb-4">Check back later for new events and activities</p>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    {{-- ═══════════════════════════════════════════════════════════════════
          📚 BOOKS SECTION
          ═══════════════════════════════════════════════════════════════════ --}}
     <section id="books" class="books-section" role="region" aria-labelledby="books-title">
@@ -1534,6 +1965,111 @@
                     endDateInput.value = '';
                 }
             });
+
+            // Communities modal functions
+            function showCommunities(eventId) {
+                const modal = document.getElementById('communities-modal-' + eventId);
+                if (!modal) return;
+                modal.style.display = 'flex';
+                // force flex centering in case global CSS overrides classes
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                // reset any internal scroll
+                modal.scrollTop = 0;
+                // focus for accessibility
+                setTimeout(() => modal.querySelector('.modal-content')?.focus(), 80);
+                document.body.style.overflow = 'hidden';
+            }
+
+            function hideCommunities(eventId) {
+                const modal = document.getElementById('communities-modal-' + eventId);
+                if (!modal) return;
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            // Close modals when clicking outside
+            document.addEventListener('click', function(event) {
+                const modals = document.querySelectorAll('[id^="communities-modal-"]');
+                modals.forEach(modal => {
+                    if (event.target === modal) {
+                        const eventId = modal.id.replace('communities-modal-', '');
+                        hideCommunities(eventId);
+                    }
+                });
+            });
+
+            // Toggle Community Membership (Join/Leave)
+            async function joinCommunity(communityId, communitySlug) {
+                const button = document.getElementById('join-btn-' + communityId);
+                const originalText = button.innerHTML;
+                const isJoining = button.classList.contains('bg-blue-600');
+                
+                // Disable button and show loading state
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (isJoining ? 'Joining...' : 'Leaving...');
+                
+                try {
+                    const response = await fetch('/communities/' + communitySlug + '/join', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'same-origin'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Update member count
+                        const memberCountSpan = document.getElementById('member-count-' + communityId);
+                        memberCountSpan.innerHTML = '<i class="fas fa-user"></i> ' + data.member_count + ' members';
+                        
+                        if (data.is_member) {
+                            // User just joined - show "Join Discussion" link
+                            const buttonContainer = button.parentElement;
+                            buttonContainer.innerHTML = '<a href="/communities/' + communitySlug + '" class="text-xs px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"><i class="fas fa-comments"></i> Join Discussion</a><button onclick="joinCommunity(' + communityId + ', \'' + communitySlug + '\')" id="join-btn-' + communityId + '" class="text-xs px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"><i class="fas fa-user-minus"></i> Leave</button>';
+                            showNotification('Successfully joined the community! Check your email for details.', 'success');
+                        } else {
+                            // User just left - show "Join Community" button
+                            button.classList.remove('bg-red-600', 'hover:bg-red-700');
+                            button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                            button.innerHTML = '<i class="fas fa-user-plus"></i> Join';
+                            button.disabled = false;
+                            showNotification('Successfully left the community.', 'success');
+                        }
+                    } else {
+                        if (response.status === 422) {
+                            showNotification(data.message, 'error');
+                        } else {
+                            throw new Error('Failed to toggle community membership');
+                        }
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    }
+                } catch (error) {
+                    console.error('Error toggling community membership:', error);
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                    showNotification('Failed to update community membership. Please try again.', 'error');
+                }
+            }
+            
+            // Show notification function
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white transition-all ' + 
+                    (type === 'success' ? 'bg-green-500' : 'bg-red-500');
+                notification.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + ' mr-2"></i>' + message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
         </script>
     @endpush
 </x-layouts.base>

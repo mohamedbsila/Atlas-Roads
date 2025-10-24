@@ -34,8 +34,27 @@
 
         <div class="mb-3">
             <label class="block text-sm font-medium">Thumbnail (replace)</label>
+            @if($currentThumbnailPath)
+                <div class="mb-2">
+                    <img src="{{ str_starts_with($currentThumbnailPath, 'http') ? $currentThumbnailPath : asset('storage/' . $currentThumbnailPath) }}" alt="Current thumbnail" class="w-28 h-20 object-cover rounded border" />
+                </div>
+            @endif
             <input wire:model="thumbnail" type="file" accept="image/*" />
             @error('thumbnail') <span class="text-red-600">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="communitiesSelect" class="block text-sm font-medium">Communities</label>
+            @if(isset($availableCommunities) && $availableCommunities->count())
+                <select id="communitiesSelect" wire:model="communities" multiple class="mt-1 block w-full border rounded px-2 py-1">
+                    @foreach($availableCommunities as $community)
+                        <option value="{{ $community->id }}" @if(in_array((string)$community->id, (array)$communities)) selected @endif>{{ $community->name }}</option>
+                    @endforeach
+                </select>
+            @else
+                <div class="mt-1 block w-full border rounded px-2 py-1 text-gray-500">No communities available. <a href="{{ route('community.create') }}" class="text-blue-600 underline">Create one</a></div>
+            @endif
+            @error('communities') <span class="text-red-600">{{ $message }}</span> @enderror
         </div>
 
         <div class="flex items-center gap-2">
