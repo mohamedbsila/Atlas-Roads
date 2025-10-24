@@ -66,8 +66,7 @@ pipeline {
             }
         }
 
-=======
->>>>>>> f1a96b60c67ff7c30794758c0a5a2602b373dfb8
+
         stage('Start Docker Services') {
             steps {
                 echo 'Starting MySQL and Nexus containers...'
