@@ -43,7 +43,6 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
         stage('SonarQube Analysis') {
             steps {
                 script {
