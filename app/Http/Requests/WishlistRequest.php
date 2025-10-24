@@ -19,8 +19,7 @@ class WishlistRequest extends FormRequest
             'isbn' => 'nullable|string|max:20',
             'description' => 'nullable|string|max:1000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-            // Normalize to uppercase in prepareForValidation so we validate against HIGH/MEDIUM/LOW
-            'priority' => 'required|in:HIGH,MEDIUM,LOW',
+            'priority' => 'required|in:low,medium,high',
             'max_price' => 'nullable|numeric|min:0|max:99999.99',
         ];
     }
@@ -38,23 +37,10 @@ class WishlistRequest extends FormRequest
             'image.mimes' => 'Image must be a JPEG, PNG, JPG, or GIF file',
             'image.max' => 'Image must not exceed 10MB',
             'priority.required' => 'Priority is required',
-            'priority.in' => 'Priority must be LOW, MEDIUM, or HIGH',
+            'priority.in' => 'Priority must be low, medium, or high',
             'max_price.numeric' => 'Max price must be a number',
             'max_price.min' => 'Max price must be at least 0',
             'max_price.max' => 'Max price must not exceed 99999.99',
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     * Normalize priority to uppercase so the rest of application using HIGH/MEDIUM/LOW works consistently.
-     */
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('priority')) {
-            $this->merge([
-                'priority' => is_string($this->priority) ? strtoupper($this->priority) : $this->priority,
-            ]);
-        }
     }
 } 

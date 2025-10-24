@@ -31,11 +31,7 @@
                     <h6 class="mb-0 font-semibold text-slate-700">
                         <i class="ni ni-settings-gear-65 mr-2"></i>Search & Filters
                     </h6>
-                    <button onclick="document.getElementById('filter-form').submit()" type="button"
-                            class="px-4 py-2 text-xs font-bold text-white uppercase rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
-                            style="background:linear-gradient(135deg,#06b6d4 0%,#0ea5e9 100%)">
-                        <i class="fas fa-sync-alt mr-1"></i> Reset
-                    </button>
+             
                 </div>
 
                 <form method="GET" action="{{ route('books.index') }}" id="filter-form">
@@ -150,7 +146,14 @@
                                 </p>
                                 <p class="mb-1.5 text-xs text-slate-500 flex items-center">
                                     <i class="ni ni-tag mr-2 text-slate-400"></i> 
-                                    <span>{{ $book->category }}</span>
+                                    <span>
+                                        @if($book->category_id && $book->relationLoaded('category'))
+                                            @php $cat = $book->getRelation('category'); @endphp
+                                            {{ $cat ? $cat->category_name : 'N/A' }}
+                                        @else
+                                            {{ $book->getAttribute('category') ?? 'N/A' }}
+                                        @endif
+                                    </span>
                                 </p>
                                 <p class="mb-0 text-xs text-slate-500 flex items-center">
                                     <i class="ni ni-calendar-grid-58 mr-2 text-slate-400"></i> 

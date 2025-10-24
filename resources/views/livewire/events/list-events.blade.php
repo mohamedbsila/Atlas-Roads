@@ -41,9 +41,9 @@
                             <td class="py-3">{{ $event->start_date }}</td>
                             <td class="py-3">{{ $event->end_date }}</td>
                             <td class="py-3 text-right">
-                                @if((auth()->user() && (auth()->user()->is_admin ?? false)) || Gate::allows('update', $event))
+                                @can('update', $event)
                                     <a href="{{ route('events.edit', $event->id) }}" class="px-2 py-1 bg-blue-600 text-white rounded mr-2">Edit</a>
-                                @endif
+                                @endcan
 
                                 <button wire:click.prevent="confirmDelete('{{ $event->id }}')" class="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
                             </td>

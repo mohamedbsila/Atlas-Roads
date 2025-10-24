@@ -15,24 +15,18 @@ class Book extends Model
         'author',
         'isbn',
         'category',
+        'category_id',
         'language',
         'published_year',
         'is_available',
-<<<<<<< HEAD
         'ownerId',
         'price'
-=======
-        'ownerId'
->>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
     ];
 
     protected $casts = [
         'published_year' => 'integer',
         'is_available' => 'boolean',
-<<<<<<< HEAD
         'price' => 'decimal:2',
-=======
->>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
     ];
 
     public function getImageUrlAttribute()
@@ -66,6 +60,14 @@ class Book extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'ownerId');
+    }
+
+    /**
+     * Category of the book
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

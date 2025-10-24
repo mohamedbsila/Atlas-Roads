@@ -17,29 +17,8 @@ class Reclamation extends Model
         'statut',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($model) {
-            // Log pour déboguer les mises à jour
-            \Log::info('Mise à jour de la réclamation', [
-                'id' => $model->id,
-                'original' => $model->getOriginal(),
-                'dirty' => $model->getDirty(),
-                'statut' => $model->statut,
-                'has_solution' => $model->relationLoaded('solution') && $model->solution !== null
-            ]);
-        });
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function solution()
-    {
-        return $this->hasOne(Solution::class);
     }
 }

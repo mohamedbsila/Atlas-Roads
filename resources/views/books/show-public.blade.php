@@ -83,7 +83,14 @@
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-slate-400 uppercase mb-1">Category</p>
-                                    <p class="text-lg font-semibold text-slate-700">{{ $book->category }}</p>
+                                    <p class="text-lg font-semibold text-slate-700">
+                                        @if($book->category_id && $book->relationLoaded('category'))
+                                            @php $cat = $book->getRelation('category'); @endphp
+                                            {{ $cat ? $cat->category_name : 'N/A' }}
+                                        @else
+                                            {{ $book->getAttribute('category') ?? 'N/A' }}
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
 

@@ -69,12 +69,6 @@
                                                 class="inline-block w-full px-6 py-3 mt-6 mb-0 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer shadow-soft-md bg-x-25 bg-150 leading-pro text-size-xs ease-soft-in tracking-tight-soft bg-gradient-cyan hover:scale-102 hover:shadow-soft-xs active:opacity-85">Sign
                                                 in</button>
                                         </div>
-                                        <div class="mt-4 text-center">
-                                            <a href="{{ route('reclamations.create') }}" 
-                                               class="inline-block w-full px-6 py-3 font-bold text-center text-slate-700 uppercase align-middle transition-all border border-solid rounded-lg cursor-pointer bg-transparent border-slate-700 hover:bg-slate-50 active:opacity-85">
-                                                Report a problem
-                                            </a>
-                                        </div>
                                     </form>
                                 </div>
                                 <div

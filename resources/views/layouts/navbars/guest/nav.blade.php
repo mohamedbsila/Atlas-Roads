@@ -33,46 +33,41 @@
                 class="items-center flex-grow overflow-hidden transition-all duration-500 ease-soft lg-max:max-h-0 basis-full lg:flex lg:basis-auto">
                 <ul class="flex flex-col pl-0 mx-auto mb-0 list-none lg:flex-row xl:ml-auto">
 
-                    @if (auth()->user())
-                        @if (auth()->user()->is_admin)
-                            <li>
-                                <a class="flex items-center px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2 
-                                    {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
-                                    aria-current="page" href="{{ url('dashboard') }}">
-                                    <i class="mr-1 fa fa-chart-pie opacity-60"></i>
-                                    Dashboard
-                                </a>
-                            </li>
-                        @endif
-
-                        <li>
-                            <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
-                                {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
-                                href="{{ url('profile') }}">
-                                <i class="mr-1 fa fa-user opacity-60"></i>
-                                Profile
-                            </a>
-                        </li>
+                    @if (auth()->user()) 
+                    <li>
+                        <a class="flex items-center px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2 
+                            {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+                            aria-current="page" href="{{ url('dashboard') }}">
+                            <i class="mr-1 fa fa-chart-pie opacity-60"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
+                            {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+                            href="{{ url('profile') }}">
+                            <i class="mr-1 fa fa-user opacity-60"></i>
+                            Profile
+                        </a>
+                    </li>
                     @endif
 
-                    @guest
-                        <li>
-                            <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
-                            {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
-                                href="{{ url('register') }}">
-                                <i class="mr-1 fas fa-user-circle opacity-60"></i>
-                                Sign Up
-                            </a>
-                        </li>
-                        <li>
-                            <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
-                            {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
-                                href="{{ url('login') }}">
-                                <i class="mr-1 fas fa-key opacity-60"></i>
-                                Sign In
-                            </a>
-                        </li>
-                    @endguest
+                    <li>
+                        <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
+                        {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+                            href="{{ auth()->user() ? url('static-sign-up') : url('register') }}">
+                            <i class="mr-1 fas fa-user-circle opacity-60"></i>
+                            Sign Up
+                        </a>
+                    </li>
+                    <li>
+                        <a class="block px-4 py-2 mr-2 font-normal transition-all lg-max:opacity-0 duration-250 ease-soft-in-out text-size-sm lg:px-2
+                        {{ Request::is('static-sign-up') || Request::is('register') ? 'text-white' : 'text-slate-700' }}"
+                            href="{{ auth()->user() ? url('static-sign-in') : url('login') }}">
+                            <i class="mr-1 fas fa-key opacity-60"></i>
+                            Sign In
+                        </a>
+                    </li>
 
                 </ul>
                 <!-- online builder btn  -->

@@ -26,13 +26,6 @@ class Login extends Component
         if (auth()->attempt(['email' => $this->email, 'password' => $this->password], $this->remember_me)) {
             $user = User::where(["email" => $this->email])->first();
             auth()->login($user, $this->remember_me);
-            
-            // Rediriger vers la page d'accueil si l'utilisateur n'est pas administrateur
-            if (!$user->is_admin) {
-                return redirect()->intended('http://localhost:8000');
-            }
-            
-            // Sinon (si admin), rediriger vers le tableau de bord
             return redirect()->intended('/dashboard');
         } else {
             return $this->addError('email', trans('auth.failed'));
