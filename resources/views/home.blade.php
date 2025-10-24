@@ -1092,6 +1092,11 @@
                         <span>Request Book</span>
                     </a>
                     
+                    <a href="{{ route('reclamations.create') }}" class="nav-cta" style="background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);">
+                        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span>Report Problem</span>
+                    </a>
+                    
                     <a href="{{ route('dashboard') }}" class="nav-link">
                         <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
                         <span>Dashboard</span>
