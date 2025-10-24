@@ -139,6 +139,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\RoomController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\RoomController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\RoomController::class, 'store'])->name('store');
+        Route::get('/{room}', [\App\Http\Controllers\Admin\RoomController::class, 'show'])->name('show');
         Route::get('/{room}/edit', [\App\Http\Controllers\Admin\RoomController::class, 'edit'])->name('edit');
         Route::put('/{room}', [\App\Http\Controllers\Admin\RoomController::class, 'update'])->name('update');
         Route::delete('/{room}', [\App\Http\Controllers\Admin\RoomController::class, 'destroy'])->name('destroy');
