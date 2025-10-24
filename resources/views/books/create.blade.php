@@ -71,14 +71,18 @@
                                         Category
                                     </label>
                                     <select name="category_id"
-                                           class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('category_id') border-red-500 @enderror">
-                                        <option value="">Select a category</option>
+                                            class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('category_id') border-red-500 @enderror">
+                                        <option value="">-- Select a category --</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->category_name }}
+                                                {{ $category->category_name }} ({{ $category->book_count }} books)
                                             </option>
                                         @endforeach
                                     </select>
+                                    <p class="mt-1 text-size-xs text-slate-400">
+                                        <i class="fas fa-folder mr-1"></i> 
+                                        Optional - You can also leave it empty
+                                    </p>
                                     @error('category_id')
                                         <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
                                     @enderror
@@ -94,6 +98,22 @@
                                         <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
                                     @enderror
                                 </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">
+                                    💰 Price (for purchase)
+                                </label>
+                                <input type="number" name="price" value="{{ old('price') }}" step="0.01" min="0"
+                                       class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none @error('price') border-red-500 @enderror"
+                                       placeholder="29.99">
+                                <p class="mt-1 text-size-xs text-slate-400">
+                                    <i class="ni ni-money-coins mr-1"></i> 
+                                    Leave empty if book is not for sale (borrow only)
+                                </p>
+                                @error('price')
+                                    <p class="mt-2 text-size-xs text-red-500">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             <div class="mb-4">
