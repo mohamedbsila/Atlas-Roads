@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BorrowRequestTestController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ use App\Http\Controllers\BorrowRequestTestController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Stripe Webhook (must be BEFORE auth middleware)
+Route::post('/stripe/webhook', [PaymentController::class, 'webhook'])->name('stripe.webhook');
 
 // Review Routes (public)
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
@@ -291,6 +295,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('borrow-requests/{borrowRequest}/reject', [\App\Http\Controllers\BorrowRequestController::class, 'reject'])->name('borrow-requests.reject');
     Route::patch('borrow-requests/{borrowRequest}/return', [\App\Http\Controllers\BorrowRequestController::class, 'markAsReturned'])->name('borrow-requests.return');
     Route::patch('borrow-requests/{borrowRequest}/cancel', [\App\Http\Controllers\BorrowRequestController::class, 'cancel'])->name('borrow-requests.cancel');
+    
+    // Payment Routes
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::post('/payments/{payment}/mark-paid', [PaymentController::class, 'markAsPaid'])->name('payments.mark-paid');
+    Route::post('/books/{book}/purchase', [PaymentController::class, 'purchase'])->name('books.purchase');
+    Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
+    Route::get('/payments/cancel/{payment}', [PaymentController::class, 'cancel'])->name('payments.cancel');
+    Route::post('/borrow-requests/{borrowRequest}/pay', [PaymentController::class, 'createBorrowCheckoutSession'])->name('borrow-requests.pay');
 });
 
 // Route de test pour BorrowRequest
