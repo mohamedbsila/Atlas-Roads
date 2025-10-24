@@ -180,7 +180,7 @@
                 </h6>
                 <div class="space-y-2">
                     <button class="w-full text-left text-xs p-2 bg-gray-100 rounded hover:bg-gray-200 quick-action" data-text="Je n'arrive pas à me connecter à mon compte">
-                        🔐 Problème de connexion
+                        🔒 Problème de connexion
                     </button>
                     <button class="w-full text-left text-xs p-2 bg-gray-100 rounded hover:bg-gray-200 quick-action" data-text="Je voudrais un résumé du livre 'The Midnight Library' de Matt Haig">
                         📚 Demande de résumé

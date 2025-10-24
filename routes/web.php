@@ -110,6 +110,20 @@ Route::middleware('auth')->group(function () {
     Route::resource('reclamations', ReclamationController::class);
     Route::patch('/reclamations/{reclamation}/bien-recu', [ReclamationController::class, 'bienRecu'])
      ->name('reclamations.bienRecu');
+    
+    // Reclamations AI Features
+    Route::post('/reclamations/{reclamation}/regenerate', [ReclamationController::class, 'regenerate'])
+        ->name('reclamations.regenerate');
+    Route::get('/chatbot', [ReclamationController::class, 'chatbot'])
+        ->name('reclamations.chatbot');
+    Route::post('/chatbot/generate', [ReclamationController::class, 'chatbotGenerate'])
+        ->name('reclamations.chatbot.generate');
+    
+    // Solutions Routes
+    Route::get('/solutions', \App\Http\Livewire\Solutions\Index::class)->name('solutions.index');
+    Route::resource('reclamations.solutions', \App\Http\Controllers\SolutionController::class)
+        ->only(['create', 'store', 'edit', 'update', 'destroy'])
+        ->names('solutions');
 
     // Borrow Requests Management
     Route::get('borrow-requests', [\App\Http\Controllers\BorrowRequestController::class, 'index'])->name('borrow-requests.index');
