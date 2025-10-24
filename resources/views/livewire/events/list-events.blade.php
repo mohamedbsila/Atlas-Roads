@@ -25,11 +25,7 @@
                 @foreach($events as $event)
                     <tr class="border-t align-top">
                             <td class="py-3 flex items-start gap-3">
-                                @if($event->thumbnail)
-                                    <img src="{{ Storage::url($event->thumbnail) }}" alt="" class="w-14 h-10 object-cover rounded" />
-                                @else
-                                    <div class="w-14 h-10 bg-gray-100 rounded"></div>
-                                @endif
+                                <img src="{{ $event->thumbnail_url }}" alt="" class="w-14 h-10 object-cover rounded" />
                                 <div>
                                     <div class="font-semibold">{{ $event->title }}</div>
                                     @if($event->description)

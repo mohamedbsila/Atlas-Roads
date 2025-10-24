@@ -230,16 +230,10 @@
             <div class="event-details-card">
                 <!-- Event Header with Image -->
                 <div class="event-details-header">
-                    @if($event->thumbnail)
-                        <img src="{{ Storage::url($event->thumbnail) }}" 
-                             alt="{{ $event->title }}" 
-                             class="event-details-image"
-                             onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
-                    @else
-                        <img src="{{ asset('assets/img/curved-images/curved14.jpg') }}" 
-                             alt="{{ $event->title }}" 
-                             class="event-details-image">
-                    @endif
+                    <img src="{{ $event->thumbnail_url }}" 
+                         alt="{{ $event->title }}" 
+                         class="event-details-image"
+                         onerror="this.src='{{ asset('assets/img/curved-images/curved14.jpg') }}'">
                     
                     <!-- Date Badge -->
                     <div class="event-details-date-badge">

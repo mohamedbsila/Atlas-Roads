@@ -37,11 +37,7 @@
                         @foreach($communities as $community)
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="py-3">
-                                    @if($community->cover_image)
-                                        <img src="{{ Storage::url($community->cover_image) }}" alt="Cover" class="w-16 h-12 object-cover rounded border" />
-                                    @else
-                                        <div class="w-16 h-12 bg-gray-100 rounded border flex items-center justify-center text-gray-400">N/A</div>
-                                    @endif
+                                    <img src="{{ $community->cover_image_url }}" alt="Cover" class="w-16 h-12 object-cover rounded border" />
                                 </td>
                                 <td class="py-3">
                                     <div class="font-semibold text-gray-800">{{ $community->name }}</div>
@@ -67,7 +63,7 @@
                                     </td>
                                 <td class="py-3">
                                     <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                                        {{ $community->members_count ?? 0 }}
+                                        {{ $community->members ?? 0 }}
                                     </span>
                                 </td>
                                 <td class="py-3">

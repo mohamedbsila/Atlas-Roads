@@ -36,7 +36,7 @@
             <label class="block text-sm font-medium">Thumbnail (replace)</label>
             @if($currentThumbnailPath)
                 <div class="mb-2">
-                    <img src="{{ Storage::url($currentThumbnailPath) }}" alt="Current thumbnail" class="w-28 h-20 object-cover rounded border" />
+                    <img src="{{ str_starts_with($currentThumbnailPath, 'http') ? $currentThumbnailPath : asset('storage/' . $currentThumbnailPath) }}" alt="Current thumbnail" class="w-28 h-20 object-cover rounded border" />
                 </div>
             @endif
             <input wire:model="thumbnail" type="file" accept="image/*" />

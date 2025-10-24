@@ -30,7 +30,7 @@
                 @if($currentCoverImagePath)
                     <div class="mb-3">
                         <p class="text-sm text-gray-600 mb-2">Current Image:</p>
-                        <img src="{{ Storage::url($currentCoverImagePath) }}" alt="Current cover" class="w-48 h-32 object-cover rounded border">
+                        <img src="{{ str_starts_with($currentCoverImagePath, 'http') ? $currentCoverImagePath : asset('storage/' . $currentCoverImagePath) }}" alt="Current cover" class="w-48 h-32 object-cover rounded border">
                     </div>
                 @endif
                 

@@ -32,7 +32,7 @@
                 <dt class="text-base font-normal text-gray-900">Members</dt>
                 <dd class="mt-1 flex justify-between items-baseline md:block lg:flex">
                     <div class="flex items-baseline text-2xl font-semibold text-indigo-600">
-                        {{ $community->members->count() }}
+                        {{ $community->communityMembers->count() }}
                     </div>
                 </dd>
             </dl>
@@ -58,11 +58,16 @@
 
         <!-- Content Section -->
         <div class="p-6">
+            <!-- Chat Section -->
+            <div class="mb-8">
+                @livewire('community-chat', ['community' => $community])
+            </div>
+
             <!-- Members Section -->
             <div class="mb-8">
                 <h2 class="text-lg font-medium text-gray-900 mb-4">Members</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    @forelse($community->members as $member)
+                    @forelse($members as $member)
                         <div class="flex flex-col items-center space-y-2">
                             <div class="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
                                 @if($member->profile_photo)
