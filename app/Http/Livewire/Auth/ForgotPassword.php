@@ -29,7 +29,7 @@ class ForgotPassword extends Component
             return back()->with('status', 'We have emailed your password reset link!');
         }
 
-        return back()->with('status', 'A problem occurred while sending the password reset link.');
+        return back()->with('status', 'We have emailed your password reset link!');
     }
 
     public function render()

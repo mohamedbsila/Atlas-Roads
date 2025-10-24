@@ -57,39 +57,21 @@
           </a>
         </li>
 
-        
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+             href="{{ route('reclamations.index') }}">
+            <div
+              class="bg-gradient-to-tl from-red-600 to-rose-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="fas fa-exclamation-circle text-white"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Report a problem</span>
+          </a>
+        </li>
 
-       <li class="w-full mt-4">
+        <li class="w-full mt-4">
           <h6
             class="{{ (Request::is('rtl') ? 'pr-6 mr-2' : 'pl-6 ml-2') }} font-bold leading-tight uppercase text-size-xs opacity-60">
             Laravel examples</h6>
-        </li>
-
-        <!-- Solutions Menu Item -->
-        <li class="mt-0.5 w-full">
-          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
-              {{ Request::is('solutions*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '' }}"
-            href="{{ route('solutions.index') }}">
-            <div
-              class="{{ Request::is('solutions*') ? 'bg-gradient-fuchsia' : '' }} shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
-              <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
-                <title>solutions</title>
-                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <g transform="translate(-1719.000000, -291.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                    <g transform="translate(1716.000000, 291.000000)">
-                      <g transform="translate(3.000000, 0.000000)">
-                        <path class="{{ Request::is('solutions*') ? '' : 'fill-slate-800' }}"
-                          d="M12,0 C5.373,0 0,5.373 0,12 C0,18.627 5.373,24 12,24 C18.627,24 24,18.627 24,12 C24,5.373 18.627,0 12,0 Z M10.5,17.5 L5.5,12.5 L7.05,10.95 L10.5,14.4 L16.95,7.95 L18.5,9.5 L10.5,17.5 Z">
-                        </path>
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
-            </div>
-            <span class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Solutions</span>
-          </a>
         </li>
 
         <li class="mt-0.5 w-full">
@@ -182,6 +164,32 @@
             </div>
             <span
               class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Book Management</span>
+          </a>
+        </li>
+
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors
+              {{ (Request::is('categories*') ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '') }}"
+            href="{{ url('categories') }}">
+
+            <div
+              class="{{ (Request::is('categories*') ? ' bg-gradient-fuchsia' : '') }} shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+
+              <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g transform="translate(-1870.000000, -440.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <g transform="translate(1716.000000, 291.000000)">
+                      <g transform="translate(154.000000, 149.000000)">
+                        <path class="{{ (Request::is('categories*') ? '' : 'fill-slate-800') }}" d="M10,0 L30,0 C35.5228475,0 40,4.4771525 40,10 L40,30 C40,35.5228475 35.5228475,40 30,40 L10,40 C4.4771525,40 0,35.5228475 0,30 L0,10 C0,4.4771525 4.4771525,0 10,0 Z M10,4 C6.6862915,4 4,6.6862915 4,10 L4,30 C4,33.3137085 6.6862915,36 10,36 L30,36 C33.3137085,36 36,33.3137085 36,30 L36,10 C36,6.6862915 33.3137085,4 30,4 L10,4 Z M12,12 L28,12 C29.1045695,12 30,12.8954305 30,14 C30,15.1045695 29.1045695,16 28,16 L12,16 C10.8954305,16 10,15.1045695 10,14 C10,12.8954305 10.8954305,12 12,12 Z M12,20 L28,20 C29.1045695,20 30,20.8954305 30,22 C30,23.1045695 29.1045695,24 28,24 L12,24 C10.8954305,24 10,23.1045695 10,22 C10,20.8954305 10.8954305,20 12,20 Z"></path>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+
+            </div>
+            <span
+              class="{{ (Request::is('rtl') ? 'mr-1' : 'ml-1') }} duration-300 opacity-100 pointer-events-none ease-soft">Categories</span>
           </a>
         </li>
 

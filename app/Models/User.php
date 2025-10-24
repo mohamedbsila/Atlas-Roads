@@ -91,6 +91,7 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return $this->hasMany(BorrowRequest::class, 'owner_id');
     }
+<<<<<<< HEAD
 
     /**
      * Check if the user is an admin
@@ -101,4 +102,6 @@ class User extends Authenticatable implements CanResetPasswordContract
     {
         return (bool) $this->is_admin;
     }
+=======
+>>>>>>> origin/books
 }

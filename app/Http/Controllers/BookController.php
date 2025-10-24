@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Http\Requests\BookRequest;
+use App\Services\TwilioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Book::query();
+        $query = Book::with('category');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -48,7 +50,8 @@ class BookController extends Controller
 
     public function create()
     {
-        return view('books.create');
+        $categories = \App\Models\Category::orderBy('category_name')->get();
+        return view('books.create', compact('categories'));
     }
 
     public function store(BookRequest $request)
@@ -64,10 +67,27 @@ class BookController extends Controller
 
         $data['is_available'] = $request->has('is_available') ? true : false;
         
+        // Convert empty string to null for category_id
+        if (empty($data['category_id'])) {
+            $data['category_id'] = null;
+        }
+        
         // Automatically assign the logged-in user as the owner
         $data['ownerId'] = auth()->id();
 
-        Book::create($data);
+        $book = Book::create($data);
+
+        // Update category book_count
+        if ($book->category_id) {
+            $category = \App\Models\Category::find($book->category_id);
+            if ($category) {
+                $category->incrementBookCount();
+            }
+        }
+
+        // Send SMS notification
+        $twilioService = new TwilioService();
+        $twilioService->notifyNewBook($book->title);
 
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully added!');
@@ -82,7 +102,8 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
-        return view('books.edit', compact('book'));
+        $categories = \App\Models\Category::orderBy('category_name')->get();
+        return view('books.edit', compact('book', 'categories'));
     }
 
     public function update(BookRequest $request, Book $book)
@@ -106,7 +127,34 @@ class BookController extends Controller
 
         $data['is_available'] = $request->has('is_available') ? true : false;
 
+        // Convert empty string to null for category_id
+        if (empty($data['category_id'])) {
+            $data['category_id'] = null;
+        }
+
+        // Track category change
+        $oldCategoryId = $book->category_id;
+        $newCategoryId = $data['category_id'] ?? null;
+
         $book->update($data);
+
+        // Update book_count for categories
+        if ($oldCategoryId != $newCategoryId) {
+            // Decrement old category
+            if ($oldCategoryId) {
+                $oldCategory = \App\Models\Category::find($oldCategoryId);
+                if ($oldCategory) {
+                    $oldCategory->decrementBookCount();
+                }
+            }
+            // Increment new category
+            if ($newCategoryId) {
+                $newCategory = \App\Models\Category::find($newCategoryId);
+                if ($newCategory) {
+                    $newCategory->incrementBookCount();
+                }
+            }
+        }
 
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully updated!');
@@ -114,10 +162,36 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
+        // Decrement category book_count
+        if ($book->category_id) {
+            $category = \App\Models\Category::find($book->category_id);
+            if ($category) {
+                $category->decrementBookCount();
+            }
+        }
+
         $book->delete();
 
         return redirect()->route('books.index')
             ->with('success', 'Book has been successfully deleted!');
+    }
+
+    /**
+     * Download book information as PDF
+     */
+    public function downloadPdf(Book $book)
+    {
+        // Eager load the category relationship
+        $book->load('category');
+
+        // Generate PDF
+        $pdf = Pdf::loadView('books.pdf', compact('book'));
+        
+        // Sanitize filename
+        $filename = preg_replace('/[^A-Za-z0-9_\-]/', '_', $book->title) . '.pdf';
+        
+        // Download PDF
+        return $pdf->download($filename);
     }
 }
 
