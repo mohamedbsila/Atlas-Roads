@@ -152,21 +152,39 @@ class PaymentController extends Controller
             ? "Achat définitif du livre: {$book->title}"
             : "Emprunt du livre: {$book->title}";
 
+        // Get full image URL - Stripe requires HTTPS URLs
+        $imageUrl = $book->image_url;
+        if (!str_starts_with($imageUrl, 'http')) {
+            $imageUrl = url($imageUrl);
+        }
+
         try {
+            \Log::info('Creating Stripe session', [
+                'amount' => $amountInCents,
+                'book' => $book->title,
+                'image_url' => $imageUrl
+            ]);
+
+            $lineItems = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => $book->title,
+                        'description' => $description,
+                    ],
+                    'unit_amount' => $amountInCents,
+                ],
+                'quantity' => 1,
+            ];
+
+            // Only add images if it's a valid HTTPS URL
+            if (str_starts_with($imageUrl, 'https://')) {
+                $lineItems['price_data']['product_data']['images'] = [$imageUrl];
+            }
+
             $session = StripeSession::create([
                 'payment_method_types' => ['card'],
-                'line_items' => [[
-                    'price_data' => [
-                        'currency' => 'usd', // ou 'eur' selon votre devise
-                        'product_data' => [
-                            'name' => $book->title,
-                            'description' => $description,
-                            'images' => [$book->image_url],
-                        ],
-                        'unit_amount' => $amountInCents,
-                    ],
-                    'quantity' => 1,
-                ]],
+                'line_items' => [$lineItems],
                 'mode' => 'payment',
                 'customer_email' => $user->email,
                 'client_reference_id' => $payment->id,
@@ -179,6 +197,8 @@ class PaymentController extends Controller
                 'cancel_url' => route('payments.cancel', ['payment' => $payment->id]),
             ]);
 
+            \Log::info('Stripe session created', ['session_id' => $session->id, 'url' => $session->url]);
+
             // Sauvegarder l'ID de session
             $payment->stripe_session_id = $session->id;
             $payment->save();
@@ -187,6 +207,7 @@ class PaymentController extends Controller
             return redirect($session->url);
 
         } catch (\Exception $e) {
+            \Log::error('Stripe session error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return back()->withErrors(['error' => 'Erreur Stripe: ' . $e->getMessage()]);
         }
     }

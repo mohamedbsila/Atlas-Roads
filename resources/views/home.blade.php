@@ -402,10 +402,9 @@
                                             
                                             {{-- Purchase Button (if price is set) --}}
                                             @if($book->price && $book->price > 0)
-                                                <form action="{{ route('books.purchase', $book) }}" method="POST" class="w-full" onsubmit="console.log('Form submitted for book {{ $book->id }}')">
+                                                <form action="{{ route('books.purchase', $book) }}" method="POST" class="w-full">
                                                     @csrf
                                                     <button type="submit"
-                                                            onclick="console.log('Purchase button clicked for book {{ $book->id }}', event)"
                                                             class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-blue-600 hover:to-blue-700 transition-all transform hover:-translate-y-1 hover:shadow-lg">
                                                         <i class="fas fa-shopping-cart me-2"></i>
                                                         💰 Acheter - {{ number_format($book->price, 2) }} $
