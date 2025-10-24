@@ -1072,6 +1072,16 @@
                 </a>
                 
             @auth
+                    <a href="{{ route('rooms.search') }}" class="nav-link">
+                        <i class="fas fa-door-open" aria-hidden="true"></i>
+                        <span>Rooms</span>
+                    </a>
+                    
+                    <a href="{{ route('room-reservations.my-reservations') }}" class="nav-link">
+                        <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                        <span>My Reservations</span>
+                    </a>
+                    
                     <a href="{{ route('wishlist.index') }}" class="nav-link">
                         <i class="fas fa-heart" aria-hidden="true"></i>
                         <span>Wishlist</span>
