@@ -1,7 +1,7 @@
 <x-layouts.base>
-    @include('layouts.navbars.guest.nav')
+    <x-client-navbar />
     
-    <div class="container mx-auto px-4 py-8 mt-20">
+    <div class="container mx-auto px-4 py-8 mt-4">
         <div class="flex items-center mb-6">
             <a href="{{ route('rooms.search') }}" 
                class="inline-flex items-center justify-center w-10 h-10 mr-4 text-white rounded-lg shadow-md"

@@ -230,52 +230,7 @@
         </style>
     @endpush
     
-    <header class="header-creative" role="banner">
-        <div class="header-container">
-            <div class="logo-group">
-                <img src="{{ asset('assets/img/logo/logo black.png') }}" 
-                     alt="Atlas Roads Logo" 
-                     class="logo-img"
-                     width="40" 
-                     height="40">
-                <span class="logo-text">Atlas Roads</span>
-            </div>
-            
-            <nav class="nav-links" role="navigation" aria-label="Main navigation">
-                <a href="{{ route('home') }}" class="nav-link">
-                    <i class="fas fa-home" aria-hidden="true"></i>
-                    <span>Home</span>
-                </a>
-                
-                <a href="{{ route('home') }}#books" class="nav-link">
-                    <i class="fas fa-book" aria-hidden="true"></i>
-                    <span>Books</span>
-                </a>
-                
-                @auth
-                    <a href="{{ route('wishlist.index') }}" class="nav-link">
-                        <i class="fas fa-heart" aria-hidden="true"></i>
-                        <span>Wishlist</span>
-                    </a>
-                    
-                    <a href="{{ route('wishlist.create') }}" class="nav-cta">
-                        <i class="fas fa-plus" aria-hidden="true"></i>
-                        <span>Request Book</span>
-                    </a>
-                    
-                    <a href="{{ route('dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
-                        <span>Dashboard</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="nav-link">
-                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
-                        <span>Login</span>
-                    </a>
-                @endauth
-            </nav>
-        </div>
-    </header>
+    <x-client-navbar />
 
     <main class="min-h-screen bg-gray-50">
         <div class="container mx-auto px-8 py-6" style="max-width: 1400px;">

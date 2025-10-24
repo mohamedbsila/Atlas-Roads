@@ -1,7 +1,7 @@
 <x-layouts.base>
-    @include('layouts.navbars.guest.nav')
+    <x-client-navbar />
     
-    <div class="container mx-auto px-4 py-8 mt-20">
+    <div class="container mx-auto px-4 py-8 mt-4">
         <div class="mb-6">
             <h5 class="mb-0 font-bold text-slate-700 text-xl">🔍 Rechercher une Salle d'Étude</h5>
             <p class="text-sm text-slate-400 mt-1">Trouvez la salle parfaite avec l'IA</p>
