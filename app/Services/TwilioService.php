@@ -12,16 +12,17 @@ class TwilioService
 
     public function __construct()
     {
-        // TEMPORARY FIX: Hardcode credentials to bypass cache issues
-        // TODO: Remove after server restart and use config() instead
-        $sid = 'AC5c2cb54a83038ccf39e39b2e41001ee6';
-        $token = '65c15a1b8db322c2c06083af43205efd';
-        $this->from = '+19786437950';
+        $sid = config('services.twilio.sid');
+        $token = config('services.twilio.token');
+        $this->from = config('services.twilio.from');
 
-        // Debug: log what we're using (remove after testing)
-        Log::info("Twilio Service initialized (HARDCODED)", [
-            'sid' => $sid,
-            'token_preview' => substr($token, 0, 8) . '...',
+        if (!$sid || !$token || !$this->from) {
+            Log::warning("Twilio credentials not configured. SMS notifications will be skipped.");
+            return;
+        }
+
+        Log::info("Twilio Service initialized", [
+            'sid' => substr($sid, 0, 10) . '...',
             'from' => $this->from
         ]);
 
@@ -37,16 +38,24 @@ class TwilioService
      */
     public function sendSMS($to, $message)
     {
+        if (!$this->twilio) {
+            Log::warning("Twilio not initialized. Skipping SMS to {$to}");
+            return false;
+        }
+
         try {
             $this->twilio->messages->create($to, [
                 'from' => $this->from,
                 'body' => $message
             ]);
 
-            Log::info("SMS sent successfully to {$to}: {$message}");
+            Log::info("SMS sent successfully", ['to' => $to, 'message' => $message]);
             return true;
         } catch (\Exception $e) {
-            Log::error("Failed to send SMS: " . $e->getMessage());
+            Log::error("Failed to send SMS", [
+                'error' => $e->getMessage(),
+                'to' => $to
+            ]);
             return false;
         }
     }
@@ -59,11 +68,15 @@ class TwilioService
      */
     public function notifyNewBook($bookTitle)
     {
-        // TEMPORARY FIX: Hardcode phone number
-        $to = '+21624019297';
-        $message = "New book added named {$bookTitle}";
+        $to = config('services.twilio.notify_number');
+        
+        if (!$to) {
+            Log::warning("Twilio notify number not configured. Skipping notification for: {$bookTitle}");
+            return false;
+        }
+        
+        $message = "📚 New book added to Atlas Roads: \"{$bookTitle}\"";
         
         return $this->sendSMS($to, $message);
     }
 }
-
