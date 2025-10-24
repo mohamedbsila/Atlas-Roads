@@ -29,17 +29,15 @@ class ReservationController extends Controller
         return view('admin.reservations.index', compact('reservations'));
     }
 
-    public function confirm($id)
+    public function confirm(RoomReservation $reservation)
     {
-        $reservation = RoomReservation::findOrFail($id);
         $reservation->confirm();
 
         return back()->with('success', 'Réservation confirmée!');
     }
 
-    public function cancel($id)
+    public function cancel(RoomReservation $reservation)
     {
-        $reservation = RoomReservation::findOrFail($id);
         $reservation->cancel();
 
         return back()->with('success', 'Réservation annulée!');

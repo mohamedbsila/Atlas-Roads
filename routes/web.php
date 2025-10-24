@@ -148,6 +148,8 @@ Route::middleware('auth')->group(function () {
     // Admin Reservations Management
     Route::prefix('admin/reservations')->name('admin.reservations.')->middleware('admin')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\ReservationController::class, 'index'])->name('index');
+        Route::post('/{reservation}/confirm', [\App\Http\Controllers\Admin\ReservationController::class, 'confirm'])->name('confirm');
+        Route::post('/{reservation}/cancel', [\App\Http\Controllers\Admin\ReservationController::class, 'cancel'])->name('cancel');
     });
 
     // Room Reservations (Users)
