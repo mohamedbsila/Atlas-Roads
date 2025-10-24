@@ -18,12 +18,14 @@ class Book extends Model
         'language',
         'published_year',
         'is_available',
-        'ownerId'
+        'ownerId',
+        'price'
     ];
 
     protected $casts = [
         'published_year' => 'integer',
         'is_available' => 'boolean',
+        'price' => 'decimal:2',
     ];
 
     public function getImageUrlAttribute()
