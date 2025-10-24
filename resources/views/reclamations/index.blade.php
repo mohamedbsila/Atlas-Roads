@@ -1,5 +1,7 @@
-<x-layouts.app>
-    <div>
+<x-layouts.base>
+    <x-client-navbar />
+    
+    <div class="container mx-auto px-4 py-8 mt-4">
         @if(session('success'))
             <div class="mb-4 p-4 text-white rounded-xl flex items-center justify-between" 
                  style="background:linear-gradient(to right,#84cc16,#4ade80)">
@@ -176,4 +178,4 @@
             {{ $reclamations->links() }}
         </div>
     </div>
-</x-layouts.app>
+</x-layouts.base>

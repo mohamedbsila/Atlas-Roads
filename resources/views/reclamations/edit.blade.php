@@ -1,11 +1,14 @@
-<x-layouts.app>
-    <div>
+<x-layouts.base>
+    <x-client-navbar />
+    
+    <div class="container mx-auto px-4 py-8 mt-4">
         <div class="mb-6">
             <a href="{{ route('reclamations.index') }}" 
-               class="inline-block px-4 py-2 mb-4 text-size-xs font-bold text-slate-400 hover:text-slate-700">
-                <i class="ni ni-bold-left mr-1"></i> Retour à la liste
+               class="inline-block px-4 py-2 mb-4 text-sm font-bold text-slate-400 hover:text-slate-700">
+                <i class="fas fa-arrow-left mr-1"></i> Retour à la liste
             </a>
-            <h5 class="mb-0 font-bold">Modifier Réclamation</h5>
+            <h5 class="mb-0 font-bold text-slate-700 text-xl">✏️ Modifier Réclamation</h5>
+            <p class="text-sm text-slate-400 mt-1">Mettez à jour votre réclamation</p>
         </div>
 
         <div class="flex flex-wrap -mx-3">
@@ -76,4 +79,4 @@
             </div>
         </div>
     </div>
-</x-layouts.app>
+</x-layouts.base>

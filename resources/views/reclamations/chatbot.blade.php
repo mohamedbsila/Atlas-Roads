@@ -1,4 +1,6 @@
 <x-layouts.base>
+<x-client-navbar />
+
 <style>
     .gradient-text {
         background: linear-gradient(135deg, #d946ef, #ec4899, #f97316);
