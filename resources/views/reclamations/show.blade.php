@@ -1,6 +1,4 @@
 <x-layouts.base>
-<x-client-navbar />
-
 <style>
     .gradient-text {
         background: linear-gradient(135deg, #d946ef, #ec4899, #f97316);
@@ -110,8 +108,8 @@
                             ];
                             $priorityIcons = [
                                 'haute' => '🔥 High',
-                                'moyenne' => '⚡ Medium',
-                                'basse' => '✓ Low'
+                                'moyenne' => '⭐ Medium',
+                                'basse' => '✨ Low'
                             ];
                         @endphp
                         <span class="inline-block px-2 py-1 text-sm rounded border {{ $priorityStyles[$reclamation->priorite] ?? 'bg-gray-100 text-gray-800' }}">
@@ -331,6 +329,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+</script>
+@endpush
+@push('scripts')
+<script>
+    // Scripts supplémentaires si nécessaire
 </script>
 @endpush
 </x-layouts.base>
