@@ -24,8 +24,12 @@ class BookRequest extends FormRequest
             'category' => 'required|string|max:50',
             'language' => 'required|string|max:30',
             'published_year' => 'required|integer|min:1900|max:2025',
+<<<<<<< HEAD
             'is_available' => 'boolean',
             'price' => 'nullable|numeric|min:0|max:99999.99'
+=======
+            'is_available' => 'boolean'
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
         ];
     }
 
@@ -47,10 +51,14 @@ class BookRequest extends FormRequest
             'image.mimes' => 'The image must be in JPG, JPEG or PNG format',
             'image.max' => 'The image must not exceed 2 MB',
             'image_url.url' => 'The image URL must be a valid URL',
+<<<<<<< HEAD
             'image_url.max' => 'The image URL must not exceed 500 characters',
             'price.numeric' => 'The price must be a valid number',
             'price.min' => 'The price must be at least 0',
             'price.max' => 'The price cannot exceed 99999.99'
+=======
+            'image_url.max' => 'The image URL must not exceed 500 characters'
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
         ];
     }
 }

@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "54b892cb3eae6f48011bd41bc6f7370a",
+=======
+    "content-hash": "0ec575e8050ea8e21a6d0860eabbf6e3",
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3589,6 +3593,7 @@
             "time": "2021-02-08T20:43:55+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "stripe/stripe-php",
             "version": "v18.0.0",
             "source": {
@@ -3648,6 +3653,8 @@
             "time": "2025-09-30T22:56:22+00:00"
         },
         {
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
             "name": "symfony/clock",
             "version": "v7.3.0",
             "source": {

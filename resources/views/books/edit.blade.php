@@ -93,6 +93,7 @@
 
                             <div class="mb-4">
                                 <label class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">
+<<<<<<< HEAD
                                     💰 Price (for purchase)
                                 </label>
                                 <input type="number" name="price" value="{{ old('price', $book->price) }}" step="0.01" min="0"
@@ -109,6 +110,8 @@
 
                             <div class="mb-4">
                                 <label class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
                                     New Cover Image
                                 </label>
                                 @if($book->image)

@@ -23,7 +23,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\BorrowRequestTestController;
+<<<<<<< HEAD
 use App\Http\Controllers\PaymentController;
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +39,12 @@ use App\Http\Controllers\PaymentController;
 |
 */
 
+<<<<<<< HEAD
 // Stripe Webhook (must be BEFORE auth middleware)
 Route::post('/stripe/webhook', [PaymentController::class, 'webhook'])->name('stripe.webhook');
 
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
 // Review Routes (public)
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
 Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update')->middleware('auth');
@@ -295,6 +301,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('borrow-requests/{borrowRequest}/reject', [\App\Http\Controllers\BorrowRequestController::class, 'reject'])->name('borrow-requests.reject');
     Route::patch('borrow-requests/{borrowRequest}/return', [\App\Http\Controllers\BorrowRequestController::class, 'markAsReturned'])->name('borrow-requests.return');
     Route::patch('borrow-requests/{borrowRequest}/cancel', [\App\Http\Controllers\BorrowRequestController::class, 'cancel'])->name('borrow-requests.cancel');
+<<<<<<< HEAD
     
     // Payment Routes
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
@@ -303,6 +310,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
     Route::get('/payments/cancel/{payment}', [PaymentController::class, 'cancel'])->name('payments.cancel');
     Route::post('/borrow-requests/{borrowRequest}/pay', [PaymentController::class, 'createBorrowCheckoutSession'])->name('borrow-requests.pay');
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
 });
 
 // Route de test pour BorrowRequest

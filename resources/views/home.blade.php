@@ -393,12 +393,16 @@
                                 <div class="space-y-2">
                                     @auth
                                         @if($book->is_available && $book->ownerId !== Auth::id())
+<<<<<<< HEAD
                                             {{-- Borrow Button --}}
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
                                             <button onclick="openBorrowModal('{{ $book->id }}', '{{ e($book->title) }}', '{{ e($book->author) }}')"
                                                     class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:from-green-600 hover:to-green-700 transition-all transform hover:-translate-y-1 hover:shadow-lg">
                                                 <i class="fas fa-hand-holding-heart me-2"></i>
                                                 📚 Emprunter ce livre
                                             </button>
+<<<<<<< HEAD
                                             
                                             {{-- Purchase Button (if price is set) --}}
                                             @if($book->price && $book->price > 0)
@@ -411,6 +415,8 @@
                                                     </button>
                                                 </form>
                                             @endif
+=======
+>>>>>>> e3ec6010e98b1a88286c675eadaa69c5c318b4bc
                                         @elseif($book->ownerId === Auth::id())
                                             <div class="w-full bg-gray-100 text-gray-500 px-4 py-2.5 rounded-lg text-sm font-semibold text-center">
                                                 <i class="fas fa-crown me-1"></i>
