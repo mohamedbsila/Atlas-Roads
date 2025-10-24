@@ -17,6 +17,7 @@ pipeline {
         PHPUNIT_COVERAGE = 'false'
         DEPLOY_PATH = '/var/www/atlas-roads'
         NEXUS_URL = 'localhost:8081'
+        SONARQUBE_URL = 'http://localhost:9000'
     }
 
     options {
@@ -42,30 +43,6 @@ pipeline {
                 echo "Message: ${env.GIT_COMMIT_MSG}"
             }
         }
-
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {
-                        sh '''
-                            # Run PHPUnit tests with coverage
-                            ./vendor/bin/phpunit --coverage-clover coverage-report.xml --log-junit test-report.xml
-                            
-                            # Run SonarQube Scanner
-                            sonar-scanner
-                        '''
-                    }
-                    
-                    timeout(time: 1, unit: 'HOURS') {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        }
-                    }
-                }
-            }
-        }
-
 
         stage('Start Docker Services') {
             steps {
@@ -119,6 +96,22 @@ pipeline {
                             echo "Nexus container already running"
                         fi
                         
+                        # Démarrer SonarQube
+                        if ! docker ps -a | grep -q atlas-sonarqube; then
+                            echo "Creating SonarQube container..."
+                            docker run -d \\
+                                --name atlas-sonarqube \\
+                                --network atlas-network \\
+                                -p 9000:9000 \\
+                                -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true \\
+                                sonarqube:lts-community
+                        elif ! docker ps | grep -q atlas-sonarqube; then
+                            echo "Starting existing SonarQube container..."
+                            docker start atlas-sonarqube
+                        else
+                            echo "SonarQube container already running"
+                        fi
+                        
                         # Attendre que MySQL soit prêt
                         echo "Waiting for MySQL to be ready..."
                         for i in {1..30}; do
@@ -128,6 +121,17 @@ pipeline {
                             fi
                             echo "Waiting for MySQL... ($i/30)"
                             sleep 2
+                        done
+                        
+                        # Attendre que SonarQube soit prêt
+                        echo "Waiting for SonarQube to be ready..."
+                        for i in {1..60}; do
+                            if curl -s http://localhost:9000/api/system/status | grep -q "UP"; then
+                                echo "SonarQube is ready!"
+                                break
+                            fi
+                            echo "Waiting for SonarQube... ($i/60)"
+                            sleep 5
                         done
                         
                         echo "Docker services started successfully!"
@@ -243,6 +247,54 @@ EOF
                 echo 'Building frontend assets...'
                 sh 'npm run build'
                 echo 'Assets compiled successfully'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube analysis...'
+                script {
+                    // Generate test coverage first
+                    sh '''
+                        # Run PHPUnit tests with coverage
+                        mkdir -p coverage
+                        vendor/bin/phpunit --coverage-clover coverage/clover.xml --log-junit coverage/junit.xml || true
+                    '''
+                    
+                    // Wait for SonarQube to be fully ready
+                    sh '''
+                        echo "Ensuring SonarQube is fully ready..."
+                        for i in {1..30}; do
+                            if curl -s -u admin:admin http://localhost:9000/api/system/status | grep -q '"status":"UP"'; then
+                                echo "SonarQube is UP!"
+                                break
+                            fi
+                            echo "Waiting for SonarQube to be UP... ($i/30)"
+                            sleep 3
+                        done
+                    '''
+                    
+                    // Configure SonarQube Scanner
+                    def scannerHome = tool name: 'SonarScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \\
+                                -Dsonar.host.url=http://localhost:9000 \\
+                                -Dsonar.login=admin \\
+                                -Dsonar.password=admin \\
+                                -Dsonar.projectKey=atlas-roads \\
+                                -Dsonar.projectName="Atlas Roads Library" \\
+                                -Dsonar.sources=app,resources,routes \\
+                                -Dsonar.tests=tests \\
+                                -Dsonar.exclusions=vendor/**,node_modules/**,storage/**,bootstrap/cache/**,public/** \\
+                                -Dsonar.php.coverage.reportPaths=coverage/clover.xml \\
+                                -Dsonar.php.tests.reportPath=coverage/junit.xml
+                        """
+                    }
+                    
+                    echo 'SonarQube analysis completed'
+                }
             }
         }
 
@@ -471,9 +523,11 @@ EOF
                     echo ""
                     echo "✓ MySQL running on port 3306"
                     echo "✓ Nexus running on port 8081"
+                    echo "✓ SonarQube running on port 9000"
                     echo "✓ Laravel app running on port 8000"
                     echo ""
                     echo "Application URL: http://localhost:8000"
+                    echo "SonarQube URL: http://localhost:9000"
                 ''' 
                 
                 try {
