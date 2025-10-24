@@ -43,6 +43,32 @@ pipeline {
             }
         }
 
+<<<<<<< HEAD
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        sh '''
+                            # Run PHPUnit tests with coverage
+                            ./vendor/bin/phpunit --coverage-clover coverage-report.xml --log-junit test-report.xml
+                            
+                            # Run SonarQube Scanner
+                            sonar-scanner
+                        '''
+                    }
+                    
+                    timeout(time: 1, unit: 'HOURS') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+
+=======
+>>>>>>> f1a96b60c67ff7c30794758c0a5a2602b373dfb8
         stage('Start Docker Services') {
             steps {
                 echo 'Starting MySQL and Nexus containers...'
