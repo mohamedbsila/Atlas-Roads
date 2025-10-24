@@ -68,40 +68,53 @@ class PaymentController extends Controller
      */
     public function purchase(Book $book)
     {
-        $userId = Auth::id();
-        if (!$userId) return redirect()->route('login');
+        try {
+            \Log::info('Purchase attempt', ['book_id' => $book->id, 'user_id' => Auth::id()]);
+            
+            $userId = Auth::id();
+            if (!$userId) return redirect()->route('login');
 
-        // Empêcher d'acheter son propre livre
-        if ($book->ownerId == $userId) {
-            return back()->withErrors(['error' => "Vous ne pouvez pas acheter votre propre livre."]);
+            // Empêcher d'acheter son propre livre
+            if ($book->ownerId == $userId) {
+                return back()->withErrors(['error' => "Vous ne pouvez pas acheter votre propre livre."]);
+            }
+
+            // Vérifier que le livre est disponible
+            if (!$book->is_available) {
+                return back()->withErrors(['error' => "Ce livre n'est pas disponible à l'achat pour le moment."]);
+            }
+
+            $currency = config('app.currency_symbol', '$');
+            $price = (float) ($book->price ?? 0);
+            if ($price <= 0) {
+                return back()->withErrors(['error' => "Ce livre n'a pas de prix valide pour l'achat."]);
+            }
+
+            // Créer le paiement en base
+            $payment = Payment::create([
+                'borrower_id' => $userId,
+                'owner_id' => $book->ownerId,
+                'book_id' => $book->id,
+                'borrow_request_id' => null,
+                'amount_total' => round($price, 2),
+                'amount_per_day' => null,
+                'currency' => $currency,
+                'status' => 'pending',
+                'type' => 'purchase',
+            ]);
+
+            \Log::info('Payment created', ['payment_id' => $payment->id]);
+
+            // Créer une session Stripe Checkout
+            return $this->createStripeCheckoutSession($payment, $book);
+            
+        } catch (\Exception $e) {
+            \Log::error('Purchase error: ' . $e->getMessage(), [
+                'book_id' => $book->id,
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withErrors(['error' => 'Erreur lors du traitement: ' . $e->getMessage()]);
         }
-
-        // Vérifier que le livre est disponible
-        if (!$book->is_available) {
-            return back()->withErrors(['error' => "Ce livre n'est pas disponible à l'achat pour le moment."]);
-        }
-
-        $currency = config('app.currency_symbol', '$');
-        $price = (float) ($book->price ?? 0);
-        if ($price <= 0) {
-            return back()->withErrors(['error' => "Ce livre n'a pas de prix valide pour l'achat."]);
-        }
-
-        // Créer le paiement en base
-        $payment = Payment::create([
-            'borrower_id' => $userId,
-            'owner_id' => $book->ownerId,
-            'book_id' => $book->id,
-            'borrow_request_id' => null,
-            'amount_total' => round($price, 2),
-            'amount_per_day' => null,
-            'currency' => $currency,
-            'status' => 'pending',
-            'type' => 'purchase',
-        ]);
-
-        // Créer une session Stripe Checkout
-        return $this->createStripeCheckoutSession($payment, $book);
     }
 
     /**
